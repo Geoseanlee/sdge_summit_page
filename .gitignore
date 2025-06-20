@@ -1,0 +1,232 @@
+# ===========================================
+# SDGS 项目 .gitignore 文件
+# 适用于 Spring Boot + Vue 3 前后端分离项目
+# ===========================================
+
+# ===========================================
+# Java & Maven 相关
+# ===========================================
+# 编译输出
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ===========================================
+# Node.js & Vue 相关
+# ===========================================
+# 依赖目录
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 构建输出
+dist/
+build/
+.nuxt/
+
+# 缓存
+.npm
+.eslintcache
+.stylelintcache
+
+# 环境配置
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vite
+.vite/
+
+# ===========================================
+# IDE & 编辑器
+# ===========================================
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================================
+# 操作系统
+# ===========================================
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# 数据库
+# ===========================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ===========================================
+# 日志文件
+# ===========================================
+*.log
+logs/
+log/
+
+# ===========================================
+# 临时文件 & 备份
+# ===========================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.rej
+
+# ===========================================
+# 压缩文件
+# ===========================================
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# ===========================================
+# 测试覆盖率报告
+# ===========================================
+coverage/
+*.lcov
+.nyc_output/
+
+# ===========================================
+# 安全敏感文件
+# ===========================================
+# 配置文件中的敏感信息
+application-prod.yaml
+application-production.yaml
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# ===========================================
+# 其他
+# ===========================================
+# 系统生成的文件
+.thumbnails/
+*.pid
+*.seed
+*.pid.lock
+
+# 运行时文件
+*.lock
+package-lock.json.backup
+
+# TypeScript 缓存
+*.tsbuildinfo
+
+# 可选的 npm 缓存目录
+.npm
+
+# 可选的 REPL 历史
+.node_repl_history
+
+# Yarn Integrity 文件
+.yarn-integrity 
