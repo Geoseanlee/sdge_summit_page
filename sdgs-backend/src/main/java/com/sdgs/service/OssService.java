@@ -69,4 +69,16 @@ public interface OssService {
      * @return 文件信息列表
      */
     List<Map<String, Object>> listFiles(String prefix, int maxKeys);
+
+    /**
+     * 事务性上传文件（支持回滚）
+     * 先上传到OSS，然后执行数据库操作，如果数据库操作失败则回滚删除OSS文件
+     *
+     * @param file 要上传的文件
+     * @param dbOperation 数据库操作函数，返回是否成功
+     * @return 上传成功后的文件访问URL
+     */
+    default String uploadFileWithTransaction(MultipartFile file, java.util.function.Supplier<Boolean> dbOperation) {
+        throw new UnsupportedOperationException("请在实现类中重写此方法");
+    }
 } 

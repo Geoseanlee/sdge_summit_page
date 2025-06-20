@@ -259,4 +259,86 @@ public class FileUploadController {
             return Result.error(500, "获取今日图片列表失败: " + e.getMessage());
         }
     }
+
+    /**
+     * 事务性上传图片（上传到OSS + 保存到数据库）
+     * 如果数据库保存失败，会自动删除已上传的OSS文件
+     * 
+     * @param file 图片文件
+     * @param title 图片标题（可选）
+     * @param category 图片分类（可选）
+     * @return 上传结果
+     */
+    @PostMapping("/upload/image/transaction")
+    public Result<Map<String, Object>> uploadImageWithTransaction(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "category", required = false) String category) {
+        
+        try {
+            // 验证文件
+            if (file == null || file.isEmpty()) {
+                return Result.error(400, "请选择要上传的文件");
+            }
+
+            if (!ossService.isImageFile(file)) {
+                return Result.error(400, "只能上传图片文件（jpg、png、gif、bmp等）");
+            }
+
+            if (!ossService.isValidFileSize(file, 10)) {
+                return Result.error(400, "文件大小不能超过10MB");
+            }
+
+            // 使用事务性上传
+            String fileUrl = ((com.sdgs.service.impl.OssServiceImpl) ossService)
+                .uploadFileWithTransaction(file, () -> {
+                    // 这里执行数据库操作
+                    try {
+                        // TODO: 将图片信息保存到数据库
+                        // 示例代码（需要根据实际的Entity和Service实现）:
+                        /*
+                        ImageEntity imageEntity = new ImageEntity();
+                        imageEntity.setFileName(file.getOriginalFilename());
+                        imageEntity.setFileUrl(fileUrl);
+                        imageEntity.setTitle(title);
+                        imageEntity.setCategory(category);
+                        imageEntity.setFileSize(file.getSize());
+                        imageEntity.setUploadTime(new Date());
+                        
+                        return imageService.save(imageEntity);
+                        */
+                        
+                        // 暂时模拟数据库操作
+                        log.info("模拟数据库保存操作 - 文件名: {}, 标题: {}, 分类: {}", 
+                               file.getOriginalFilename(), title, category);
+                        
+                        // 这里可以模拟失败情况进行测试
+                        // if (file.getOriginalFilename().contains("test-fail")) {
+                        //     return false; // 模拟数据库保存失败
+                        // }
+                        
+                        return true; // 模拟数据库保存成功
+                        
+                    } catch (Exception e) {
+                        log.error("数据库操作异常", e);
+                        return false;
+                    }
+                });
+
+            // 构建返回数据
+            Map<String, Object> data = new HashMap<>();
+            data.put("fileName", file.getOriginalFilename());
+            data.put("fileSize", file.getSize());
+            data.put("fileUrl", fileUrl);
+            data.put("title", title);
+            data.put("category", category);
+
+            log.info("事务性图片上传成功: {}", fileUrl);
+            return Result.success(data);
+
+        } catch (Exception e) {
+            log.error("事务性图片上传失败", e);
+            return Result.error(500, "图片上传失败: " + e.getMessage());
+        }
+    }
 } 

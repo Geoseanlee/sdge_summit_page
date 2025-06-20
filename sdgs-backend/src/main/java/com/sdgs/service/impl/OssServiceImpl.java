@@ -247,4 +247,51 @@ public class OssServiceImpl implements OssService {
             throw new RuntimeException("解析文件URL失败: " + e.getMessage());
         }
     }
+
+    /**
+     * 事务性上传文件（支持回滚）
+     * 
+     * @param file 要上传的文件
+     * @param dbOperation 数据库操作函数，返回是否成功
+     * @return 上传成功后的文件访问URL
+     */
+    public String uploadFileWithTransaction(MultipartFile file, java.util.function.Supplier<Boolean> dbOperation) {
+        String fileUrl = null;
+        
+        try {
+            // 1. 先上传到OSS
+            fileUrl = uploadFile(file);
+            log.info("文件上传到OSS成功: {}", fileUrl);
+            
+            // 2. 执行数据库操作
+            boolean dbSuccess = dbOperation.get();
+            
+            if (!dbSuccess) {
+                // 数据库操作失败，回滚删除OSS文件
+                log.warn("数据库操作失败，开始回滚删除OSS文件: {}", fileUrl);
+                boolean deleted = deleteFile(fileUrl);
+                if (deleted) {
+                    log.info("OSS文件回滚删除成功: {}", fileUrl);
+                } else {
+                    log.error("OSS文件回滚删除失败: {}", fileUrl);
+                }
+                throw new RuntimeException("数据库操作失败，已回滚OSS文件");
+            }
+            
+            log.info("文件上传和数据库操作都成功: {}", fileUrl);
+            return fileUrl;
+            
+        } catch (Exception e) {
+            // 如果是在数据库操作阶段失败且OSS文件已上传，尝试清理
+            if (fileUrl != null && !e.getMessage().contains("数据库操作失败")) {
+                try {
+                    deleteFile(fileUrl);
+                    log.info("异常时清理OSS文件成功: {}", fileUrl);
+                } catch (Exception cleanupException) {
+                    log.error("异常时清理OSS文件失败: {}", fileUrl, cleanupException);
+                }
+            }
+            throw e;
+        }
+    }
 } 
