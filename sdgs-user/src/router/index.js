@@ -57,6 +57,11 @@ const router = createRouter({
       name: 'join-us',
       component: () => import('../views/JoinUsView.vue'),
     },
+    {
+      path: '/test-oss',
+      name: 'test-oss',
+      component: () => import('../views/TestOssView.vue'),
+    },
   ],
 })
 

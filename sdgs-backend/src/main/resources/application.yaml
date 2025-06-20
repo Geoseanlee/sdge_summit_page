@@ -3,3 +3,15 @@ spring:
     url: jdbc:mysql://localhost:3306/sdgs_db
     username: root
     password: 123456
+
+# 阿里云 OSS 配置
+aliyun:
+  oss:
+    # 你创建的 Bucket 所在地域的 Endpoint
+    endpoint: oss-cn-shanghai.aliyuncs.com
+    # 你的 AccessKey ID
+    access-key-id: LTAI5t9d2TSnVvjL6Sk4Yjfn
+    # 你的 AccessKey Secret
+    access-key-secret: kBZm6FdK1lgZNnqdGgyesgUxSxceJ4
+    # 你创建的 Bucket 名称
+    bucket-name: sdgs-images-shanghai

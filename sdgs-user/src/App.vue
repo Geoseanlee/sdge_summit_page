@@ -55,6 +55,9 @@ const closeMenu = () => {
             <router-link to="/roundtable" class="nav-link" @click="closeMenu">圆桌会议</router-link>
             <router-link to="/news" class="nav-link" @click="closeMenu">新闻资讯</router-link>
             <router-link to="/about" class="nav-link" @click="closeMenu">关于我们</router-link>
+            <router-link to="/test-oss" class="nav-link test-btn" @click="closeMenu">
+              OSS测试
+            </router-link>
             <router-link to="/join-us" class="nav-link join-us-btn" @click="closeMenu">
               加入我们
             </router-link>
@@ -278,6 +281,21 @@ const closeMenu = () => {
 .nav-link.router-link-active {
   color: #2563eb;
   background-color: #dbeafe;
+}
+
+.test-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.test-btn:hover {
+  background: linear-gradient(135deg, #d97706, #b45309) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .join-us-btn {
