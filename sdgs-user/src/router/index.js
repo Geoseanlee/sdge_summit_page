@@ -10,12 +10,52 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/expo',
+      name: 'expo',
+      component: () => import('../views/ExpoView.vue'),
+      children: [
+        {
+          path: 'background',
+          name: 'expo-background',
+          component: () => import('../views/expo/ExpoBackgroundView.vue'),
+        },
+        {
+          path: 'summit',
+          name: 'expo-summit',
+          component: () => import('../views/expo/ExpoSummitView.vue'),
+        },
+      ],
+    },
+    {
+      path: '/roundtable',
+      name: 'roundtable',
+      component: () => import('../views/RoundtableView.vue'),
+    },
+    {
+      path: '/news',
+      name: 'news',
+      component: () => import('../views/NewsView.vue'),
+    },
+    {
+      path: '/news/:id',
+      name: 'news-detail',
+      component: () => import('../views/news/NewsDetailView.vue'),
+      props: true,
+    },
+    {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
+    },
+    {
+      path: '/about/more',
+      name: 'about-more',
+      component: () => import('../views/about/AboutMoreView.vue'),
+    },
+    {
+      path: '/join-us',
+      name: 'join-us',
+      component: () => import('../views/JoinUsView.vue'),
     },
   ],
 })
