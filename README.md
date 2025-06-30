@@ -370,3 +370,6 @@ sdgs-user/src/
 ![SDGs Logo](https://via.placeholder.com/200x50/FF6B6B/FFFFFF?text=SDGs+Platform)
 
 </div>
+
+###
+圆桌会议数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/forum.sql

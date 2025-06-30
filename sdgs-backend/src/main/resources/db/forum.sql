@@ -1,0 +1,18 @@
+ CREATE TABLE `forum` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL COMMENT '会议标题',
+  `description` text COMMENT '会议描述',
+  `image_url` varchar(255) DEFAULT NULL COMMENT '会议图片URL',
+  `start_time` datetime NOT NULL COMMENT '开始时间',
+  `end_time` datetime NOT NULL COMMENT '结束时间',
+  `location` varchar(255) NOT NULL COMMENT '会议地点',
+  `speakers` varchar(500) DEFAULT NULL COMMENT '演讲者，逗号分隔',
+  `participants` int DEFAULT '0' COMMENT '参与人数',
+  `discussions` int DEFAULT '0' COMMENT '讨论数量',
+  `status` varchar(20) NOT NULL COMMENT '状态：UPCOMING, PAST',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_start_time` (`start_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='圆桌论坛会议表';
