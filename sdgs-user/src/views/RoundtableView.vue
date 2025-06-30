@@ -19,22 +19,32 @@
           </div>
         </section>
 
-        <!-- 热门讨论主题 -->
-        <section class="discussion-topics">
-          <div class="topics-grid topics-vertical">
-            <div
-              v-for="topic in discussionTopics"
-              :key="topic.id"
-              class="topic-card topic-card-large-icon"
-            >
-              <div class="topic-icon-large">{{ topic.icon }}</div>
-              <h3>{{ topic.title }}</h3>
-              <p>{{ topic.description }}</p>
-              <div class="topic-stats">
-                <span>{{ topic.participants }} 人参与</span>
-                <span>{{ topic.discussions }} 条讨论</span>
+        <!-- 会议列表 -->
+        <section class="forum-list-section">
+          <div class="forum-list">
+            <div class="forum-item" v-for="item in pagedForumList" :key="item.id">
+              <div class="forum-img">
+                <img :src="item.imageUrl" :alt="item.title" />
+              </div>
+              <div class="forum-info">
+                <div class="forum-tag">{{ item.tag }}</div>
+                <div class="forum-title">{{ item.title }}</div>
+                <div class="forum-desc">{{ item.description }}</div>
+                <el-button type="primary" @click="viewMore(item)">更多</el-button>
               </div>
             </div>
+          </div>
+          <div class="forum-pagination">
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="forumList.length"
+              :page-size="4"
+              :current-page.sync="currentPage"
+              :pager-count="7"
+              hide-on-single-page
+              @current-change="handlePageChange"
+            />
           </div>
         </section>
       </div>
@@ -43,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Clock, Location } from '@element-plus/icons-vue'
 import request from '@/utils/request'
@@ -51,40 +61,50 @@ import request from '@/utils/request'
 // 响应式数据
 const upcomingMeetings = ref([])
 const pastMeetings = ref([])
-const discussionTopics = ref([
+const forumList = ref([
   {
     id: 1,
-    icon: '🌍',
-    title: '全球合作与伙伴关系',
-    description: '如何加强国际合作，建立有效的全球伙伴关系',
-    participants: 156,
-    discussions: 89,
+    imageUrl: 'https://via.placeholder.com/120x120?text=Poster1',
+    title: '品牌&青年领袖板块会议',
+    description: '聚焦青年创新与可持续实践，汇聚全球影响力人物。',
+    tag: '品牌&青年领袖板块',
   },
   {
     id: 2,
-    icon: '💡',
-    title: '创新技术与可持续发展',
-    description: '探讨人工智能、区块链等新技术在SDG中的应用',
-    participants: 203,
-    discussions: 127,
+    imageUrl: 'https://via.placeholder.com/120x120?text=Poster2',
+    title: '未来教育板块会议',
+    description: '探讨未来人才培养，促进可持续发展的专业与学术成果。',
+    tag: '未来教育板块',
   },
   {
     id: 3,
-    icon: '🎓',
-    title: '教育与能力建设',
-    description: '提升全民可持续发展意识和能力的策略',
-    participants: 178,
-    discussions: 95,
+    imageUrl: 'https://via.placeholder.com/120x120?text=Poster3',
+    title: '艺术疗愈板块会议',
+    description: '创新艺术与科技结合，探索艺术在心理健康中的独特作用。',
+    tag: '艺术疗愈板块',
   },
   {
     id: 4,
-    icon: '🏢',
-    title: '企业社会责任',
-    description: '企业在实现SDG中的作用和责任',
-    participants: 145,
-    discussions: 73,
+    imageUrl: 'https://via.placeholder.com/120x120?text=Poster4',
+    title: '女性板块会议',
+    description: '聚焦女性在可持续发展中的关键角色，赋能女性领导力。',
+    tag: '女性板块',
+  },
+  {
+    id: 5,
+    imageUrl: 'https://via.placeholder.com/120x120?text=Poster5',
+    title: 'ESG板块会议',
+    description: '聚焦环境、社会和治理三大领域的绿色技术与责任。',
+    tag: 'ESG板块',
   },
 ])
+
+const currentPage = ref(1)
+const pageSize = 4
+const pagedForumList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return forumList.value.slice(start, start + pageSize)
+})
 
 // 获取会议数据
 const fetchMeetings = async () => {
@@ -131,6 +151,15 @@ const viewDetails = (meeting) => {
 
 const watchRecording = (meeting) => {
   ElMessage.info(`观看会议回放：${meeting.title}`)
+}
+
+function viewMore(item) {
+  // 这里可以跳转详情页或弹窗
+  alert('更多: ' + item.title)
+}
+
+function handlePageChange(page) {
+  currentPage.value = page
 }
 
 // 页面加载时获取数据
@@ -392,5 +421,77 @@ section h2 {
   flex-direction: column;
   gap: 32px;
   align-items: center;
+}
+
+.forum-list-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0 60px 0;
+}
+.forum-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.forum-item {
+  display: flex;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  overflow: hidden;
+  min-height: 180px;
+}
+.forum-img {
+  width: 180px;
+  height: 180px;
+  background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.forum-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.forum-info {
+  flex: 1;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.forum-tag {
+  font-size: 0.95rem;
+  color: #1765d6;
+  margin-bottom: 8px;
+}
+.forum-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.forum-desc {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 18px;
+}
+.forum-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+/deep/ .el-pagination {
+  font-size: 1.1rem;
+}
+/deep/ .el-pagination.is-background .el-pager li {
+  border-radius: 4px;
+  min-width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+/deep/ .el-pagination.is-background .el-pager li.active {
+  background: #42a5f5;
+  color: #fff;
 }
 </style> 

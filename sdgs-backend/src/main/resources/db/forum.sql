@@ -12,7 +12,6 @@
   `status` varchar(20) NOT NULL COMMENT '状态：UPCOMING, PAST',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `tag` varchar(50) DEFAULT NULL COMMENT '会议标签（如品牌&青年领袖板块等）',
   PRIMARY KEY (`id`),
-  KEY `idx_status` (`status`),
-  KEY `idx_start_time` (`start_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='圆桌论坛会议表';
+  KEY `idx_status`

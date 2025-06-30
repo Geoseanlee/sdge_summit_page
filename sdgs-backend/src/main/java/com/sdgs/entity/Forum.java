@@ -24,4 +24,5 @@ public class Forum {
     private String status; // UPCOMING, PAST
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private String tag; // 会议标签（如品牌&青年领袖板块等）
 } 
