@@ -37,16 +37,20 @@
             </div>
           </div>
           <div class="forum-pagination">
-            <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="forumList.length"
-              :page-size="4"
-              :current-page.sync="currentPage"
-              :pager-count="7"
-              hide-on-single-page
-              @current-change="handlePageChange"
-            />
+            <div class="custom-pagination">
+              <span class="pagination-info">第{{ currentPage }}页，共{{ totalPages }}页</span>
+              <button class="pager-btn" :disabled="currentPage === 1" @click="changePage(currentPage - 1)">&lt;</button>
+              <template v-for="page in pageList" :key="page">
+                <button
+                  v-if="page !== '...'"
+                  class="pager-btn"
+                  :class="{ active: currentPage === page }"
+                  @click="changePage(page)"
+                >{{ page }}</button>
+                <span v-else class="pager-btn ellipsis">...</span>
+              </template>
+              <button class="pager-btn" :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">&gt;</button>
+            </div>
           </div>
         </section>
       </div>
@@ -63,10 +67,37 @@ import request from '@/utils/request'
 const forumList = ref([])
 const currentPage = ref(1)
 const pageSize = 4
+const maxPagerCount = 6
+const totalPages = computed(() => Math.ceil(forumList.value.length / pageSize))
+
 const pagedForumList = computed(() => {
   const start = (currentPage.value - 1) * pageSize
   return forumList.value.slice(start, start + pageSize)
 })
+
+const pageList = computed(() => {
+  const list = []
+  if (totalPages.value <= 5) {
+    for (let i = 1; i <= totalPages.value; i++) list.push(i)
+    return list
+  }
+  if (currentPage.value <= 3) {
+    list.push(1, 2, 3, 4, '...', totalPages.value)
+    return list
+  }
+  if (currentPage.value >= totalPages.value - 2) {
+    list.push(1, '...', totalPages.value - 3, totalPages.value - 2, totalPages.value - 1, totalPages.value)
+    return list
+  }
+  list.push(1, '...', currentPage.value - 1, currentPage.value, currentPage.value + 1, '...', totalPages.value)
+  return list
+})
+
+function changePage(page) {
+  if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 
 const fetchForums = async () => {
   try {
@@ -99,10 +130,6 @@ const watchRecording = (meeting) => {
 function viewMore(item) {
   // 这里可以跳转详情页或弹窗
   alert('更多: ' + item.title)
-}
-
-function handlePageChange(page) {
-  currentPage.value = page
 }
 
 // 页面加载时获取数据
@@ -386,37 +413,36 @@ section h2 {
   overflow: hidden;
   margin-bottom: 32px;
   min-height: 250px;
-  width: 1000px;
+  width: 1200px;
   max-width: 100%;
 }
 .forum-img {
-  width: 180px;
-  height: 180px;
-  background: #f3f3f3;
+  width: 220px;
+  min-height: 250px;
+  height: auto;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
+  background: #f7f7f7;
 }
 .forum-img img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
 }
 .forum-info {
   position: relative;
-  padding-bottom: 40px;
+  padding: 1px 24px 80px 32px;
   flex: 1;
-  padding: 24px 32px;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .forum-tags {
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  color: #1765d6;
-  letter-spacing: 1px;
-  font-family: inherit;
+  font-weight: bold;
+  margin-top: 2em;
 }
 .forum-tag {
   display: inline-block;
@@ -439,10 +465,12 @@ section h2 {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
+  line-height: 1;
 }
 .forum-desc {
   font-size: 1rem;
   margin-bottom: 18px;
+  line-height: 1;
 }
 .forum-pagination {
   display: flex;
@@ -486,5 +514,40 @@ section h2 {
 }
 .forum-intro-title {
   color: #195288;
+}
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  font-size: 1.1rem;
+  color: #7a97b6;
+}
+.pagination-info {
+  margin-right: 16px;
+}
+.pager-btn {
+  background: #f5f7fa;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 14px;
+  font-size: 1.1rem;
+  color: #195288;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pager-btn.active {
+  background: #51aaff;
+  color: #fff;
+}
+.pager-btn:disabled {
+  color: #b0b0b0;
+  cursor: not-allowed;
+}
+.pager-btn.ellipsis {
+  background: none;
+  color: #999;
+  cursor: default;
 }
 </style> 
