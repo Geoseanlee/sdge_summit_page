@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/forums")
 public class ForumController {
@@ -22,11 +23,8 @@ public class ForumController {
     private OssService ossService;
 
     @GetMapping
-    public Result<List<Forum>> list(@RequestParam(required = false) String status) {
+    public Result<List<Forum>> list() {
         LambdaQueryWrapper<Forum> queryWrapper = new LambdaQueryWrapper<>();
-        if (status != null) {
-            queryWrapper.eq(Forum::getStatus, status);
-        }
         queryWrapper.orderByDesc(Forum::getCreateTime);
         return Result.success(forumService.list(queryWrapper));
     }

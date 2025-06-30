@@ -24,12 +24,14 @@
           <div class="forum-list">
             <div class="forum-item" v-for="item in pagedForumList" :key="item.id">
               <div class="forum-img">
-                <img :src="item.imageUrl" :alt="item.title" />
+                <img :src="item.imageUrl || item.image_url" :alt="item.title" />
               </div>
               <div class="forum-info">
-                <div class="forum-tag">{{ item.tag }}</div>
                 <div class="forum-title">{{ item.title }}</div>
                 <div class="forum-desc">{{ item.description }}</div>
+                <div class="forum-tags">
+                  <span v-for="t in item.tag.split(',')" :key="t">#{{ t.trim() }} </span>
+                </div>
                 <el-button type="primary" @click="viewMore(item)">更多</el-button>
               </div>
             </div>
@@ -58,47 +60,15 @@ import { ElMessage } from 'element-plus'
 import { Clock, Location } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 
-// 响应式数据
-const upcomingMeetings = ref([])
-const pastMeetings = ref([])
-const forumList = ref([
-  {
-    id: 1,
-    imageUrl: 'https://via.placeholder.com/120x120?text=Poster1',
-    title: '品牌&青年领袖板块会议',
-    description: '聚焦青年创新与可持续实践，汇聚全球影响力人物。',
-    tag: '品牌&青年领袖板块',
-  },
-  {
-    id: 2,
-    imageUrl: 'https://via.placeholder.com/120x120?text=Poster2',
-    title: '未来教育板块会议',
-    description: '探讨未来人才培养，促进可持续发展的专业与学术成果。',
-    tag: '未来教育板块',
-  },
-  {
-    id: 3,
-    imageUrl: 'https://via.placeholder.com/120x120?text=Poster3',
-    title: '艺术疗愈板块会议',
-    description: '创新艺术与科技结合，探索艺术在心理健康中的独特作用。',
-    tag: '艺术疗愈板块',
-  },
-  {
-    id: 4,
-    imageUrl: 'https://via.placeholder.com/120x120?text=Poster4',
-    title: '女性板块会议',
-    description: '聚焦女性在可持续发展中的关键角色，赋能女性领导力。',
-    tag: '女性板块',
-  },
-  {
-    id: 5,
-    imageUrl: 'https://via.placeholder.com/120x120?text=Poster5',
-    title: 'ESG板块会议',
-    description: '聚焦环境、社会和治理三大领域的绿色技术与责任。',
-    tag: 'ESG板块',
-  },
-])
+const FIXED_TAGS = [
+  '品牌&青年领袖板块',
+  '未来教育板块',
+  '艺术疗愈板块',
+  '女性板块',
+  'ESG板块',
+]
 
+const forumList = ref([])
 const currentPage = ref(1)
 const pageSize = 4
 const pagedForumList = computed(() => {
@@ -106,29 +76,13 @@ const pagedForumList = computed(() => {
   return forumList.value.slice(start, start + pageSize)
 })
 
-// 获取会议数据
-const fetchMeetings = async () => {
+const fetchForums = async () => {
   try {
-    // 获取即将举行的会议
-    const upcomingRes = await request.get('/forums', {
-      params: { status: 'UPCOMING' }
-    })
-    upcomingMeetings.value = (upcomingRes || []).map(meeting => ({
-      ...meeting,
-      day: new Date(meeting.startTime).getDate(),
-      month: new Date(meeting.startTime).toLocaleString('en-US', { month: 'short' }).toUpperCase(),
-      time: `${new Date(meeting.startTime).toLocaleTimeString()} - ${new Date(meeting.endTime).toLocaleTimeString()}`,
-      speakers: meeting.speakers ? meeting.speakers.split(',') : []
-    }))
-
-    // 获取历史会议
-    const pastRes = await request.get('/forums', {
-      params: { status: 'PAST' }
-    })
-    pastMeetings.value = (pastRes || []).map(meeting => ({
-      ...meeting,
-      date: new Date(meeting.startTime).toLocaleDateString('zh-CN')
-    }))
+    const res = await request.get('/forums')
+    // 只保留tag为5个固定标签之一的会议对象
+    forumList.value = (res || []).filter(item =>
+      item.tag && FIXED_TAGS.includes(item.tag.trim())
+    )
   } catch (error) {
     ElMessage.error('获取会议数据失败')
     console.error(error)
@@ -164,7 +118,7 @@ function handlePageChange(page) {
 
 // 页面加载时获取数据
 onMounted(() => {
-  fetchMeetings()
+  fetchForums()
 })
 </script>
 
@@ -461,10 +415,21 @@ section h2 {
   flex-direction: column;
   justify-content: center;
 }
-.forum-tag {
+.forum-tags {
+  margin-bottom: 8px;
   font-size: 0.95rem;
   color: #1765d6;
-  margin-bottom: 8px;
+  letter-spacing: 1px;
+  font-family: inherit;
+}
+.forum-tag {
+  display: inline-block;
+  background: #e0f2fe;
+  color: #1765d6;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 0.95rem;
+  margin-right: 8px;
 }
 .forum-title {
   font-size: 1.2rem;
