@@ -32,7 +32,7 @@
                 <div class="forum-tags">
                   <span v-for="t in item.tag.split(',')" :key="t">#{{ t.trim() }} </span>
                 </div>
-                <el-button type="primary" @click="viewMore(item)">更多</el-button>
+                <el-button class="forum-more-btn" type="primary" @click="viewMore(item)">更多   &gt;</el-button>
               </div>
             </div>
           </div>
@@ -60,14 +60,6 @@ import { ElMessage } from 'element-plus'
 import { Clock, Location } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 
-const FIXED_TAGS = [
-  '品牌&青年领袖板块',
-  '未来教育板块',
-  '艺术疗愈板块',
-  '女性板块',
-  'ESG板块',
-]
-
 const forumList = ref([])
 const currentPage = ref(1)
 const pageSize = 4
@@ -79,10 +71,7 @@ const pagedForumList = computed(() => {
 const fetchForums = async () => {
   try {
     const res = await request.get('/forums')
-    // 只保留tag为5个固定标签之一的会议对象
-    forumList.value = (res || []).filter(item =>
-      item.tag && FIXED_TAGS.includes(item.tag.trim())
-    )
+    forumList.value = res || []
   } catch (error) {
     ElMessage.error('获取会议数据失败')
     console.error(error)
@@ -409,6 +398,8 @@ section h2 {
   object-fit: cover;
 }
 .forum-info {
+  position: relative;
+  padding-bottom: 40px;
   flex: 1;
   padding: 24px 32px;
   display: flex;
@@ -458,5 +449,22 @@ section h2 {
 /deep/ .el-pagination.is-background .el-pager li.active {
   background: #42a5f5;
   color: #fff;
+}
+.forum-more-btn {
+  min-width: unset;
+  width: auto;
+  padding: 0 18px;
+  height: 32px;
+  font-size: 16px;
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  border-radius: 6px;
+  box-shadow: none;
+  background: #409eff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style> 
