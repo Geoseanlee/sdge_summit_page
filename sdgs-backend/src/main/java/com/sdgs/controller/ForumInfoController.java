@@ -1,23 +1,27 @@
 package com.sdgs.controller;
 
 import com.sdgs.common.Result;
-import com.sdgs.entity.ExpoInfo;
-import com.sdgs.service.ExpoInfoService;
+import com.sdgs.entity.ForumInfo;
+import com.sdgs.service.ForumInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/expo-info")
 @CrossOrigin
-public class ExpoInfoController {
-    @Autowired
-    private ExpoInfoService expoInfoService;
+@RestController
+@RequestMapping("/api/forum-info")
+public class ForumInfoController {
 
+    @Autowired
+    private ForumInfoService forumInfoService;
+
+    /**
+     * 获取最新论坛介绍信息
+     */
     @GetMapping("/latest")
-    public Result<ExpoInfo> getLatest() {
-        return Result.success(expoInfoService.getLatest());
+    public Result<ForumInfo> latest() {
+        return Result.success(forumInfoService.getLatest());
     }
 } 

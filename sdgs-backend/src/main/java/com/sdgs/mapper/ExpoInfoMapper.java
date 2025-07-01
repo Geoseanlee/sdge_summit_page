@@ -9,11 +9,13 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface ExpoInfoMapper {
     
-    @Select("SELECT id, title, content, create_time, update_time FROM expo_info ORDER BY update_time DESC LIMIT 1")
+    @Select("SELECT id, title, subtitle, description, image_url, create_time, update_time FROM expo_info ORDER BY update_time DESC LIMIT 1")
     @Results({
         @Result(property = "id", column = "id"),
         @Result(property = "title", column = "title"),
-        @Result(property = "content", column = "content"),
+        @Result(property = "subtitle", column = "subtitle"),
+        @Result(property = "description", column = "description"),
+        @Result(property = "imageUrl", column = "image_url"),
         @Result(property = "createTime", column = "create_time"),
         @Result(property = "updateTime", column = "update_time")
     })
