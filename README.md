@@ -372,4 +372,5 @@ sdgs-user/src/
 </div>
 
 ###
-圆桌会议数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/forum.sql
+圆桌会议论坛数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/forum.sql
+圆桌会议标题介绍数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/expo_info.sql

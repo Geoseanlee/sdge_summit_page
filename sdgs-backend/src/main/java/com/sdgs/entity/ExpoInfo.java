@@ -9,13 +9,9 @@ public class ExpoInfo {
     
     private Long id;
     
-    private String title; // 主标题，如"世博会"
+    private String title; // 主标题
     
-    private String subtitle; // 副标题，如"全球最高级的展览平台"
-    
-    private String description; // 描述文字（包含两段内容）
-    
-    private String imageUrl; // 图片的OSS URL
+    private String content; // 介绍内容（HTML）
     
     private LocalDateTime createTime; // 创建时间
     
