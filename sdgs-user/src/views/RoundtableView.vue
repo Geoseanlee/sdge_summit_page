@@ -573,6 +573,10 @@ section h2 {
 
 <!-- 追加全局样式，作用于 v-html 动态内容 -->
 <style>
+.forum-intro-content {
+  font-size: 16px;
+  line-height: 1.8;
+}
 .forum-intro-content p {
   margin-bottom: 1.2em;
 }
