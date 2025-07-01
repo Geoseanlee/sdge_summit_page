@@ -527,6 +527,10 @@ section h2 {
 .forum-intro-section .intro-paragraph {
   color: #000 !important;
 }
+.forum-intro-content p:empty {
+  min-height: 1.2em;
+  display: block;
+}
 .forum-intro-content p {
   margin-bottom: 1em;
 }
@@ -564,5 +568,12 @@ section h2 {
   background: none;
   color: #999;
   cursor: default;
+}
+</style>
+
+<!-- 追加全局样式，作用于 v-html 动态内容 -->
+<style>
+.forum-intro-content p {
+  margin-bottom: 1.2em;
 }
 </style> 
