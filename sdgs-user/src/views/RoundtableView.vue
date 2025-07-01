@@ -32,7 +32,7 @@
                     #{{ t.trim() }}<span v-if="idx !== item.tag.split(',').length - 1">&nbsp;&nbsp;&nbsp;</span>
                   </span>
                 </div>
-                <el-button class="forum-more-btn" type="primary" @click="viewMore(item)">更多   &gt;</el-button>
+                <el-button class="forum-more-btn" type="primary" @click="viewMore(item)">更多&nbsp; &gt;</el-button>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ const fetchForums = async () => {
 const registerMeeting = async (meeting) => {
   try {
     await request.post(`/forums/${meeting.id}/register`)
-    ElMessage.success(`已成功报名：${meeting.title}`)
+  ElMessage.success(`已成功报名：${meeting.title}`)
   } catch (error) {
     ElMessage.error('报名失败，请稍后重试')
   }
@@ -388,7 +388,7 @@ section h2 {
 
 .topics-vertical {
   display: flex;
-  flex-direction: column;
+    flex-direction: column;
   gap: 32px;
   align-items: center;
 }
@@ -409,7 +409,7 @@ section h2 {
   color: #0166A5FF;
   display: flex;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  box-shadow: 0 -2px 1px rgba(255, 255, 255, 0), 0 8px 14px rgba(0,0,0,0.18);
   overflow: hidden;
   margin-bottom: 32px;
   min-height: 250px;
@@ -438,8 +438,8 @@ section h2 {
   max-width: 900px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
+    justify-content: center;
+  }
 .forum-tags {
   font-weight: bold;
   margin-top: 2em;
@@ -499,21 +499,26 @@ section h2 {
   position: absolute;
   right: 32px;
   bottom: 24px;
-  border-radius: 6px;
+  border-radius: 12px;
   box-shadow: none;
-  background: #409eff;
+  background: #43A0E2FF;
   color: #fff;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+    justify-content: center;
+  }
 .intro-paragraph {
   margin-bottom: 1.5em;
   line-height: 1.9;
   font-size: 0.95rem;
 }
 .forum-intro-title {
-  color: #0166A5FF;
+  color: #0166A5FF !important;
+}
+.forum-intro-section,
+.forum-intro-section .forum-intro-content,
+.forum-intro-section .intro-paragraph {
+  color: #000 !important;
 }
 .custom-pagination {
   display: flex;

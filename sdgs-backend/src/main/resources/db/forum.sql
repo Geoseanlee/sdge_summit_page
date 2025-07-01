@@ -35,6 +35,4 @@ VALUES
 ('SDGs企业论坛：', '企业社会责任与可持续战略', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/136a38177ae74152b900639127a916fa.jpg', '企业,社会责任'),
 ('SDGs国际论坛：', '国际合作与发展', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/7ff44278063245608a9a20c9de817bbf.jpg', '国际,合作'),
 ('SDGs未来论坛：', '未来趋势与青年机遇', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/bff09c4b0e8a498c8f15d9279b2bea8d.jpg', '未来,青年'),
-('SDGs气候论坛：', '气候变化与绿色转型', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/extra_forum_image.jpg', '气候,绿色转型'),
-('SDGs科技论坛：', '前沿科技与可持续创新', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/extra_forum_image2.jpg', '科技,创新'),
-('SDGs生态论坛：', '生态保护与绿色发展', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/extra_forum_image3.jpg', '生态,绿色发展');
+('SDGs气候论坛：', '气候变化与绿色转型', 'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/01/bff09c4b0e8a498c8f15d9279b2bea8d.jpg', '气候,绿色转型');

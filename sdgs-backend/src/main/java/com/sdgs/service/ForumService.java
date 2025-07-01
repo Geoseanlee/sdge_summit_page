@@ -1,7 +1,12 @@
 package com.sdgs.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.sdgs.entity.Forum;
-
-public interface ForumService extends IService<Forum> {
+import java.util.List;
+ 
+public interface ForumService {
+    List<Forum> list();
+    Forum getById(Long id);
+    boolean save(Forum forum);
+    boolean updateById(Forum forum);
+    boolean removeById(Long id);
 } 

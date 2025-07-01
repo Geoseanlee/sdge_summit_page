@@ -1,6 +1,5 @@
 package com.sdgs.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sdgs.common.Result;
 import com.sdgs.entity.Forum;
 import com.sdgs.service.ForumService;
@@ -24,9 +23,7 @@ public class ForumController {
 
     @GetMapping
     public Result<List<Forum>> list() {
-        LambdaQueryWrapper<Forum> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByDesc(Forum::getCreateTime);
-        return Result.success(forumService.list(queryWrapper));
+        return Result.success(forumService.list());
     }
 
     @GetMapping("/{id}")
