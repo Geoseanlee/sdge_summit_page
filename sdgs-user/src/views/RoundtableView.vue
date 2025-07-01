@@ -406,7 +406,7 @@ section h2 {
 }
 .forum-item {
   background: #eaf6fb;
-  color: #195288;
+  color: #0166A5FF;
   display: flex;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
@@ -457,7 +457,7 @@ section h2 {
 .forum-desc,
 .forum-tags,
 .forum-info {
-  color: #174c7e;
+  color: #0166A5FF;
   font-weight: bold;
   font-size: 0.95rem;
 }
@@ -513,7 +513,7 @@ section h2 {
   font-size: 0.95rem;
 }
 .forum-intro-title {
-  color: #195288;
+  color: #0166A5FF;
 }
 .custom-pagination {
   display: flex;
@@ -533,7 +533,7 @@ section h2 {
   border-radius: 6px;
   padding: 4px 14px;
   font-size: 1.1rem;
-  color: #195288;
+  color: #0166A5FF;
   cursor: pointer;
   transition: background 0.2s;
 }
