@@ -30,3 +30,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### API Documentation ###
+API_DOCUMENTATION.md

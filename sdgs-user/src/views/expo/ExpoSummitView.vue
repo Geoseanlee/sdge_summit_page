@@ -26,19 +26,22 @@
                 <h1 class="page-title">峰会简明议程</h1>
 
                 <!-- 议程表格 -->
-                <el-card class="schedule-card">
-                    <el-table :data="scheduleData" :span-method="mergeRows" style="width: 100%" size="large" :show-header="false" :cell-style="setCellStyle" class="borderless-table">
+                <el-card class="schedule-card" v-loading="loading">
+                    <div v-if="scheduleData.length === 0 && !loading" class="empty-state">
+                        暂无议程信息
+                    </div>
+                    <el-table v-else :data="scheduleData" :span-method="mergeRows" style="width: 100%" size="large" :show-header="false" :cell-style="setCellStyle" class="borderless-table">
                         <el-table-column prop="date" width="120" align="center" :show-overflow-tooltip="false">
                             <template #default="scope">
                                 <div class="date-cell">
-                                    {{ scope.row.date }}
+                                    {{ scope.row.date || '' }}
                                 </div>
                             </template>
                         </el-table-column>
                         <el-table-column prop="time" width="150" align="center">
                             <template #default="scope">
                                 <div class="time-cell">
-                                    {{ scope.row.time }}
+                                    {{ scope.row.time || '' }}
                                 </div>
                             </template>
                         </el-table-column>
@@ -47,7 +50,7 @@
                                 <div class="event-cell">
                                     <div class="event-content">
                                         <div class="main-event">
-                                            {{ scope.row.event }}
+                                            {{ scope.row.event || '' }}
                                         </div>
                                     </div>
                                 </div>
@@ -59,14 +62,17 @@
                 <!-- 峰会拟邀请嘉宾 -->
                 <h1 class="page-title guest-title">峰会拟邀请嘉宾</h1>
                 
-                <el-card class="guest-card">
-                    <div class="guest-categories">
-                        <div v-for="(category, index) in guestCategories" :key="index" class="category-section">
-                            <h2 class="category-title">{{ category.title }}</h2>
+                <el-card class="guest-card" v-loading="loading">
+                    <div v-if="guestCategories.length === 0 && !loading" class="empty-state">
+                        暂无嘉宾信息
+                    </div>
+                    <div v-else class="guest-categories">
+                        <div v-for="(category, index) in guestCategories" :key="category.id || index" class="category-section">
+                            <h2 class="category-title">{{ category.title || '' }}</h2>
                             <ul class="guest-list">
-                                <li v-for="guest in category.guests" :key="guest">
+                                <li v-for="(guest, guestIndex) in category.guests" :key="guestIndex">
                                     <span class="bullet">•</span>
-                                    {{ guest }}
+                                    {{ guest || '' }}
                                 </li>
                             </ul>
                         </div>
@@ -78,184 +84,65 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { House, User } from '@element-plus/icons-vue'
+import request from '@/utils/request'
+import { ElMessage } from 'element-plus'
 
 // 响应式数据
+const scheduleData = ref([])
+const guestCategories = ref([])
+const loading = ref(false)
 
-// 议程数据
-const scheduleData = ref([
-    {
-        date: '8月24日',
-        time: '17:00前',
-        event: '入住酒店&领取参展证件',
-        dateColor: '#bae1f6',
-        timeColor: '#d7f1fc',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '',
-        time: '18:00-20:00',
-        event: '欢迎晚宴',
-        dateColor: '#bae1f6',
-        timeColor: '#d7f1fc',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '8月25日',
-        time: '',
-        event: '峰会开幕致辞',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '上午',
-        event: '主题分享',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '',
-        event: '圆桌对话',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '',
-        time: '12:00-13:00',
-        event: '午餐',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '',
-        time: '',
-        event: '',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '下午',
-        event: '各板块分论坛',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '',
-        event: '',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '18:00-21:00',
-        event: '晚宴与颁奖酒会',
-        dateColor: '#d7f1fc',
-        timeColor: '#ffffff',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '8月26日',
-        time: '上午',
-        event: '参访大阪吹田德川分病院、NEC日本电气株式会社、无印良品社、日本皇家医疗俱乐部、丰田集团（可选）',
-        dateColor: '#bae1f6',
-        timeColor: '#d7f1fc',
-        eventColor: '#e1f3ff'
-    },
-    {
-        date: '',
-        time: '12:00-14:00',
-        event: '午餐',
-        dateColor: '#bae1f6',
-        timeColor: '#d7f1fc',
-        eventColor: '#bae1f6'
-    },
-    {
-        date: '',
-        time: '下午',
-        event: '大咖分享与交流',
-        dateColor: '#bae1f6',
-        timeColor: '#d7f1fc',
-        eventColor: '#e1f3ff'
+// 获取峰会议程数据
+const fetchScheduleData = async () => {
+    try {
+        loading.value = true
+        const response = await request.get('/summit/schedule')
+        if (response && Array.isArray(response)) {
+            scheduleData.value = response
+        } else {
+            // 如果后端返回null或空数据，使用默认数据
+            scheduleData.value = []
+        }
+    } catch (error) {
+        console.error('获取峰会议程失败:', error)
+        ElMessage.error('获取峰会议程失败')
+        scheduleData.value = []
+    } finally {
+        loading.value = false
     }
-])
+}
 
-// 嘉宾分类数据
-const guestCategories = ref([
-    {
-        title: '1. 大阪世博会主办方及政府代表——世博会组委会领导',
-        guests: [
-            '世博会组委会领导（主席、副主席、会长、副会长、秘书长）',
-            '日本政府官员（国家级、部级及相关部门领导、如经济产业省、文化厅、文部科学省等）',
-            '中国政府相关部门官员（科技、文化、教育、商务等领域）',
-            '领事馆/大使馆'
-        ]
-    },
-    {
-        title: '2. 国际组织及机构代表',
-        guests: [
-            '联合国教科文组织（UNESCO）官员',
-            '经合组织（OECD）、世界经济论坛（WEF）、国际教育协会（IEA）等国际组织代表',
-            '全球科技与创新机构代表（如IEEE、世界人工智能大会等）'
-        ]
-    },
-    {
-        title: '3. 世界500强及商界领袖',
-        guests: [
-            '全球及亚洲500强企业高管（总裁、副总裁、董事等）',
-            '重点邀请企业：本田（Honda）、无印良品（MUJI）、丰田（Toyota）、',
-            '松下（Panasonic）、索尼（Sony）、软银（SoftBank）等；',
-            '中国代表企业：华为、阿里巴巴、腾讯、比亚迪、字节跳动等',
-            '中日商会及企业协会领导',
-            '日本经济团体联合会（经团联）代表',
-            '中国贸促会、日本商工会议所等机构领导',
-            '中日商会会长'
-        ]
-    },
-    {
-        title: '4. 学术及研究机构代表',
-        guests: [
-            '国际顶尖高校教授及学者（哈佛、斯坦福、牛津、东京大学、北京大学、清华大学等）',
-            '科技及未来趋势专家（人工智能、绿色能源、生命科学等领域）',
-            '教育及文化研究专家'
-        ]
-    },
-    {
-        title: '5. 体育界及奥运冠军',
-        guests: [
-            '奥运会、亚运会、世锦赛冠军（跨项目，如体操、游泳、田径等）',
-            '日本及中国的体育明星及体育组织负责人'
-        ]
-    },
-    {
-        title: '6. 文化、艺术及娱乐界代表',
-        guests: [
-            '知名艺人及娱乐明星（电影、音乐、戏剧等）',
-            '社交媒体及数字内容创作者（各领域KOL、大V、知名网红）',
-            '文化学者及艺术家（书画、摄影、雕塑、设计、动画等领域）',
-            '知名IP及品牌代表（动漫、游戏、文学IP等）'
-        ]
-    },
-    {
-        title: '7. 企业家及行业合作伙伴',
-        guests: [
-            '上午论坛：大型企业代表（跨国企业、行业龙头企业高管）',
-            '下午分论坛：中小型领域企业代表（创新型企业、创业公司、独角兽企业创始人）',
-            '投资及金融机构代表（风险投资、私募基金、银行高管）'
-        ]
+// 获取嘉宾分类数据
+const fetchGuestData = async () => {
+    try {
+        loading.value = true
+        const response = await request.get('/summit/guests')
+        if (response && Array.isArray(response)) {
+            // 转换后端数据格式为前端需要的格式
+            guestCategories.value = response.map(category => ({
+                title: category.title,
+                guests: category.guests ? category.guests.map(guest => guest.guestName) : []
+            }))
+        } else {
+            // 如果后端返回null或空数据，使用默认数据
+            guestCategories.value = []
+        }
+    } catch (error) {
+        console.error('获取峰会嘉宾信息失败:', error)
+        ElMessage.error('获取峰会嘉宾信息失败')
+        guestCategories.value = []
+    } finally {
+        loading.value = false
     }
-])
+}
+
+// 页面挂载时获取数据
+onMounted(() => {
+    fetchScheduleData()
+    fetchGuestData()
+})
 
 // 合并单元格方法
 // 合并单元格方法
@@ -280,11 +167,11 @@ const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
 // 设置单元格样式
 const setCellStyle = ({ row, column }) => {
     if (column.property === 'date') {
-        return { backgroundColor: row.dateColor }
+        return { backgroundColor: row.dateColor || '#bae1f6' }
     } else if (column.property === 'time') {
-        return { backgroundColor: row.timeColor }
+        return { backgroundColor: row.timeColor || '#d7f1fc' }
     } else if (column.property === 'event') {
-        return { backgroundColor: row.eventColor }
+        return { backgroundColor: row.eventColor || '#bae1f6' }
     }
 }
 </script>
@@ -531,6 +418,14 @@ const setCellStyle = ({ row, column }) => {
     font-weight: bold;
     margin-top: 2px;
     flex-shrink: 0;
+}
+
+/* 空状态样式 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 16px;
 }
 
 /* 响应式设计 */
