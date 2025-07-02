@@ -13,16 +13,18 @@ const router = createRouter({
             path: '/expo',
             name: 'expo',
             component: () => import('../views/ExpoView.vue'),
-        },
-        {
-            path: '/expo/background',
-            name: 'expo-background',
-            component: () => import('../views/expo/ExpoBackgroundView.vue'),
-        },
-        {
-            path: '/expo/summit',
-            name: 'expo-summit',
-            component: () => import('../views/expo/ExpoSummitView.vue'),
+            children: [
+                {
+                    path: 'background',
+                    name: 'expo-background',
+                    component: () => import('../views/expo/ExpoBackgroundView.vue'),
+                },
+                {
+                    path: 'summit',
+                    name: 'expo-summit',
+                    component: () => import('../views/expo/ExpoSummitView.vue'),
+                },
+            ],
         },
         {
             path: '/roundtable',
