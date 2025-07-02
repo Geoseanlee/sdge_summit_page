@@ -15,12 +15,6 @@ public class SummitSchedule {
 
     private String event; // 事件内容
 
-    private String dateColor; // 日期列背景色
-
-    private String timeColor; // 时间列背景色
-
-    private String eventColor; // 事件列背景色
-
     private Integer sortOrder; // 排序顺序
 
     private LocalDateTime createTime; // 创建时间

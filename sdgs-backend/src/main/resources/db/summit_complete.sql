@@ -9,9 +9,6 @@ CREATE TABLE `summit_schedule` (
   `date` VARCHAR(20) DEFAULT NULL COMMENT '日期，如8月24日',
   `time` VARCHAR(50) DEFAULT NULL COMMENT '时间，如17:00前',
   `event` TEXT DEFAULT NULL COMMENT '事件内容',
-  `date_color` VARCHAR(10) DEFAULT '#bae1f6' COMMENT '日期列背景色',
-  `time_color` VARCHAR(10) DEFAULT '#d7f1fc' COMMENT '时间列背景色',
-  `event_color` VARCHAR(10) DEFAULT '#bae1f6' COMMENT '事件列背景色',
   `sort_order` INT DEFAULT 0 COMMENT '排序顺序',
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -46,20 +43,20 @@ CREATE TABLE `summit_guest` (
 -- ====================================
 -- 插入峰会议程数据
 -- ====================================
-INSERT INTO `summit_schedule` (`date`, `time`, `event`, `date_color`, `time_color`, `event_color`, `sort_order`) VALUES
-('8月24日', '17:00前', '入住酒店&领取参展证件', '#bae1f6', '#d7f1fc', '#bae1f6', 1),
-('', '18:00-20:00', '欢迎晚宴', '#bae1f6', '#d7f1fc', '#bae1f6', 2),
-('8月25日', '', '峰会开幕致辞', '#d7f1fc', '#ffffff', '#e1f3ff', 3),
-('', '上午', '主题分享', '#d7f1fc', '#ffffff', '#e1f3ff', 4),
-('', '', '圆桌对话', '#d7f1fc', '#ffffff', '#bae1f6', 5),
-('', '12:00-13:00', '午餐', '#d7f1fc', '#ffffff', '#bae1f6', 6),
-('', '', '', '#d7f1fc', '#ffffff', '#e1f3ff', 7),
-('', '下午', '各板块分论坛', '#d7f1fc', '#ffffff', '#e1f3ff', 8),
-('', '', '', '#d7f1fc', '#ffffff', '#e1f3ff', 9),
-('', '18:00-21:00', '晚宴与颁奖酒会', '#d7f1fc', '#ffffff', '#bae1f6', 10),
-('8月26日', '上午', '参访大阪吹田德川分病院、NEC日本电气株式会社、无印良品社、日本皇家医疗俱乐部、丰田集团（可选）', '#bae1f6', '#d7f1fc', '#e1f3ff', 11),
-('', '12:00-14:00', '午餐', '#bae1f6', '#d7f1fc', '#bae1f6', 12),
-('', '下午', '大咖分享与交流', '#bae1f6', '#d7f1fc', '#e1f3ff', 13);
+INSERT INTO `summit_schedule` (`date`, `time`, `event`, `sort_order`) VALUES
+('8月24日', '17:00前', '入住酒店&领取参展证件', 1),
+('', '18:00-20:00', '欢迎晚宴', 2),
+('8月25日', '', '峰会开幕致辞', 3),
+('', '上午', '主题分享', 4),
+('', '', '圆桌对话', 5),
+('', '12:00-13:00', '午餐', 6),
+('', '', '', 7),
+('', '下午', '各板块分论坛', 8),
+('', '', '', 9),
+('', '18:00-21:00', '晚宴与颁奖酒会', 10),
+('8月26日', '上午', '参访大阪吹田德川分病院、NEC日本电气株式会社、无印良品社、日本皇家医疗俱乐部、丰田集团（可选）', 11),
+('', '12:00-14:00', '午餐', 12),
+('', '下午', '大咖分享与交流', 13);
 
 -- ====================================
 -- 插入峰会嘉宾分类数据

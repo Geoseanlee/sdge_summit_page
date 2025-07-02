@@ -145,34 +145,86 @@ onMounted(() => {
 })
 
 // 合并单元格方法
-// 合并单元格方法
 const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
-    if (columnIndex === 0) { // 日期列
-        if (rowIndex === 0) {
-            return [2, 1] // 8月24日合并2行（第0-1行）
-        } else if (rowIndex === 1) {
-            return [0, 0] // 隐藏第1行的日期
-        } else if (rowIndex === 2) {
-            return [8, 1] // 8月25日合并8行（第2-9行）
-        } else if (rowIndex >= 3 && rowIndex <= 9) {
-            return [0, 0] // 隐藏第3-9行的日期
-        } else if (rowIndex === 10) {
-            return [3, 1] // 8月26日合并3行（第10-12行）
-        } else if (rowIndex >= 11 && rowIndex <= 12) {
-            return [0, 0] // 隐藏第11-12行的日期
+    if (columnIndex === 0 && scheduleData.value.length > 0) { // 日期列
+        const currentDate = scheduleData.value[rowIndex]?.date
+        
+        // 如果当前行有日期值，计算需要合并的行数
+        if (currentDate && currentDate.trim() !== '') {
+            let mergeCount = 1
+            
+            // 向下查找相同日期的行（空日期属于同一天）
+            for (let i = rowIndex + 1; i < scheduleData.value.length; i++) {
+                const nextDate = scheduleData.value[i]?.date
+                if (!nextDate || nextDate.trim() === '') {
+                    mergeCount++
+                } else {
+                    break
+                }
+            }
+            
+            return [mergeCount, 1]
+        } else {
+            // 当前行是空日期，需要隐藏
+            return [0, 0]
         }
     }
 }
 
-// 设置单元格样式
-const setCellStyle = ({ row, column }) => {
-    if (column.property === 'date') {
-        return { backgroundColor: row.dateColor || '#bae1f6' }
-    } else if (column.property === 'time') {
-        return { backgroundColor: row.timeColor || '#d7f1fc' }
-    } else if (column.property === 'event') {
-        return { backgroundColor: row.eventColor || '#bae1f6' }
+// 计算颜色逻辑
+const getRowColors = (rowIndex) => {
+    if (scheduleData.value.length === 0) return null
+    
+    // 找到当前行所属的日期组
+    let currentDateGroupIndex = 0
+    
+    // 从头开始遍历，计算当前行属于第几个日期组
+    for (let i = 0; i <= rowIndex; i++) {
+        const row = scheduleData.value[i]
+        if (row?.date && row.date.trim() !== '') {
+            // 遇到有日期的行，如果不是第一行就说明进入了新的日期组
+            if (i > 0) {
+                // 检查之前是否已经有日期组了
+                let hasDateBefore = false
+                for (let j = 0; j < i; j++) {
+                    if (scheduleData.value[j]?.date && scheduleData.value[j].date.trim() !== '') {
+                        hasDateBefore = true
+                        break
+                    }
+                }
+                if (hasDateBefore) {
+                    currentDateGroupIndex++
+                }
+            }
+        }
     }
+    
+    // 根据日期组索引决定颜色
+    // 第一列：BAE1F6(偶数组) 与 D7F1FC(奇数组) 交替
+    // 第二列：跟随第一列，BAE1F6->D7F1FC, D7F1FC->FFFFFF
+    // 第三列：BAE1F6(偶数组) 与 E1F3FF(奇数组) 交替
+    const isEvenGroup = currentDateGroupIndex % 2 === 0
+    
+    return {
+        dateColor: isEvenGroup ? '#bae1f6' : '#d7f1fc',
+        timeColor: isEvenGroup ? '#d7f1fc' : '#ffffff', 
+        eventColor: isEvenGroup ? '#bae1f6' : '#e1f3ff'
+    }
+}
+
+// 设置单元格样式
+const setCellStyle = ({ row, column, rowIndex }) => {
+    const colors = getRowColors(rowIndex)
+    if (!colors) return {}
+    
+    if (column.property === 'date') {
+        return { backgroundColor: colors.dateColor }
+    } else if (column.property === 'time') {
+        return { backgroundColor: colors.timeColor }
+    } else if (column.property === 'event') {
+        return { backgroundColor: colors.eventColor }
+    }
+    return {}
 }
 </script>
 
@@ -246,6 +298,13 @@ const setCellStyle = ({ row, column }) => {
 
 .guest-title {
     margin: 100px 0 100px 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 16px;
 }
 
 
