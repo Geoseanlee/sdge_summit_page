@@ -175,14 +175,16 @@ const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
 const getRowColors = (rowIndex) => {
     if (scheduleData.value.length === 0) return null
     
-    // 找到当前行所属的日期组
+    // 找到当前行所属的日期组和在组内的索引
     let currentDateGroupIndex = 0
+    let indexInGroup = 0
+    let currentGroupStartIndex = 0
     
     // 从头开始遍历，计算当前行属于第几个日期组
     for (let i = 0; i <= rowIndex; i++) {
         const row = scheduleData.value[i]
         if (row?.date && row.date.trim() !== '') {
-            // 遇到有日期的行，如果不是第一行就说明进入了新的日期组
+            // 遇到有日期的行
             if (i > 0) {
                 // 检查之前是否已经有日期组了
                 let hasDateBefore = false
@@ -194,22 +196,54 @@ const getRowColors = (rowIndex) => {
                 }
                 if (hasDateBefore) {
                     currentDateGroupIndex++
+                    currentGroupStartIndex = i
                 }
             }
         }
+        
+        if (i === rowIndex) {
+            indexInGroup = i - currentGroupStartIndex
+        }
     }
     
-    // 根据日期组索引决定颜色
-    // 第一列：BAE1F6(偶数组) 与 D7F1FC(奇数组) 交替
-    // 第二列：跟随第一列，BAE1F6->D7F1FC, D7F1FC->FFFFFF
-    // 第三列：BAE1F6(偶数组) 与 E1F3FF(奇数组) 交替
+    // 第一列和第二列的颜色逻辑（保持原有逻辑）
     const isEvenGroup = currentDateGroupIndex % 2 === 0
+    const dateColor = isEvenGroup ? '#bae1f6' : '#d7f1fc'
+    const timeColor = isEvenGroup ? '#d7f1fc' : '#ffffff'
     
-    return {
-        dateColor: isEvenGroup ? '#bae1f6' : '#d7f1fc',
-        timeColor: isEvenGroup ? '#d7f1fc' : '#ffffff', 
-        eventColor: isEvenGroup ? '#bae1f6' : '#e1f3ff'
+    // 第三列的颜色逻辑（按您的模板数据）
+    let eventColor = '#bae1f6' // 默认值
+    
+    if (currentDateGroupIndex === 0) {
+        // 第1个日期组（8月24日）：全部 #bae1f6
+        eventColor = '#bae1f6'
+    } else if (currentDateGroupIndex === 1) {
+        // 第2个日期组（8月25日）：复杂模式
+        // 索引: 0,1 -> #e1f3ff; 2,3 -> #bae1f6; 4,5,6 -> #e1f3ff; 7 -> #bae1f6
+        if (indexInGroup <= 1) {
+            eventColor = '#e1f3ff'
+        } else if (indexInGroup <= 3) {
+            eventColor = '#bae1f6'
+        } else if (indexInGroup <= 6) {
+            eventColor = '#e1f3ff'
+        } else {
+            eventColor = '#bae1f6'
+        }
+    } else if (currentDateGroupIndex === 2) {
+        // 第3个日期组（8月26日）：#e1f3ff, #bae1f6, #e1f3ff
+        if (indexInGroup === 0) {
+            eventColor = '#e1f3ff'
+        } else if (indexInGroup === 1) {
+            eventColor = '#bae1f6'
+        } else {
+            eventColor = '#e1f3ff'
+        }
+    } else {
+        // 其他日期组：按奇偶交替
+        eventColor = isEvenGroup ? '#bae1f6' : '#e1f3ff'
     }
+    
+    return { dateColor, timeColor, eventColor }
 }
 
 // 设置单元格样式

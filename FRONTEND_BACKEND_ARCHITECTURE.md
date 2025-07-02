@@ -81,22 +81,31 @@ CREATE TABLE `summit_schedule` (
   - 当日期列为 `#d7f1fc` 时 → 时间列为 `#ffffff`
 
 #### 3. 事件列（第三列）
-- **交替颜色**: `#bae1f6` ↔ `#e1f3ff`  
-- **切换规则**: 与日期列同步切换
+- **复杂模式**: 根据具体日期组和组内位置确定
+- **第1日期组（8月24日）**: 全部 `#bae1f6`
+- **第2日期组（8月25日）**: 
+  - 索引 0,1: `#e1f3ff`
+  - 索引 2,3: `#bae1f6` 
+  - 索引 4,5,6: `#e1f3ff`
+  - 索引 7: `#bae1f6`
+- **第3日期组（8月26日）**: `#e1f3ff` → `#bae1f6` → `#e1f3ff`
+- **其他日期组**: 按日期组奇偶性交替
 
 ### 实现方式
 
 ```javascript
 // 计算颜色逻辑
 const getRowColors = (rowIndex) => {
-    // 计算当前行属于第几个日期组
+    // 找到当前行所属的日期组和在组内的索引
     let currentDateGroupIndex = 0
+    let indexInGroup = 0
+    let currentGroupStartIndex = 0
     
+    // 计算日期组索引和组内位置
     for (let i = 0; i <= rowIndex; i++) {
         const row = scheduleData.value[i]
         if (row?.date && row.date.trim() !== '') {
             if (i > 0) {
-                // 检查之前是否已经有日期组
                 let hasDateBefore = false
                 for (let j = 0; j < i; j++) {
                     if (scheduleData.value[j]?.date && scheduleData.value[j].date.trim() !== '') {
@@ -106,19 +115,36 @@ const getRowColors = (rowIndex) => {
                 }
                 if (hasDateBefore) {
                     currentDateGroupIndex++
+                    currentGroupStartIndex = i
                 }
             }
         }
+        if (i === rowIndex) {
+            indexInGroup = i - currentGroupStartIndex
+        }
     }
     
-    // 根据日期组索引决定颜色
+    // 第一列和第二列颜色逻辑
     const isEvenGroup = currentDateGroupIndex % 2 === 0
+    const dateColor = isEvenGroup ? '#bae1f6' : '#d7f1fc'
+    const timeColor = isEvenGroup ? '#d7f1fc' : '#ffffff'
     
-    return {
-        dateColor: isEvenGroup ? '#bae1f6' : '#d7f1fc',
-        timeColor: isEvenGroup ? '#d7f1fc' : '#ffffff', 
-        eventColor: isEvenGroup ? '#bae1f6' : '#e1f3ff'
+    // 第三列复杂颜色逻辑
+    let eventColor = '#bae1f6'
+    if (currentDateGroupIndex === 0) {
+        eventColor = '#bae1f6'
+    } else if (currentDateGroupIndex === 1) {
+        if (indexInGroup <= 1) eventColor = '#e1f3ff'
+        else if (indexInGroup <= 3) eventColor = '#bae1f6'
+        else if (indexInGroup <= 6) eventColor = '#e1f3ff'
+        else eventColor = '#bae1f6'
+    } else if (currentDateGroupIndex === 2) {
+        eventColor = indexInGroup === 1 ? '#bae1f6' : '#e1f3ff'
+    } else {
+        eventColor = isEvenGroup ? '#bae1f6' : '#e1f3ff'
     }
+    
+    return { dateColor, timeColor, eventColor }
 }
 ```
 
