@@ -313,7 +313,7 @@ const setCellStyle = ({ row, column, rowIndex }) => {
 
 /* 主要内容样式 */
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
 }
