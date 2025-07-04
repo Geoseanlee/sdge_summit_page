@@ -14,9 +14,9 @@
   /* 容器最大宽度 */
   --container-xs: 100%;
   --container-sm: 720px;
-  --container-md: 960px;
-  --container-lg: 1200px;
-  --container-xl: 1320px;
+  --container-md: 1140px;
+  --container-lg: 1400px;
+  --container-xl: 1600px;
   
   /* 间距系统 */
   --spacing-xs: 0.5rem;

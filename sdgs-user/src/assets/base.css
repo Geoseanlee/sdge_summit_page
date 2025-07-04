@@ -36,6 +36,8 @@
   --section-gap: 160px;
 }
 
+/* 注释掉深色模式，确保页面始终为白色背景 */
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: var(--vt-c-black);
@@ -49,6 +51,7 @@
     --color-text: var(--vt-c-text-dark-2);
   }
 }
+*/
 
 *,
 *::before,
