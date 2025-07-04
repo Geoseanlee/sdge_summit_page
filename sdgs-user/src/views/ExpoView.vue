@@ -79,7 +79,7 @@ onMounted(() => {
 
 <style scoped>
 .expo-page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 40px 80px;
   font-family: 'Microsoft YaHei', Arial, sans-serif;
