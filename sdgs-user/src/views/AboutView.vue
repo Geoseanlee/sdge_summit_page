@@ -6,8 +6,12 @@
     <!-- 真正内容 -->
     <template v-else>
       <!-- Hero / 头图 -->
-      <section class="hero">
-        <img class="hero-img" :src="about.heroImg" alt="Hero" />
+      <section
+        class="hero"
+        :style="{
+          backgroundImage: about.heroImg ? `url('${about.heroImg}')` : 'none'
+        }"
+      >
         <div class="hero-overlay">
 
           <h1 class="hero-title">{{ about.headerTitle }}</h1>
@@ -20,7 +24,7 @@
 
       <!-- 引言 -->
       <section class="intro">
-        <p v-for="(para, i) in about.introHtml.split('\n').filter(p => p.trim())" :key="i">
+        <p v-for="(para, i) in introParagraphs" :key="i">
           {{ para }}
         </p>
       </section>
@@ -54,15 +58,21 @@
       <!-- 伙伴 LOGO 示例（选做，可继续拆成组件） -->
       <section class="logo-wall section-container">
         <h2 class="logo-wall-title">部分平台及媒体资源</h2>
-        <img class="logo-wall-img" :src="about.logoWallImg" alt="logo墙" v-if="about.logoWallImg" />
+        <div class="logo-grid" v-if="mediaList.length > 0">
+          <img class="logo-item" :src="logo" alt="logo" v-for="logo in mediaList" :key="logo" />
+        </div>
       </section>
       <section class="logo-wall section-container">
         <h2 class="logo-wall-title">特别合作伙伴</h2>
-        <img class="logo-wall-img" :src="about.specialLogoWallImg" alt="logo墙" v-if="about.specialLogoWallImg" />
+        <div class="logo-grid" v-if="specialList.length > 0">
+          <img class="logo-item" :src="logo" alt="logo" v-for="logo in specialList" :key="logo" />
+        </div>
       </section>
       <section class="logo-wall section-container">
         <h2 class="logo-wall-title">合作伙伴</h2>
-        <img class="logo-wall-img" :src="about.partnerLogoWallImg" alt="logo墙" v-if="about.partnerLogoWallImg" />
+        <div class="logo-grid" v-if="partnerList.length > 0">
+          <img class="logo-item" :src="logo" alt="logo" v-for="logo in partnerList" :key="logo" />
+        </div>
       </section>
       <!--
       <LogoWall title="特别合作伙伴" :list="specialList" />
@@ -75,7 +85,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import bgImage from '@/assets/images/about-bg.jpg'
+
 
 /** ========= 类型定义（可根据后端字段微调） ========= */
 interface Advantage {
@@ -113,6 +123,11 @@ const specialList = computed<string[]>(() =>
 const partnerList = computed<string[]>(() =>
   about.value ? JSON.parse(about.value.partnerJson) : [])
 
+const introParagraphs = computed(() => {
+  if (!about.value || !about.value.introHtml) return [];
+  return about.value.introHtml.split(/\\n|\/n|\n/g).filter(p => p.trim());
+});
+
 /** ========= 拉取数据 ========= */
 onMounted(async () => {
   try {
@@ -134,6 +149,7 @@ onMounted(async () => {
 .about {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
     Helvetica, Arial, 'Segoe UI', sans-serif;
+
 }
 .loading {
   min-height: 60vh;
@@ -146,29 +162,26 @@ onMounted(async () => {
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  height: 420px;
-  overflow: hidden;
-  background: linear-gradient(180deg, #e3f0fc 0%, #fff 100%);
+  width: 100%;
+
+  background-size: cover;
+  background-position: center;
+  padding-top: 40%; /* 40%是宽高比，比如16:9就是56.25%，你可以根据图片比例调整 */
 }
 .hero-img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.7);
-  position: absolute;
-  left: 0; top: 0; z-index: 1;
+  display: block;
+  /* 不要写 height: 100%; */
 }
 .hero-overlay {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: #222;
-  text-align: center;
-  background: linear-gradient(180deg,rgba(255,255,255,0.7) 0%,rgba(255,255,255,0.2) 100%);
 }
 
 .hero-title {
@@ -206,7 +219,32 @@ onMounted(async () => {
 .hero-btn:hover {
   background: #ffd966;
 }
+/* ===== Hero 顶部渐变罩（调整版） ===== */
+.hero::before{
+  content:"";
+  position:absolute;
+  top:0; left:0;
+  width:100%;
+  height:90%;             /* 覆盖够大的区域即可 */
+  pointer-events:none;
+  z-index:1;
 
+  /* 渐变说明
+     0% – 45%  : 完全透明（原图不受影响）
+     45% – 55% : 从 0 → 100% 白，形成白带上缘
+     55% – 70% : 从 100% → 0.6 白，开始淡出
+     70% – 100%: 继续减淡到完全透明
+  */
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,0)   0%,
+    rgba(255,255,255,0)  25%,
+    rgba(255,255,255,1)  50%,
+    rgba(255,255,255,.6) 90%,
+    rgba(255,255,255,0) 100%
+  );
+}
+.hero-overlay{ z-index:2; }
 /* ===== 引言 ===== */
 .intro {
   max-width: 950px;
@@ -321,7 +359,7 @@ onMounted(async () => {
 .logo-wall-title {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  color: #18346f;
+  color: #204085;
   font-weight: 600;
 }
 .logo-wall-img {
@@ -332,6 +370,26 @@ onMounted(async () => {
   margin: 0 auto;
   border-radius: 24px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* ===== Logo Grid ===== */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.logo-item {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.logo-item:hover {
+  transform: scale(1.05);
 }
 
 /* 响应式微调 */
