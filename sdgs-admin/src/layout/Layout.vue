@@ -58,7 +58,7 @@
 
     <el-container>
       <el-header class="header">
-        <div>面包屑/其他</div>
+        
       </el-header>
       <el-main class="main-content">
         <router-view />
