@@ -1,5 +1,5 @@
 <template>
-  <main>
-    <h1>Home</h1>
-  </main>
+  <div>
+    <h1>首页</h1>
+  </div>
 </template>
