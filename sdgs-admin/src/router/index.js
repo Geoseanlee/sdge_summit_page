@@ -55,6 +55,11 @@ const router = createRouter({
           component: () => import('../views/JoinView.vue')
         },
         {
+          path: 'image-management',
+          name: 'image-management',
+          component: () => import('../views/ImageManagementView.vue')
+        },
+        {
           path: 'account',
           name: 'account',
           component: () => import('../views/AccountView.vue')
