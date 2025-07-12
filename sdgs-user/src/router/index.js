@@ -60,6 +60,12 @@ const router = createRouter({
             name: 'test-oss',
             component: () => import('../views/TestOssView.vue'),
         },
+        {
+            // Catcher for unmatched routes
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: () => import('../views/NotFoundView.vue'),
+        },
     ],
 })
 
