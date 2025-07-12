@@ -43,11 +43,7 @@ const closeMenu = () => {
           <!-- Logo -->
           <div class="nav-logo">
             <router-link to="/" class="logo-link">
-              <span class="logo-icon">🌍</span>
-              <div class="logo-text-container">
-                <span class="logo-text">世博全球青年联盟</span>
-                <span class="logo-subtitle">World Expo Global Youth Alliance</span>
-              </div>
+              <img src="/expo_logo.png" alt="World Expo Global Youth Alliance Logo" class="logo-image" />
             </router-link>
           </div>
 
@@ -165,57 +161,15 @@ const closeMenu = () => {
   transition: var(--transition-base);
 }
 
-.logo-icon {
-  font-size: 1.8rem;
-  margin-right: 15px;
-}
-
-.logo-text-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.logo-image {
+  height: 80px; /* Adjust as needed */
+  width: auto;
+  transition: var(--transition-base);
 }
 
 @media (max-width: 767px) {
-  .nav-logo .logo-link {
-    font-size: 1.1rem;
-  }
-  
-  .logo-icon {
-    font-size: 1.5rem;
-    margin-right: 10px;
-  }
-}
-
-.logo-text {
-  color: white;
-  font-weight: 700;
-  font-size: 1.8rem;
-  line-height: 1.2;
-}
-
-.logo-subtitle {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 400;
-  font-size: 1.1rem;
-  margin-top: 2px;
-}
-
-@media (max-width: 1023px) {
-  .logo-text {
-    font-size: 1.5rem;
-  }
-  .logo-subtitle {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .logo-text {
-    font-size: 1.2rem;
-  }
-  .logo-subtitle {
-    font-size: 0.7rem;
+  .logo-image {
+    height: 60px; /* Adjust for smaller screens */
   }
 }
 
