@@ -477,16 +477,16 @@ section h2 {
   justify-content: center;
   margin-top: 32px;
 }
-/deep/ .el-pagination {
+:deep(.el-pagination) {
   font-size: 1.1rem;
 }
-/deep/ .el-pagination.is-background .el-pager li {
+:deep(.el-pagination.is-background .el-pager li) {
   border-radius: 4px;
   min-width: 32px;
   height: 32px;
   line-height: 32px;
 }
-/deep/ .el-pagination.is-background .el-pager li.active {
+:deep(.el-pagination.is-background .el-pager li.active) {
   background: #42a5f5;
   color: #fff;
 }
@@ -511,6 +511,10 @@ section h2 {
   margin-bottom: 1.5em;
   line-height: 1.9;
   font-size: 0.95rem;
+}
+.forum-intro-content {
+  max-width: 70%;
+  margin: 0 auto;
 }
 .forum-intro-title {
   color: #0166A5FF !important;
