@@ -480,6 +480,11 @@ const handleSubmit = async () => {
     
     const submitData = { ...newsForm }
     
+    // 处理标签：将中文逗号转换为英文逗号
+    if (submitData.tags) {
+      submitData.tags = submitData.tags.replace(/，/g, ',')
+    }
+    
     let res
     if (isEdit.value) {
       res = await updateNews(editingId.value, submitData)

@@ -1,6 +1,7 @@
 package com.sdgs.entity;
 
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -40,6 +41,7 @@ public class News {
     private String source;
     
     /** 发布时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishTime;
     
     /** 状态（0:草稿 1:已发布） */
@@ -49,9 +51,11 @@ public class News {
     private Integer viewCount;
     
     /** 创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     
     /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
     
 } 
