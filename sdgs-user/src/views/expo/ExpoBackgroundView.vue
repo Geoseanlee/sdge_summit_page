@@ -4,141 +4,74 @@
     <div class="page-header">
       <div class="container">
         <nav class="breadcrumb">
-          <router-link to="/expo">SDGs展览</router-link>
-          <span class="separator">></span>
-          <span class="current">世博会背景</span>
+          <router-link to="/" class="icon-link">
+            <img src="@/assets/home-icon.png" alt="主页" class="home-icon" /> <!-- 使用本地图片 -->
+          </router-link>
+          <img src="@/assets/arrow-icon.png" alt="分隔符" class="separator" />
+          <router-link to="/expo" class="breadcrumb-link">世博会</router-link> <!-- 加粗“世博会” -->
+          <img src="@/assets/arrow-icon.png" alt="分隔符" class="separator" />
+          <span class="current">背景</span> <!-- 加粗“背景” -->
         </nav>
-        <h1>世博会背景</h1>
-        <p>了解可持续发展目标世博会的起源与发展历程</p>
       </div>
     </div>
 
     <!-- 主要内容 -->
     <div class="background-content">
       <div class="container">
-        <!-- 历史发展 -->
-        <section class="history-section">
-          <h2>历史发展</h2>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-date">2015年</div>
-              <div class="timeline-content">
-                <h3>联合国2030年可持续发展议程</h3>
-                <p>联合国大会通过《2030年可持续发展议程》，确立了17个可持续发展目标（SDGs），标志着全球可持续发展进入新纪元。</p>
-              </div>
+
+        <!-- 第一部分到第四部分合并 -->
+        <section class="content-section combined-section">
+          <h2>以青年之力，搭建中国与世界的可持续桥梁</h2>
+          <div class="divider"></div>
+
+          <div class="block-flex">
+            <div class="text-area">
+              <h3>1. 联合国SDGs与未来契约：共绘人类可持续未来蓝图</h3>
+              <p v-html="sdgsIntro"></p>
             </div>
-            <div class="timeline-item">
-              <div class="timeline-date">2018年</div>
-              <div class="timeline-content">
-                <h3>首届SDGs世博会概念提出</h3>
-                <p>在联合国可持续发展高级别政治论坛上，首次提出举办专门展示SDGs成果的世博会概念，得到各国积极响应。</p>
-              </div>
+            <div class="image-area">
+              <img :src="sdgsImageUrl" alt="SDGs目标图" />
             </div>
-            <div class="timeline-item">
-              <div class="timeline-date">2020年</div>
-              <div class="timeline-content">
-                <h3>SDGs世博会筹备启动</h3>
-                <p>尽管受到疫情影响，各国依然坚持推进SDGs世博会的筹备工作，并创新性地采用线上线下结合的展示模式。</p>
-              </div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="block-flex reverse-layout">
+            <div class="text-area">
+              <h3>2. 世界博览会：World Expo 全球思想与创新的交汇舞台</h3>
+              <p v-html="expoIntro"></p>
             </div>
-            <div class="timeline-item">
-              <div class="timeline-date">2023年</div>
-              <div class="timeline-content">
-                <h3>全面筹备阶段</h3>
-                <p>进入全面筹备阶段，各国展馆设计完成，技术平台搭建就绪，预计将成为史上最具影响力的可持续发展主题展览。</p>
-              </div>
+            <div class="image-area">
+              <img :src="expoImageUrl" alt="EXPO 2025 logo" />
+            </div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="block-flex">
+            <div class="text-area">
+              <h3>3. 青年领袖：Youth Leaders 变革的核心力量，引领可持续未来</h3>
+              <p v-html="youthIntro"></p>
+            </div>
+            <div class="image-area">
+              <img :src="youthImageUrl" alt="青年协作图" />
             </div>
           </div>
         </section>
 
-        <!-- 世博会意义 -->
-        <section class="significance-section">
-          <h2>世博会意义</h2>
-          <div class="significance-grid">
-            <div class="significance-card">
-              <div class="card-icon">🎯</div>
-              <h3>目标展示</h3>
-              <p>全面展示17个可持续发展目标的内涵、意义和实现路径，让公众深入了解SDGs的重要性。</p>
-            </div>
-            <div class="significance-card">
-              <div class="card-icon">🌍</div>
-              <h3>全球合作</h3>
-              <p>促进各国在可持续发展领域的交流与合作，分享最佳实践，共同应对全球挑战。</p>
-            </div>
-            <div class="significance-card">
-              <div class="card-icon">💡</div>
-              <h3>创新展示</h3>
-              <p>展示最新的可持续发展技术和解决方案，推动创新成果的转化与应用。</p>
-            </div>
-            <div class="significance-card">
-              <div class="card-icon">📚</div>
-              <h3>教育意义</h3>
-              <p>提高全球公众的可持续发展意识，培养下一代的环保理念和责任感。</p>
-            </div>
+        <!-- 第五部分到第七部分合并 -->
+        <section class="content-section combined-policy-section">
+          <h2>国家政策倡议与国际合作</h2>
+          <div class="policy-section">
+            <h3>
+              【知行合一，大国担当】<br />
+              SDGs中国力量
+            </h3>
+            <div v-html="chinaPolicyHtml"></div>
+          </div>
+          <div class="content-block">
+            <p>这里可以添加更多内容...</p>
           </div>
         </section>
 
-        <!-- 核心理念 -->
-        <section class="concept-section">
-          <h2>核心理念</h2>
-          <div class="concept-content">
-            <div class="concept-text">
-              <div class="concept-item">
-                <h3>🌱 可持续性</h3>
-                <p>世博会本身就是可持续发展理念的体现，从场馆建设到运营管理，都严格遵循绿色、低碳、循环的原则。</p>
-              </div>
-              <div class="concept-item">
-                <h3>🤝 包容性</h3>
-                <p>欢迎全球各国、各地区、各行业参与，特别关注发展中国家和弱势群体，确保每个人都能从中受益。</p>
-              </div>
-              <div class="concept-item">
-                <h3>🔄 创新性</h3>
-                <p>运用最新的数字技术、虚拟现实等手段，创造沉浸式、互动式的展示体验，让参观者深度参与。</p>
-              </div>
-            </div>
-            <div class="concept-stats">
-              <div class="stat-box">
-                <div class="stat-number">193</div>
-                <div class="stat-label">参与国家</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-number">1000+</div>
-                <div class="stat-label">展示项目</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-number">50万+</div>
-                <div class="stat-label">预计参观人次</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 参与方式 -->
-        <section class="participation-section">
-          <h2>如何参与</h2>
-          <div class="participation-steps">
-            <div class="step-item">
-              <div class="step-number">1</div>
-              <h3>在线注册</h3>
-              <p>访问官方网站完成参观者注册，选择感兴趣的展览内容。</p>
-            </div>
-            <div class="step-item">
-              <div class="step-number">2</div>
-              <h3>选择参观方式</h3>
-              <p>可选择线上虚拟参观或线下实地参观，灵活安排参观时间。</p>
-            </div>
-            <div class="step-item">
-              <div class="step-number">3</div>
-              <h3>互动体验</h3>
-              <p>参与各种互动活动，与专家学者交流，获得深度学习体验。</p>
-            </div>
-            <div class="step-item">
-              <div class="step-number">4</div>
-              <h3>分享传播</h3>
-              <p>将学到的知识分享给更多人，成为可持续发展的倡导者。</p>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   </div>
@@ -149,305 +82,202 @@
 </script>
 
 <style scoped>
+/* ===========================
+   页面整体布局样式
+   =========================== */
 .expo-background {
-  min-height: 100vh;
-  background-color: #f8f9fa;
+  min-height: 100vh; /* 确保页面高度至少为视口高度 */
+  background-color: #fff; /* 设置背景为纯白色 */
 }
 
+/* ===========================
+   页面头部样式
+   =========================== */
 .page-header {
-  background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
-  color: white;
-  padding: 40px 0 60px;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  background-color: #fff; /* 设置白色背景，突出头部区域 */
+  color: #1c3365; /* 设置深蓝色文字，提升可读性 */
+  padding: 20px 0; /* 添加上下内边距，增加头部的视觉空间 */
 }
 
 .breadcrumb {
-  margin-bottom: 20px;
-  font-size: 0.9rem;
+  display: flex; /* 使用弹性布局，使导航项水平排列 */
+  align-items: center; /* 垂直居中对齐导航项 */
+  font-size: 20px; /* 设置导航文字大小 */
+  font-weight: 900 !important; /* 强制加粗导航文字，提升层级感 */
+  color: #0167a5; /* 设置蓝色文字，符合整体配色 */
+  margin-bottom: 24px; /* 添加导航与下方内容的间距 */
 }
 
-.breadcrumb a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  color: white;
+.breadcrumb a,
+.text-link,
+.current {
+  color: #0167a5; /* 设置链接文字颜色，与整体配色一致 */
+  text-decoration: none; /* 去掉下划线，简化视觉效果 */
+  font-weight: 700 !important; /* 强制加粗，突出导航项 */
 }
 
 .separator {
-  margin: 0 10px;
-  color: rgba(255, 255, 255, 0.6);
+  width: 16px; /* 设置分隔符宽度 */
+  height: 16px; /* 设置分隔符高度 */
+  margin: 0 8px; /* 添加分隔符左右间距 */
+  vertical-align: middle; /* 垂直居中对齐 */
+  object-fit: contain; /* 保持图片比例，避免变形 */
 }
 
-.current {
-  color: white;
+.home-icon {
+  width: 30px; /* 设置主页图标宽度 */
+  height: 30px; /* 设置主页图标高度 */
+  object-fit: contain; /* 保持图标比例 */
+  vertical-align: middle; /* 垂直居中对齐 */
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
+/* ===========================
+   面包屑导航悬停样式调整
+   =========================== */
+.breadcrumb-link:hover {
+  color: #014f7d; /* 设置悬停时更深的颜色 */
+  text-decoration: underline; /* 添加下划线以增强交互反馈 */
+}
+/* ===========================
+   Home 图标悬停样式调整
+   =========================== */
+.icon-link:hover .home-icon {
+  filter: brightness(0.8); /* 悬停时降低亮度，提供交互反馈 */
+  transform: scale(1.1); /* 悬停时放大图标，增强视觉效果 */
+  transition: all 0.3s ease; /* 添加平滑过渡效果 */
 }
 
-.page-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
+/* ===========================
+   主要内容样式
+   =========================== */
 .background-content {
-  padding: 60px 0;
+  padding: 60px 0; /* 添加上下内边距，增加内容区域的视觉空间 */
 }
 
 section {
-  margin-bottom: 60px;
+  margin-bottom: 60px; /* 每个部分之间添加间距，分隔内容 */
 }
 
 section h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: #333;
-  text-align: center;
+  font-size: 2rem; /* 设置标题字体大小，突出显示 */
+  font-weight: 600; /* 设置字体加粗，强调标题 */
+  margin-bottom: 1rem; /* 添加标题与下方内容的间距 */
+  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
+  text-align: left; /* 左对齐标题，保持一致性 */
 }
 
-/* 时间线样式 */
-.timeline {
-  position: relative;
-  max-width: 800px;
-  margin: 0 auto;
+/* ===========================
+   内容块样式
+   =========================== */
+.content-block {
+  background: none; /* 移除背景色 */
+  box-shadow: none; /* 移除阴影效果 */
+  border-radius: 0; /* 移除圆角 */
 }
 
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #e5e7eb;
-  transform: translateX(-50%);
+.content-section h3 {
+  font-size: 1.5rem; /* 设置标题字体大小，突出显示 */
+  font-weight: 600; /* 设置字体加粗，强调标题 */
+  margin-bottom: 16px; /* 添加标题与下方内容的间距 */
+  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
 }
 
-.timeline-item {
-  display: flex;
-  margin-bottom: 40px;
-  position: relative;
+/* ===========================
+   弹性布局样式
+   =========================== */
+.block-flex {
+  display: flex; /* 使用弹性布局，使子元素水平排列 */
+  gap: 24px; /* 设置子元素之间的间距 */
+  align-items: center; /* 垂直居中对齐子元素 */
 }
 
-.timeline-item:nth-child(odd) {
-  flex-direction: row;
+.block-flex.reverse-layout {
+  flex-direction: row-reverse; /* 子元素反向排列，用于特定布局 */
 }
 
-.timeline-item:nth-child(even) {
-  flex-direction: row-reverse;
+.text-area {
+  flex: 1; /* 占据剩余空间，确保文字区域自适应 */
 }
 
-.timeline-date {
-  flex: 0 0 100px;
-  background: #2563eb;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  text-align: center;
-  font-weight: 600;
-  height: fit-content;
-  position: relative;
-  z-index: 2;
+.image-area {
+  flex: 0 0 300px; /* 固定宽度，确保图片区域大小一致 */
 }
 
-.timeline-content {
-  flex: 1;
-  background: white;
-  margin: 0 30px;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.image-area img {
+  max-width: 100%; /* 图片宽度自适应，避免超出容器 */
+  border-radius: 12px; /* 设置圆角，提升视觉柔和度 */
 }
 
-.timeline-content h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
+/* ===========================
+   政策部分样式
+   =========================== */
+.policy-section {
+  background: none; /* 移除背景色 */
+  padding: 32px; /* 保留内边距 */
+  border-radius: 0; /* 移除圆角 */
+  text-align: center; /* 内容居中 */
 }
 
-.timeline-content p {
-  color: #666;
-  line-height: 1.6;
+.policy-section h3 {
+  font-size: 1.5rem; /* 设置标题字体大小，突出显示 */
+  font-weight: 600; /* 设置字体加粗，强调标题 */
+  margin-bottom: 16px; /* 添加标题与下方内容的间距 */
+  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
 }
 
-/* 意义卡片样式 */
-.significance-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+/* ===========================
+   分割线样式
+   =========================== */
+.divider {
+  height: 2px; /* 设置分割线高度 */
+  background-color: #b5c7ea; /* 设置分割线颜色，与整体配色一致 */
+  margin: 40px 0; /* 添加上下间距，分隔内容 */
 }
 
-.significance-card {
-  background: white;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.significance-card:hover {
-  transform: translateY(-8px);
-}
-
-.card-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-}
-
-.significance-card h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.significance-card p {
-  color: #666;
-  line-height: 1.6;
-}
-
-/* 核心理念样式 */
-.concept-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 40px;
-  align-items: start;
-}
-
-.concept-item {
-  margin-bottom: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.concept-item h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.concept-item p {
-  color: #666;
-  line-height: 1.6;
-}
-
-.concept-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.stat-box {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2563eb;
-  margin-bottom: 8px;
-}
-
-.stat-label {
-  color: #666;
-  font-weight: 500;
-}
-
-/* 参与步骤样式 */
-.participation-steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-}
-
-.step-item {
-  background: white;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  position: relative;
-}
-
-.step-number {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 auto 16px;
-}
-
-.step-item h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.step-item p {
-  color: #666;
-  line-height: 1.6;
-}
-
-/* 响应式设计 */
+/* ===========================
+   响应式样式
+   =========================== */
 @media (max-width: 768px) {
-  .page-header h1 {
-    font-size: 2rem;
+  .block-flex {
+    flex-direction: column; /* 子元素垂直排列，适配小屏幕 */
   }
-  
-  .timeline::before {
-    left: 30px;
+
+  .block-flex.reverse-layout {
+    flex-direction: column; /* 子元素垂直排列，适配小屏幕 */
   }
-  
-  .timeline-item {
-    flex-direction: column !important;
-    padding-left: 60px;
+
+  .text-area {
+    text-align: center; /* 窄屏模式下文字内容居中 */
   }
-  
-  .timeline-date {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-  
-  .timeline-content {
-    margin: 0;
-    margin-top: 60px;
-  }
-  
-  .concept-content {
-    grid-template-columns: 1fr;
-  }
-  
-  .concept-stats {
-    flex-direction: row;
-    justify-content: space-around;
+
+  .image-area {
+    margin-bottom: 20px; /* 添加图片下方间距，避免内容重叠 */
   }
 }
-</style> 
+
+/* ===========================
+   合并后的样式调整
+   =========================== */
+.combined-section {
+  margin-bottom: 60px; /* 设置与下方内容的间距 */
+}
+
+.combined-policy-section {
+  margin-top: 40px; /* 设置与上方内容的间距 */
+}
+
+.combined-policy-section h2 {
+  margin-bottom: 0px; /* 缩短标题与下方内容的间距 */
+  font-size: 2rem; /* 调整字体大小，减少视觉占用 */
+  line-height: 1; /* 减小行高，进一步缩短间距 */
+  text-align: center; /* 标题居中 */
+}
+
+.policy-section h3 {
+  margin-top: 0px; /* 减少标题与上方内容的间距 */
+  font-size: 1.5rem; /* 调整字体大小，减少视觉占用 */
+  line-height: 1; /* 减小行高，进一步缩短间距 */
+}
+
+
+</style>
