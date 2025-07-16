@@ -1,5 +1,15 @@
 <template>
   <div class="expo-background">
+    <!-- 添加面包屑部分 -->
+    <div class="breadcrumb">
+      <a href="#" class="icon-link">
+        <img src="@/assets/home-icon.png" alt="首页" class="home-icon">
+      </a>
+      <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+      <a href="#" class="breadcrumb-link">世博会</a>
+      <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+      <span class="current">背景</span>
+    </div>
     <!-- 主要内容 -->
     <div class="background-content">
       <div class="container">
@@ -66,7 +76,10 @@
               <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
+          <div class="divider"></div>
         </section>
+
+
 
         <!-- 第二部分 -->
         <section class="content-section combined-policy-section">
@@ -144,6 +157,8 @@ onMounted(() => {
   font-weight: 900 !important;
   color: #0167a5;
   margin-bottom: 24px;
+  margin-left: 100px; /* 添加左边距 */
+  padding-left: 20px; /* 可选：额外的内边距 */
 }
 
 .breadcrumb a,
@@ -181,7 +196,7 @@ onMounted(() => {
 }
 
 .background-content {
-  padding: 60px 0;
+  padding: 20px 0; /* 减少顶部内边距 */
 }
 
 section {
@@ -293,8 +308,9 @@ section h2 {
   margin-bottom: 60px;
 }
 
+/* 调整第一部分和第二部分之间的间距 */
 .combined-policy-section {
-  margin-top: 40px;
+  margin-top: 80px; /* 增加顶部间距 */
 }
 
 .combined-policy-section h2 {
@@ -303,6 +319,4 @@ section h2 {
   line-height: 1;
   text-align: center;
 }
-
-
 </style>
