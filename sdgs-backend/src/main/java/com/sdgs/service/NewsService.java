@@ -40,20 +40,5 @@ public interface NewsService {
      * 增加阅读量
      */
     boolean incrementViewCount(Long id);
-    
-    /**
-     * 根据分类查询新闻
-     */
-    List<News> getByCategory(String category);
-    
-    /**
-     * 获取下一个可用的ID（用于实现ID重用）
-     */
-    Long getNextAvailableId();
-    
-    /**
-     * 使用指定ID保存新闻
-     */
-    boolean saveWithId(News news);
-    
+
 } 

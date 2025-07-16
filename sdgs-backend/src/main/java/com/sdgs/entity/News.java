@@ -28,18 +28,6 @@ public class News {
     /** 封面图片URL */
     private String coverImageUrl;
     
-    /** 新闻分类 */
-    private String category;
-    
-    /** 标签（逗号分隔） */
-    private String tags;
-    
-    /** 作者 */
-    private String author;
-    
-    /** 来源 */
-    private String source;
-    
     /** 发布时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishTime;

@@ -234,8 +234,8 @@ const rules = {
     { min: 1, max: 200, message: '标题长度在 1 到 200 个字符', trigger: 'blur' }
   ],
   summary: [
-    { required: true, message: '请输入动态简介', trigger: 'blur' },
-    { min: 1, max: 1000, message: '简介长度在 1 到 1000 个字符', trigger: 'blur' }
+    // { required: true, message: '请输入动态简介', trigger: 'blur' },
+    { min: 0, max: 1000, message: '简介长度在 1 到 1000 个字符', trigger: 'blur' }
   ],
   content: [
     { required: true, message: '请输入动态正文', trigger: 'blur' }

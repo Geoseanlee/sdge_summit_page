@@ -128,52 +128,6 @@ public class NewsController {
     }
     
     /**
-     * 根据分类获取新闻
-     */
-    @GetMapping("/category/{category}")
-    public Result<List<News>> getNewsByCategory(@PathVariable String category) {
-        try {
-            List<News> news = newsService.getByCategory(category);
-            return Result.success(news);
-        } catch (Exception e) {
-            log.error("根据分类获取新闻失败, category: {}", category, e);
-            return Result.error(500, "获取新闻失败");
-        }
-    }
-    
-    /**
-     * 获取下一个可用的ID
-     */
-    @GetMapping("/admin/nextId")
-    public Result<Long> getNextAvailableId() {
-        try {
-            Long nextId = newsService.getNextAvailableId();
-            return Result.success(nextId);
-        } catch (Exception e) {
-            log.error("获取下一个可用ID失败", e);
-            return Result.error(500, "获取ID失败");
-        }
-    }
-    
-    /**
-     * 使用指定ID创建新闻
-     */
-    @PostMapping("/admin/withId")
-    public Result<News> createNewsWithId(@RequestBody News news) {
-        try {
-            boolean success = newsService.saveWithId(news);
-            if (success) {
-                return Result.success(news);
-            } else {
-                return Result.error(500, "创建新闻失败");
-            }
-        } catch (Exception e) {
-            log.error("使用指定ID创建新闻失败", e);
-            return Result.error(500, "创建新闻失败");
-        }
-    }
-    
-    /**
      * 上传图片
      */
     @PostMapping("/admin/upload")
