@@ -1,282 +1,307 @@
 <template>
   <div class="expo-background">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="container">
-        <nav class="breadcrumb">
-          <router-link to="/" class="icon-link">
-            <img src="@/assets/home-icon.png" alt="主页" class="home-icon" /> <!-- 使用本地图片 -->
-          </router-link>
-          <img src="@/assets/arrow-icon.png" alt="分隔符" class="separator" />
-          <router-link to="/expo" class="breadcrumb-link">世博会</router-link> <!-- 加粗“世博会” -->
-          <img src="@/assets/arrow-icon.png" alt="分隔符" class="separator" />
-          <span class="current">背景</span> <!-- 加粗“背景” -->
-        </nav>
-      </div>
-    </div>
-
     <!-- 主要内容 -->
     <div class="background-content">
       <div class="container">
-
-        <!-- 第一部分到第四部分合并 -->
+        <!-- 第一部分 -->
         <section class="content-section combined-section">
-          <h2>以青年之力，搭建中国与世界的可持续桥梁</h2>
+          <h2>{{ backgroundData.part1MainTitle || '暂无标题' }}</h2>
           <div class="divider"></div>
 
           <div class="block-flex">
             <div class="text-area">
-              <h3>1. 联合国SDGs与未来契约：共绘人类可持续未来蓝图</h3>
-              <p v-html="sdgsIntro"></p>
+              <h3>{{ backgroundData.part1Section1Title || '暂无标题' }}</h3>
+              <p
+                v-if="backgroundData.part1Section1Content"
+                v-html="backgroundData.part1Section1Content"
+              ></p>
+              <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img :src="sdgsImageUrl" alt="SDGs目标图" />
+              <img
+                v-if="backgroundData.part1Section1Image"
+                :src="backgroundData.part1Section1Image"
+                alt="图1"
+              />
+              <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
           <div class="divider"></div>
 
           <div class="block-flex reverse-layout">
             <div class="text-area">
-              <h3>2. 世界博览会：World Expo 全球思想与创新的交汇舞台</h3>
-              <p v-html="expoIntro"></p>
+              <h3>{{ backgroundData.part1Section2Title || '暂无标题' }}</h3>
+              <p
+                v-if="backgroundData.part1Section2Content"
+                v-html="backgroundData.part1Section2Content"
+              ></p>
+              <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img :src="expoImageUrl" alt="EXPO 2025 logo" />
+              <img
+                v-if="backgroundData.part1Section2Image"
+                :src="backgroundData.part1Section2Image"
+                alt="图2"
+              />
+              <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
           <div class="divider"></div>
 
           <div class="block-flex">
             <div class="text-area">
-              <h3>3. 青年领袖：Youth Leaders 变革的核心力量，引领可持续未来</h3>
-              <p v-html="youthIntro"></p>
+              <h3>{{ backgroundData.part1Section3Title || '暂无标题' }}</h3>
+              <p
+                v-if="backgroundData.part1Section3Content"
+                v-html="backgroundData.part1Section3Content"
+              ></p>
+              <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img :src="youthImageUrl" alt="青年协作图" />
+              <img
+                v-if="backgroundData.part1Section3Image"
+                :src="backgroundData.part1Section3Image"
+                alt="图3"
+              />
+              <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
         </section>
 
-        <!-- 第五部分到第七部分合并 -->
+        <!-- 第二部分 -->
         <section class="content-section combined-policy-section">
-          <h2>国家政策倡议与国际合作</h2>
+          <h2>{{ backgroundData.part2MainTitle || '暂无标题' }}</h2>
           <div class="policy-section">
-            <h3>
-              【知行合一，大国担当】<br />
-              SDGs中国力量
-            </h3>
-            <div v-html="chinaPolicyHtml"></div>
-          </div>
-          <div class="content-block">
-            <p>这里可以添加更多内容...</p>
+            <h3 v-if="backgroundData.part2SubTitle" v-html="backgroundData.part2SubTitle"></h3>
+            <h3 v-else>暂无副标题</h3>
+            <div v-if="backgroundData.part2Content" v-html="backgroundData.part2Content"></div>
+            <div v-else>暂无内容</div>
           </div>
         </section>
-
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// 这里可以添加页面逻辑
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+// 响应式数据 - 使用更通用的命名
+const backgroundData = ref({
+  part1MainTitle: null,
+  part1Section1Title: null,
+  part1Section1Content: null,
+  part1Section1Image: null,
+  part1Section2Title: null,
+  part1Section2Content: null,
+  part1Section2Image: null,
+  part1Section3Title: null,
+  part1Section3Content: null,
+  part1Section3Image: null,
+  part2MainTitle: null,
+  part2SubTitle: null,
+  part2Content: null,
+})
+
+// 获取背景数据
+const fetchBackgroundData = async () => {
+  try {
+    const response = await axios.get('/api/expo/background/data')
+    if (response.data.code === 200) {
+      backgroundData.value = response.data.data
+    } else {
+      console.error('获取数据失败:', response.data.message)
+    }
+  } catch (error) {
+    console.error('请求失败:', error)
+  }
+}
+
+// 页面加载时获取数据
+onMounted(() => {
+  fetchBackgroundData()
+})
 </script>
 
 <style scoped>
-/* ===========================
-   页面整体布局样式
-   =========================== */
+/* 原有样式保持不变 */
 .expo-background {
-  min-height: 100vh; /* 确保页面高度至少为视口高度 */
-  background-color: #fff; /* 设置背景为纯白色 */
+  min-height: 100vh;
+  background-color: #fff;
 }
 
-/* ===========================
-   页面头部样式
-   =========================== */
 .page-header {
-  background-color: #fff; /* 设置白色背景，突出头部区域 */
-  color: #1c3365; /* 设置深蓝色文字，提升可读性 */
-  padding: 20px 0; /* 添加上下内边距，增加头部的视觉空间 */
+  background-color: #fff;
+  color: #1c3365;
+  padding: 20px 0;
 }
 
 .breadcrumb {
-  display: flex; /* 使用弹性布局，使导航项水平排列 */
-  align-items: center; /* 垂直居中对齐导航项 */
-  font-size: 20px; /* 设置导航文字大小 */
-  font-weight: 900 !important; /* 强制加粗导航文字，提升层级感 */
-  color: #0167a5; /* 设置蓝色文字，符合整体配色 */
-  margin-bottom: 24px; /* 添加导航与下方内容的间距 */
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 900 !important;
+  color: #0167a5;
+  margin-bottom: 24px;
 }
 
 .breadcrumb a,
 .text-link,
 .current {
-  color: #0167a5; /* 设置链接文字颜色，与整体配色一致 */
-  text-decoration: none; /* 去掉下划线，简化视觉效果 */
-  font-weight: 700 !important; /* 强制加粗，突出导航项 */
+  color: #0167a5;
+  text-decoration: none;
+  font-weight: 700 !important;
 }
 
 .separator {
-  width: 16px; /* 设置分隔符宽度 */
-  height: 16px; /* 设置分隔符高度 */
-  margin: 0 8px; /* 添加分隔符左右间距 */
-  vertical-align: middle; /* 垂直居中对齐 */
-  object-fit: contain; /* 保持图片比例，避免变形 */
+  width: 16px;
+  height: 16px;
+  margin: 0 8px;
+  vertical-align: middle;
+  object-fit: contain;
 }
 
 .home-icon {
-  width: 30px; /* 设置主页图标宽度 */
-  height: 30px; /* 设置主页图标高度 */
-  object-fit: contain; /* 保持图标比例 */
-  vertical-align: middle; /* 垂直居中对齐 */
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  vertical-align: middle;
 }
 
-/* ===========================
-   面包屑导航悬停样式调整
-   =========================== */
 .breadcrumb-link:hover {
-  color: #014f7d; /* 设置悬停时更深的颜色 */
-  text-decoration: underline; /* 添加下划线以增强交互反馈 */
-}
-/* ===========================
-   Home 图标悬停样式调整
-   =========================== */
-.icon-link:hover .home-icon {
-  filter: brightness(0.8); /* 悬停时降低亮度，提供交互反馈 */
-  transform: scale(1.1); /* 悬停时放大图标，增强视觉效果 */
-  transition: all 0.3s ease; /* 添加平滑过渡效果 */
+  color: #014f7d;
+  text-decoration: underline;
 }
 
-/* ===========================
-   主要内容样式
-   =========================== */
+.icon-link:hover .home-icon {
+  filter: brightness(0.8);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
 .background-content {
-  padding: 60px 0; /* 添加上下内边距，增加内容区域的视觉空间 */
+  padding: 60px 0;
 }
 
 section {
-  margin-bottom: 60px; /* 每个部分之间添加间距，分隔内容 */
+  margin-bottom: 60px;
 }
 
 section h2 {
-  font-size: 2rem; /* 设置标题字体大小，突出显示 */
-  font-weight: 600; /* 设置字体加粗，强调标题 */
-  margin-bottom: 1rem; /* 添加标题与下方内容的间距 */
-  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
-  text-align: left; /* 左对齐标题，保持一致性 */
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #0167a5;
+  text-align: left;
 }
 
-/* ===========================
-   内容块样式
-   =========================== */
 .content-block {
-  background: none; /* 移除背景色 */
-  box-shadow: none; /* 移除阴影效果 */
-  border-radius: 0; /* 移除圆角 */
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .content-section h3 {
-  font-size: 1.5rem; /* 设置标题字体大小，突出显示 */
-  font-weight: 600; /* 设置字体加粗，强调标题 */
-  margin-bottom: 16px; /* 添加标题与下方内容的间距 */
-  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #0167a5;
 }
 
-/* ===========================
-   弹性布局样式
-   =========================== */
 .block-flex {
-  display: flex; /* 使用弹性布局，使子元素水平排列 */
-  gap: 24px; /* 设置子元素之间的间距 */
-  align-items: center; /* 垂直居中对齐子元素 */
+  display: flex;
+  gap: 24px;
+  align-items: center;
 }
 
 .block-flex.reverse-layout {
-  flex-direction: row-reverse; /* 子元素反向排列，用于特定布局 */
+  flex-direction: row-reverse;
 }
 
 .text-area {
-  flex: 1; /* 占据剩余空间，确保文字区域自适应 */
+  flex: 1;
 }
 
 .image-area {
-  flex: 0 0 300px; /* 固定宽度，确保图片区域大小一致 */
+  flex: 0 0 300px;
 }
 
 .image-area img {
-  max-width: 100%; /* 图片宽度自适应，避免超出容器 */
-  border-radius: 12px; /* 设置圆角，提升视觉柔和度 */
+  max-width: 100%;
+  border-radius: 12px;
 }
 
-/* ===========================
-   政策部分样式
-   =========================== */
+/* 占位图片样式 */
+.placeholder-image {
+  width: 100%;
+  height: 200px;
+  background-color: #f5f5f5;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+}
+
 .policy-section {
-  background: none; /* 移除背景色 */
-  padding: 32px; /* 保留内边距 */
-  border-radius: 0; /* 移除圆角 */
-  text-align: center; /* 内容居中 */
+  background: none;
+  padding: 32px 0;
+  border-radius: 0;
+  text-align: center;
 }
 
 .policy-section h3 {
-  font-size: 1.5rem; /* 设置标题字体大小，突出显示 */
-  font-weight: 600; /* 设置字体加粗，强调标题 */
-  margin-bottom: 16px; /* 添加标题与下方内容的间距 */
-  color: #0167a5; /* 设置标题颜色，与整体配色一致 */
+  margin-top: 0px;
+  text-align: center;
+  line-height: 1;
+  font-weight: 400; /* 更细的字体 */
+  font-size: 1.3rem; /* 可选：稍微调小字号 */
 }
 
-/* ===========================
-   分割线样式
-   =========================== */
+.policy-section div {
+  text-align: left; /* 内容div左对齐 */
+}
+
 .divider {
-  height: 2px; /* 设置分割线高度 */
-  background-color: #b5c7ea; /* 设置分割线颜色，与整体配色一致 */
-  margin: 40px 0; /* 添加上下间距，分隔内容 */
+  height: 2px;
+  background-color: #b5c7ea;
+  margin: 10px 0;
 }
 
-/* ===========================
-   响应式样式
-   =========================== */
 @media (max-width: 768px) {
   .block-flex {
-    flex-direction: column; /* 子元素垂直排列，适配小屏幕 */
+    flex-direction: column;
   }
 
   .block-flex.reverse-layout {
-    flex-direction: column; /* 子元素垂直排列，适配小屏幕 */
+    flex-direction: column;
   }
 
   .text-area {
-    text-align: center; /* 窄屏模式下文字内容居中 */
+    text-align: center;
   }
 
   .image-area {
-    margin-bottom: 20px; /* 添加图片下方间距，避免内容重叠 */
+    margin-bottom: 20px;
   }
 }
 
-/* ===========================
-   合并后的样式调整
-   =========================== */
 .combined-section {
-  margin-bottom: 60px; /* 设置与下方内容的间距 */
+  margin-bottom: 60px;
 }
 
 .combined-policy-section {
-  margin-top: 40px; /* 设置与上方内容的间距 */
+  margin-top: 40px;
 }
 
 .combined-policy-section h2 {
-  margin-bottom: 0px; /* 缩短标题与下方内容的间距 */
-  font-size: 2rem; /* 调整字体大小，减少视觉占用 */
-  line-height: 1; /* 减小行高，进一步缩短间距 */
-  text-align: center; /* 标题居中 */
-}
-
-.policy-section h3 {
-  margin-top: 0px; /* 减少标题与上方内容的间距 */
-  font-size: 1.5rem; /* 调整字体大小，减少视觉占用 */
-  line-height: 1; /* 减小行高，进一步缩短间距 */
+  margin-bottom: 0px;
+  font-size: 2rem;
+  line-height: 1;
+  text-align: center;
 }
 
 
