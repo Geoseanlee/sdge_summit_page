@@ -171,15 +171,13 @@
 
           <!-- 正文内容 -->
           <el-form-item label="正文内容" prop="content">
-            <el-input
+            <RichTextEditor
               v-model="newsForm.content"
-              type="textarea"
-              :rows="15"
-              placeholder="请输入动态正文内容，支持HTML格式"
-              style="width: 100%"
+              placeholder="请输入动态正文内容，支持富文本格式"
+              height="400px"
             />
             <div class="editor-tip">
-              <small>提示：您可以使用HTML标签来格式化文本，如 &lt;h2&gt;、&lt;p&gt;、&lt;strong&gt; 等</small>
+              <small>提示：使用工具栏进行富文本编辑，支持插入图片、链接、表格等</small>
             </div>
           </el-form-item>
 
@@ -219,6 +217,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Refresh, Edit, Delete, Loading } from '@element-plus/icons-vue'
 import { get, post, put, del, uploadImage } from '@/api'
+import RichTextEditor from '@/components/RichTextEditor.vue'
 
 // 视图状态管理
 const currentView = ref('list') // 'list' | 'form'
@@ -471,7 +470,9 @@ const handleSubmit = async () => {
     await newsFormRef.value.validate()
     
     // 验证正文内容
-    if (!newsForm.content || newsForm.content.trim() === '') {
+    if (!newsForm.content || 
+        (typeof newsForm.content === 'string' && newsForm.content.trim() === '') ||
+        (typeof newsForm.content === 'string' && newsForm.content.replace(/<[^>]*>/g, '').trim() === '')) {
       ElMessage.error('请输入动态正文内容')
       return
     }

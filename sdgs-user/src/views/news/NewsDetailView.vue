@@ -31,10 +31,10 @@
             <header class="article-header">
               <h1>{{ article.title }}</h1>
               <div class="article-meta">
-                <span class="author">📝 {{ article.author }}</span>
-                <span class="date">📅 {{ article.date }}</span>
-                <span class="category">🏷️ {{ article.category }}</span>
-                <span class="views">👁️ {{ article.views }} 阅读</span>
+                <span class="author">作者: {{ article.author }}</span>
+                <span class="date">日期: {{ article.date }}</span>
+                <span class="category">分类: {{ article.category }}</span>
+                <span class="views">阅读: {{ article.views }}</span>
               </div>
               <div class="article-tags">
                 <span 
@@ -54,29 +54,10 @@
               
               <div class="article-text" v-html="article.content"></div>
               
-              <!-- 相关链接 -->
-              <div class="related-links" v-if="article.relatedLinks">
-                <h3>相关链接</h3>
-                <ul>
-                  <li v-for="link in article.relatedLinks" :key="link.title">
-                    <a :href="link.url" target="_blank">{{ link.title }}</a>
-                  </li>
-                </ul>
-              </div>
+
             </div>
 
-            <!-- 文章底部 -->
-            <footer class="article-footer">
-              <div class="share-section">
-                <h4>分享文章</h4>
-                <div class="share-buttons">
-                  <button class="share-btn weibo">微博</button>
-                  <button class="share-btn wechat">微信</button>
-                  <button class="share-btn qq">QQ</button>
-                  <button class="share-btn copy">复制链接</button>
-                </div>
-              </div>
-            </footer>
+
           </article>
 
           <!-- 侧边栏 -->
@@ -130,73 +111,15 @@
           </aside>
         </div>
 
-        <!-- 评论区 -->
-        <section class="comments-section">
-          <h2>评论 ({{ comments.length }})</h2>
-          
-          <!-- 发表评论 -->
-          <div class="comment-form">
-            <el-form @submit.prevent="submitComment">
-              <el-form-item>
-                <el-input
-                  v-model="newComment.author"
-                  placeholder="您的姓名"
-                  style="width: 200px; margin-right: 16px;"
-                />
-                <el-input
-                  v-model="newComment.email"
-                  placeholder="邮箱地址"
-                  style="width: 200px;"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-input
-                  v-model="newComment.content"
-                  type="textarea"
-                  :rows="4"
-                  placeholder="写下您的评论..."
-                  style="width: 100%;"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submitComment">发表评论</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
 
-          <!-- 评论列表 -->
-          <div class="comments-list">
-            <div 
-              v-for="comment in comments" 
-              :key="comment.id"
-              class="comment-item"
-            >
-              <div class="comment-avatar">
-                <span>{{ comment.author.charAt(0) }}</span>
-              </div>
-              <div class="comment-content">
-                <div class="comment-header">
-                  <span class="comment-author">{{ comment.author }}</span>
-                  <span class="comment-date">{{ comment.date }}</span>
-                </div>
-                <p class="comment-text">{{ comment.content }}</p>
-                <div class="comment-actions">
-                  <button class="action-btn">👍 {{ comment.likes }}</button>
-                  <button class="action-btn">💬 回复</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 
 const route = useRoute()
@@ -216,13 +139,11 @@ const fetchArticle = async () => {
       date: response.publishTime ? new Date(response.publishTime).toLocaleDateString('zh-CN') : '',
       views: response.viewCount || 0,
       tags: response.tags ? response.tags.split(',').map(tag => tag.trim()) : [],
-      image: response.coverImageUrl || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=400&fit=crop',
-      relatedLinks: []
+      image: response.coverImageUrl || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=400&fit=crop'
     }
-  } catch (error) {
-    ElMessage.error('加载文章失败')
-    console.error('Error fetching article:', error)
-  } finally {
+      } catch (error) {
+      console.error('Error fetching article:', error)
+    } finally {
     loading.value = false
   }
 }
@@ -255,62 +176,7 @@ const hotTags = ref([
   '创新科技', '社会公平', '环境保护', '经济发展'
 ])
 
-// 评论数据
-const comments = ref([
-  {
-    id: 1,
-    author: '张三',
-    date: '2024年3月16日 10:30',
-    content: '这份报告很有价值，为我们了解全球可持续发展现状提供了重要参考。希望各国能够加强合作，共同推进SDGs目标的实现。',
-    likes: 15
-  },
-  {
-    id: 2,
-    author: '李四',
-    date: '2024年3月16日 14:20',
-    content: '清洁能源发展确实令人鼓舞，但在发展中国家的推广还需要更多的技术支持和资金援助。',
-    likes: 8
-  },
-  {
-    id: 3,
-    author: '王五',
-    date: '2024年3月16日 16:45',
-    content: '教育普及率的提升很不错，但我们还需要关注教育质量的问题，特别是偏远地区的教育质量。',
-    likes: 12
-  }
-])
 
-// 新评论表单
-const newComment = reactive({
-  author: '',
-  email: '',
-  content: ''
-})
-
-// 提交评论
-const submitComment = () => {
-  if (!newComment.author || !newComment.content) {
-    ElMessage.warning('请填写姓名和评论内容')
-    return
-  }
-  
-  const comment = {
-    id: comments.value.length + 1,
-    author: newComment.author,
-    date: new Date().toLocaleString('zh-CN'),
-    content: newComment.content,
-    likes: 0
-  }
-  
-  comments.value.unshift(comment)
-  
-  // 重置表单
-  newComment.author = ''
-  newComment.email = ''
-  newComment.content = ''
-  
-  ElMessage.success('评论发表成功')
-}
 
 onMounted(() => {
   // 根据路由参数加载对应文章
@@ -479,83 +345,9 @@ onMounted(() => {
   color: #666;
 }
 
-.related-links {
-  margin-top: 32px;
-  padding: 24px;
-  background: #f8f9fa;
-  border-radius: 12px;
-}
 
-.related-links h3 {
-  margin-bottom: 16px;
-  color: #333;
-}
 
-.related-links ul {
-  list-style: none;
-  padding: 0;
-}
 
-.related-links li {
-  margin-bottom: 8px;
-}
-
-.related-links a {
-  color: #e11d48;
-  text-decoration: none;
-}
-
-.related-links a:hover {
-  text-decoration: underline;
-}
-
-.article-footer {
-  padding: 40px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.share-section h4 {
-  margin-bottom: 16px;
-  color: #333;
-}
-
-.share-buttons {
-  display: flex;
-  gap: 12px;
-}
-
-.share-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: transform 0.2s;
-}
-
-.share-btn:hover {
-  transform: translateY(-2px);
-}
-
-.share-btn.weibo {
-  background: #e6162d;
-  color: white;
-}
-
-.share-btn.wechat {
-  background: #07c160;
-  color: white;
-}
-
-.share-btn.qq {
-  background: #12b7f5;
-  color: white;
-}
-
-.share-btn.copy {
-  background: #6b7280;
-  color: white;
-}
 
 /* 侧边栏样式 */
 .sidebar-card {
@@ -653,105 +445,7 @@ onMounted(() => {
   color: white;
 }
 
-/* 评论区样式 */
-.comments-section {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  margin-top: 40px;
-}
 
-.comments-section h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-  color: #333;
-}
-
-.comment-form {
-  margin-bottom: 40px;
-  padding: 24px;
-  background: #f8f9fa;
-  border-radius: 12px;
-}
-
-.comment-item {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.comment-item:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.comment-avatar {
-  flex: 0 0 40px;
-}
-
-.comment-avatar span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: #e11d48;
-  color: white;
-  border-radius: 50%;
-  font-weight: 600;
-}
-
-.comment-content {
-  flex: 1;
-}
-
-.comment-header {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 8px;
-}
-
-.comment-author {
-  font-weight: 600;
-  color: #333;
-}
-
-.comment-date {
-  color: #999;
-  font-size: 0.9rem;
-}
-
-.comment-text {
-  margin-bottom: 12px;
-  line-height: 1.6;
-  color: #444;
-}
-
-.comment-actions {
-  display: flex;
-  gap: 16px;
-}
-
-.action-btn {
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  font-size: 0.9rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.action-btn:hover {
-  background: #f3f4f6;
-  color: #333;
-}
 
 .loading-state,
 .error-state {
@@ -788,12 +482,8 @@ onMounted(() => {
     font-size: 0.8rem;
   }
   
-  .share-buttons {
-    flex-wrap: wrap;
-  }
+
   
-  .comments-section {
-    padding: 24px;
-  }
+
 }
 </style> 
