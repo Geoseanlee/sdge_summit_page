@@ -43,24 +43,18 @@ const closeMenu = () => {
           <!-- Logo -->
           <div class="nav-logo">
             <router-link to="/" class="logo-link">
-              <span class="logo-icon">🌍</span>
-              <span class="logo-text">SDGs Platform</span>
+              <img src="/expo_logo.png" alt="World Expo Global Youth Alliance Logo" class="logo-image" />
             </router-link>
           </div>
 
           <!-- 导航菜单 -->
           <div class="nav-menu" :class="{ active: isMenuOpen }">
-            <router-link to="/" class="nav-link" @click="closeMenu">首页</router-link>
-            <router-link to="/expo" class="nav-link" @click="closeMenu">SDGs展览</router-link>
+            <router-link to="/expo" class="nav-link" @click="closeMenu">世博会</router-link>
             <router-link to="/roundtable" class="nav-link" @click="closeMenu">圆桌会议</router-link>
-            <router-link to="/news" class="nav-link" @click="closeMenu">新闻资讯</router-link>
+            <router-link to="/news" class="nav-link" @click="closeMenu">动态</router-link>
             <router-link to="/about" class="nav-link" @click="closeMenu">关于我们</router-link>
-            <router-link to="/test-oss" class="nav-link test-btn" @click="closeMenu">
-              OSS测试
-            </router-link>
-            <router-link to="/join-us" class="nav-link join-us-btn" @click="closeMenu">
-              加入我们
-            </router-link>
+            <router-link to="/join-us" class="nav-link" @click="closeMenu">加入我们</router-link>
+            <router-link to="/test-oss" class="nav-link test-btn" @click="closeMenu">OSS测试</router-link>
           </div>
 
           <!-- 移动端菜单按钮 -->
@@ -121,7 +115,7 @@ const closeMenu = () => {
    导航栏响应式样式
    ================================= */
 .app-header {
-  background: white;
+  background: linear-gradient(135deg, #67b7f7, #5dade2);
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
@@ -140,7 +134,7 @@ const closeMenu = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: 140px;
 }
 
 @media (max-width: 1279px) {
@@ -153,7 +147,7 @@ const closeMenu = () => {
 @media (max-width: 767px) {
   .nav-container {
     padding: 0 var(--spacing-sm);
-    height: 60px;
+    height: 100px;
   }
 }
 
@@ -161,35 +155,21 @@ const closeMenu = () => {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: #333;
+  color: white;
   font-weight: 700;
   font-size: 1.3rem;
   transition: var(--transition-base);
 }
 
-.logo-icon {
-  font-size: 1.8rem;
-  margin-right: 10px;
+.logo-image {
+  height: 80px; /* Adjust as needed */
+  width: auto;
+  transition: var(--transition-base);
 }
 
 @media (max-width: 767px) {
-  .nav-logo .logo-link {
-    font-size: 1.1rem;
-  }
-  
-  .logo-icon {
-    font-size: 1.5rem;
-    margin-right: 8px;
-  }
-}
-
-.logo-text {
-  color: #2563eb;
-}
-
-@media (max-width: 480px) {
-  .logo-text {
-    display: none; /* 超小屏幕隐藏文字，只显示图标 */
+  .logo-image {
+    height: 60px; /* Adjust for smaller screens */
   }
 }
 
@@ -209,10 +189,10 @@ const closeMenu = () => {
 @media (max-width: 767px) {
   .nav-menu {
     position: fixed;
-    top: 60px;
+    top: 100px;
     left: 0;
     right: 0;
-    background: white;
+    background: linear-gradient(135deg, #67b7f7, #5dade2);
     flex-direction: column;
     gap: 0;
     padding: var(--spacing-md) 0;
@@ -221,7 +201,7 @@ const closeMenu = () => {
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-base);
-    max-height: calc(100vh - 60px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
   
@@ -234,8 +214,9 @@ const closeMenu = () => {
 
 .nav-link {
   text-decoration: none;
-  color: #666;
+  color: white;
   font-weight: 500;
+  font-size: 1.1rem;
   transition: var(--transition-base);
   padding: 8px 16px;
   border-radius: var(--radius-md);
@@ -245,7 +226,7 @@ const closeMenu = () => {
 @media (max-width: 1023px) {
   .nav-link {
     padding: 6px 12px;
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 }
 
@@ -256,10 +237,11 @@ const closeMenu = () => {
     padding: 15px var(--spacing-lg);
     text-align: center;
     border-radius: 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 18px;
     min-height: 44px;
     line-height: 44px;
+    color: white;
   }
   
   .nav-link:last-child {
@@ -268,19 +250,34 @@ const closeMenu = () => {
 }
 
 .nav-link:hover {
-  color: #2563eb;
-  background-color: #f8fafc;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 767px) {
   .nav-link:hover {
-    background-color: #f0f9ff;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 }
 
 .nav-link.router-link-active {
-  color: #2563eb;
-  background-color: #dbeafe;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  background-color: transparent;
+}
+
+@media (max-width: 1023px) {
+  .nav-link.router-link-active {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav-link.router-link-active {
+    font-size: 20px;
+    font-weight: 700;
+  }
 }
 
 .test-btn {
@@ -296,45 +293,6 @@ const closeMenu = () => {
   background: linear-gradient(135deg, #d97706, #b45309) !important;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-}
-
-.join-us-btn {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white !important;
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
-}
-
-@media (max-width: 1023px) {
-  .join-us-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 767px) {
-  .join-us-btn {
-    margin: var(--spacing-sm) var(--spacing-lg);
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: var(--radius-lg);
-    min-height: 44px;
-    line-height: 1;
-  }
-}
-
-.join-us-btn:hover {
-  background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-@media (max-width: 767px) {
-  .join-us-btn:hover {
-    transform: none; /* 移动端不使用transform */
-  }
 }
 
 .nav-toggle {
@@ -359,13 +317,13 @@ const closeMenu = () => {
 }
 
 .nav-toggle:hover {
-  background-color: #f8fafc;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .nav-toggle span {
   width: 25px;
   height: 3px;
-  background: #333;
+  background: white;
   margin: 3px 0;
   transition: var(--transition-base);
   border-radius: 2px;
