@@ -14,7 +14,18 @@
     <!-- 主要内容 -->
     <div class="detail-content">
       <div class="container">
-        <div class="content-wrapper">
+        <!-- 加载状态 -->
+        <div v-if="loading" class="loading-state">
+          <p>正在加载文章...</p>
+        </div>
+        
+        <!-- 文章不存在 -->
+        <div v-else-if="!article" class="error-state">
+          <p>文章不存在或已被删除</p>
+        </div>
+        
+        <!-- 文章内容 -->
+        <div v-else class="content-wrapper">
           <!-- 文章内容 -->
           <article class="article-content">
             <header class="article-header">
@@ -186,64 +197,35 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
 
 const route = useRoute()
 const articleId = route.params.id
 
 // 文章数据
-const article = ref({
-  id: 1,
-  title: '联合国发布2024年可持续发展目标进展报告：全球合作迎来新机遇',
-  author: '联合国新闻中心',
-  date: '2024年3月15日',
-  category: '政策发布',
-  views: 2345,
-  tags: ['SDGs', '政策', '全球合作', '可持续发展'],
-  image: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=400&fit=crop',
-  content: `
-    <h2 id="section1">背景介绍</h2>
-    <p>联合国在纽约总部正式发布了《2024年可持续发展目标进展报告》，这是自2015年通过《2030年可持续发展议程》以来的第九次年度评估报告。报告全面分析了全球在17个可持续发展目标方面取得的进展和面临的挑战。</p>
-    
-    <p>报告指出，尽管面临新冠疫情、地缘政治冲突和气候变化等多重挑战，国际社会在推进可持续发展目标方面仍取得了显著进展。特别是在清洁能源、数字技术应用和国际合作机制建设方面，呈现出前所未有的发展势头。</p>
+const article = ref(null)
+const loading = ref(false)
 
-    <h2 id="section2">主要内容</h2>
-    <p>报告重点强调了以下几个方面的重要进展：</p>
-    
-    <h3>1. 贫困减少成效显著</h3>
-    <p>全球极端贫困人口比例从2015年的10.1%下降至2023年的8.4%，超过1.3亿人摆脱了极端贫困。其中，亚洲和非洲地区的减贫成效最为突出。</p>
-    
-    <h3>2. 教育普及率持续提升</h3>
-    <p>全球小学教育净入学率达到95.2%，性别教育差距进一步缩小。数字教育技术的广泛应用为偏远地区的教育发展带来了新机遇。</p>
-    
-    <h3>3. 清洁能源发展迅速</h3>
-    <p>可再生能源占全球发电量的比例达到30.1%，太阳能和风能成本大幅下降，为能源转型提供了有力支撑。</p>
-
-    <h2 id="section3">重要意义</h2>
-    <p>这份报告的发布具有重要的现实意义和深远的历史意义：</p>
-    
-    <blockquote>
-      <p>"我们正处在实现可持续发展目标的关键时期。虽然面临挑战，但我们有理由对未来保持乐观。"</p>
-      <cite>— 联合国秘书长安东尼奥·古特雷斯</cite>
-    </blockquote>
-    
-    <p>报告为各国政府、国际组织和民间社会提供了重要的政策参考，有助于调整发展战略，加强国际合作，确保在2030年实现所有可持续发展目标。</p>
-
-    <h2 id="section4">未来展望</h2>
-    <p>展望未来，报告提出了三大重点行动领域：</p>
-    
-    <ul>
-      <li><strong>加强多边合作</strong>：建立更加有效的国际合作机制，促进资源共享和技术转移。</li>
-      <li><strong>促进创新发展</strong>：充分利用数字技术、人工智能等新兴技术，推动可持续发展模式创新。</li>
-      <li><strong>确保包容性增长</strong>：重点关注最脆弱群体的需求，确保发展成果惠及所有人。</li>
-    </ul>
-    
-    <p>联合国呼吁国际社会继续加强合作，共同努力，确保在2030年实现所有可持续发展目标，为人类和地球创造更加美好的未来。</p>
-  `,
-  relatedLinks: [
-    { title: '联合国可持续发展目标官网', url: 'https://sdgs.un.org/' },
-    { title: '2030年可持续发展议程', url: 'https://sdgs.un.org/2030agenda' }
-  ]
-})
+// 获取文章数据
+const fetchArticle = async () => {
+  loading.value = true
+  try {
+    const response = await request.get(`/news/${articleId}`)
+    article.value = {
+      ...response,
+      date: response.publishTime ? new Date(response.publishTime).toLocaleDateString('zh-CN') : '',
+      views: response.viewCount || 0,
+      tags: response.tags ? response.tags.split(',').map(tag => tag.trim()) : [],
+      image: response.coverImageUrl || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=400&fit=crop',
+      relatedLinks: []
+    }
+  } catch (error) {
+    ElMessage.error('加载文章失败')
+    console.error('Error fetching article:', error)
+  } finally {
+    loading.value = false
+  }
+}
 
 // 相关文章
 const relatedArticles = ref([
@@ -332,7 +314,7 @@ const submitComment = () => {
 
 onMounted(() => {
   // 根据路由参数加载对应文章
-  console.log('加载文章ID:', articleId)
+  fetchArticle()
 })
 </script>
 
@@ -769,6 +751,19 @@ onMounted(() => {
 .action-btn:hover {
   background: #f3f4f6;
   color: #333;
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 100px 20px;
+  color: #666;
+}
+
+.loading-state p,
+.error-state p {
+  font-size: 1.2rem;
+  margin: 0;
 }
 
 /* 响应式设计 */

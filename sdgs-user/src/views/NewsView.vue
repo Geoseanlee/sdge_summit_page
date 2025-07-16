@@ -35,7 +35,19 @@
 
         <!-- 新闻列表 -->
         <div class="news-list">
+          <!-- 加载状态 -->
+          <div v-if="loading" class="loading-state">
+            <p>正在加载新闻...</p>
+          </div>
+          
+          <!-- 空状态 -->
+          <div v-else-if="filteredNews.length === 0" class="empty-state">
+            <p>暂无新闻数据</p>
+          </div>
+          
+          <!-- 新闻卡片 -->
           <div
+            v-else
             v-for="article in filteredNews"
             :key="article.id"
             class="news-card"
@@ -71,89 +83,54 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
 
 const $router = useRouter()
 
 // 响应式数据
 const searchQuery = ref('')
 const selectedCategory = ref('all')
+const loading = ref(false)
+const newsData = ref([])
 
 // 分类数据
 const categories = ref([
   { id: 'all', name: '全部' },
-  { id: 'climate', name: '气候行动' },
-  { id: 'education', name: '教育发展' },
-  { id: 'health', name: '健康福祉' },
-  { id: 'economy', name: '经济发展' },
-  { id: 'environment', name: '环境保护' }
+  { id: '政策发布', name: '政策发布' },
+  { id: '气候行动', name: '气候行动' },
+  { id: '教育发展', name: '教育发展' },
+  { id: '健康福祉', name: '健康福祉' },
+  { id: '经济发展', name: '经济发展' },
+  { id: '环境保护', name: '环境保护' }
 ])
 
-// 新闻数据
-const newsData = ref([
-  {
-    id: 1,
-    title: '联合国发布2024年可持续发展目标进展报告',
-    summary: '报告显示全球在减贫、教育、健康等领域取得显著进展，但气候变化仍是最大挑战。',
-    category: '全部',
-    categoryId: 'all',
-    date: '2024-03-10',
-    source: '联合国官网',
-    readTime: 5,
-    image: '/images/news1.jpg',
-    tags: ['SDG报告', '全球进展', '联合国']
-  },
-  {
-    id: 2,
-    title: '全球气候峰会达成新的减排协议',
-    summary: '195个国家承诺在2030年前将碳排放量减少50%，加速向清洁能源转型。',
-    category: '气候行动',
-    categoryId: 'climate',
-    date: '2024-03-08',
-    source: 'Climate News',
-    readTime: 8,
-    image: '/images/news2.jpg',
-    tags: ['气候变化', '减排', '清洁能源']
-  },
-  {
-    id: 3,
-    title: '数字教育平台助力全球教育公平',
-    summary: '新兴的在线教育技术正在帮助发展中国家的儿童获得优质教育资源。',
-    category: '教育发展',
-    categoryId: 'education',
-    date: '2024-03-05',
-    source: 'Education Today',
-    readTime: 6,
-    image: '/images/news3.jpg',
-    tags: ['数字教育', '教育公平', '技术创新']
-  },
-  {
-    id: 4,
-    title: '全球疫苗接种计划显著改善儿童健康',
-    summary: '世界卫生组织报告显示，全球儿童疫苗接种率达到历史新高。',
-    category: '健康福祉',
-    categoryId: 'health',
-    date: '2024-03-03',
-    source: 'WHO',
-    readTime: 4,
-    image: '/images/news4.jpg',
-    tags: ['疫苗接种', '儿童健康', 'WHO']
-  },
-  {
-    id: 5,
-    title: '绿色金融推动可持续经济发展',
-    summary: '越来越多的金融机构将ESG因素纳入投资决策，推动经济向可持续方向发展。',
-    category: '经济发展',
-    categoryId: 'economy',
-    date: '2024-03-01',
-    source: 'Finance Weekly',
-    readTime: 7,
-    image: '/images/news5.jpg',
-    tags: ['绿色金融', 'ESG', '可持续投资']
+// 获取新闻数据
+const fetchNewsData = async () => {
+  loading.value = true
+  try {
+    const response = await request.get('/news/published')
+    newsData.value = response.map(item => ({
+      ...item,
+      date: item.publishTime ? new Date(item.publishTime).toLocaleDateString('zh-CN') : '',
+      image: item.coverImageUrl || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=400&fit=crop',
+      readTime: Math.ceil((item.content || '').length / 200), // 估算阅读时间
+      tags: item.tags ? item.tags.split(',').map(tag => tag.trim()) : []
+    }))
+  } catch (error) {
+    ElMessage.error('加载新闻数据失败')
+    console.error('Error fetching news:', error)
+  } finally {
+    loading.value = false
   }
-])
+}
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchNewsData()
+})
 
 // 计算属性：过滤后的新闻
 const filteredNews = computed(() => {
@@ -161,7 +138,7 @@ const filteredNews = computed(() => {
 
   // 按分类筛选
   if (selectedCategory.value !== 'all') {
-    filtered = filtered.filter(news => news.categoryId === selectedCategory.value)
+    filtered = filtered.filter(news => news.category === selectedCategory.value)
   }
 
   // 按搜索关键词筛选
@@ -170,7 +147,7 @@ const filteredNews = computed(() => {
     filtered = filtered.filter(news =>
       news.title.toLowerCase().includes(query) ||
       news.summary.toLowerCase().includes(query) ||
-      news.tags.some(tag => tag.toLowerCase().includes(query))
+      (news.tags && news.tags.some(tag => tag.toLowerCase().includes(query)))
     )
   }
 
@@ -326,6 +303,19 @@ const openNews = (article) => {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.8rem;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.loading-state p,
+.empty-state p {
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* 响应式设计 */
