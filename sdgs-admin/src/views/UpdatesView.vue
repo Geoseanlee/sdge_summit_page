@@ -129,33 +129,13 @@
             </div>
           </el-form-item>
 
-          <!-- 分类 -->
-          <el-form-item label="分类">
-            <el-select v-model="newsForm.category" placeholder="请选择分类">
-              <el-option label="政策发布" value="政策发布" />
-              <el-option label="气候行动" value="气候行动" />
-              <el-option label="教育发展" value="教育发展" />
-              <el-option label="健康福祉" value="健康福祉" />
-              <el-option label="经济发展" value="经济发展" />
-              <el-option label="环境保护" value="环境保护" />
-              <el-option label="其他" value="其他" />
-            </el-select>
-          </el-form-item>
 
-          <!-- 标签 -->
-          <el-form-item label="标签">
-            <el-input v-model="newsForm.tags" placeholder="请输入标签，用逗号分隔" />
-          </el-form-item>
 
-          <!-- 作者 -->
-          <el-form-item label="作者">
-            <el-input v-model="newsForm.author" placeholder="请输入作者" />
-          </el-form-item>
 
-          <!-- 来源 -->
-          <el-form-item label="来源">
-            <el-input v-model="newsForm.source" placeholder="请输入来源" />
-          </el-form-item>
+
+
+
+
 
           <!-- 简介 -->
           <el-form-item label="简介" prop="summary">
@@ -190,12 +170,12 @@
           </el-form-item>
 
           <!-- 动态ID管理（仅新增时显示） -->
-          <el-form-item v-if="!isEdit" label="ID管理">
+          <!-- <el-form-item v-if="!isEdit" label="ID管理">
             <el-checkbox v-model="useNextAvailableId">使用下一个可用的ID（重用被删除的ID）</el-checkbox>
             <div v-if="useNextAvailableId" class="next-id-info">
               <small>下一个可用ID: {{ nextAvailableId }}</small>
             </div>
-          </el-form-item>
+          </el-form-item> -->
 
           <!-- 按钮 -->
           <el-form-item>
@@ -232,8 +212,8 @@ const newsList = ref([])
 const submitting = ref(false)
 const newsFormRef = ref(null)
 const fileInput = ref(null)
-const useNextAvailableId = ref(false)
-const nextAvailableId = ref(null)
+// const useNextAvailableId = ref(false)
+// const nextAvailableId = ref(null)
 
 // 表单数据
 const newsForm = reactive({
@@ -242,10 +222,6 @@ const newsForm = reactive({
   summary: '',
   content: '',
   coverImageUrl: '',
-  category: '',
-  tags: '',
-  author: '',
-  source: '',
   publishTime: '',
   status: 1,
   viewCount: 0
@@ -270,11 +246,11 @@ const rules = {
 const getAllNews = () => get('/api/news/admin/list')
 const getNewsById = (id) => get(`/api/news/${id}`)
 const createNews = (data) => post('/api/news/admin', data)
-const createNewsWithId = (data) => post('/api/news/admin/withId', data)
+// const createNewsWithId = (data) => post('/api/news/admin/withId', data)
 const updateNews = (id, data) => put(`/api/news/admin/${id}`, data)
 const deleteNews = (id) => del(`/api/news/admin/${id}`)
 const uploadNewsImage = (file) => uploadImage(file)
-const getNextAvailableId = () => get('/api/news/admin/nextId')
+// const getNextAvailableId = () => get('/api/news/admin/nextId')
 
 onMounted(() => {
   loadNewsList()
@@ -346,9 +322,8 @@ const showCreateForm = () => {
   isEdit.value = false
   editingId.value = null
   currentView.value = 'form'
-  // 设置默认发布时间和获取下一个可用ID
+  // 设置默认发布时间
   newsForm.publishTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
-  fetchNextAvailableId()
 }
 
 const showEditForm = async (news) => {
@@ -372,31 +347,27 @@ const resetForm = () => {
     summary: '',
     content: '',
     coverImageUrl: '',
-    category: '',
-    tags: '',
-    author: '',
-    source: '',
     publishTime: '',
     status: 1,
     viewCount: 0
   })
-  useNextAvailableId.value = false
-  nextAvailableId.value = null
+  // useNextAvailableId.value = false
+  // nextAvailableId.value = null
   if (newsFormRef.value) {
     newsFormRef.value.clearValidate()
   }
 }
 
-const fetchNextAvailableId = async () => {
-  try {
-    const res = await getNextAvailableId()
-    if (res.code === 200) {
-      nextAvailableId.value = res.data
-    }
-  } catch (error) {
-    console.error('获取下一个可用ID失败:', error)
-  }
-}
+// const fetchNextAvailableId = async () => {
+//   try {
+//     const res = await getNextAvailableId()
+//     if (res.code === 200) {
+//       nextAvailableId.value = res.data
+//     }
+//   } catch (error) {
+//     console.error('获取下一个可用ID失败:', error)
+//   }
+// }
 
 const loadNewsData = async (id) => {
   try {
@@ -409,10 +380,6 @@ const loadNewsData = async (id) => {
         summary: data.summary || '',
         content: data.content || '',
         coverImageUrl: data.coverImageUrl || '',
-        category: data.category || '',
-        tags: data.tags || '',
-        author: data.author || '',
-        source: data.source || '',
         publishTime: data.publishTime || '',
         status: data.status || 1,
         viewCount: data.viewCount || 0
@@ -481,24 +448,12 @@ const handleSubmit = async () => {
     
     const submitData = { ...newsForm }
     
-    // 处理标签：将中文逗号转换为英文逗号
-    if (submitData.tags) {
-      submitData.tags = submitData.tags.replace(/，/g, ',')
-    }
-    
     let res
     if (isEdit.value) {
       res = await updateNews(editingId.value, submitData)
     } else {
-      // 新增模式，根据用户选择使用不同的API
-      if (useNextAvailableId.value && nextAvailableId.value) {
-        // 使用指定ID创建新闻
-        submitData.id = nextAvailableId.value
-        res = await createNewsWithId(submitData)
-      } else {
-        // 使用自动生成ID创建新闻
-        res = await createNews(submitData)
-      }
+      // 新增模式，使用自动生成ID创建新闻
+      res = await createNews(submitData)
     }
     
     if (res.code === 200) {
@@ -697,7 +652,7 @@ const handleSubmit = async () => {
   padding: 12px 30px;
 }
 
-.next-id-info {
+/* .next-id-info {
   margin-top: 8px;
   padding: 8px 12px;
   background: #f0f9ff;
@@ -708,7 +663,7 @@ const handleSubmit = async () => {
 .next-id-info small {
   color: #1e40af;
   font-weight: 500;
-}
+} */
 
 /* ===== 响应式设计 ===== */
 @media (max-width: 768px) {
