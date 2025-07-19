@@ -1,216 +1,262 @@
 <template>
   <div class="home">
-    <div class="hero-section">
-      <div class="hero-content">
-        <div class="hero-item">
-          <h1 class="main-title blue-title">走进世界</h1>
-          <p class="subtitle">与世博全球青年一起</p>
-        </div>
-        <div class="hero-item">
-          <h1 class="main-title blue-title">走进世博</h1>
-          <p class="subtitle">共创可持续发展未来</p>
-        </div>
-      </div>
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-text">加载中...</div>
     </div>
 
-    <!-- 添加图片区域 -->
-    <div class="image-section">
-      <div class="hero-image">
-        <img src="/expo_logo.png" alt="展示图片" class="hero-img" />
+    <!-- 主内容 -->
+    <template v-else>
+      <!-- 英雄区域 -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <div class="hero-titles-row">
+            <div class="hero-item" v-if="homeInfo?.heroTitle1 || homeInfo?.heroSubtitle1">
+              <h1 class="main-title blue-title" v-if="homeInfo?.heroTitle1">{{ homeInfo.heroTitle1 }}</h1>
+              <p class="subtitle blue-subtitle" v-if="homeInfo?.heroSubtitle1">{{ homeInfo.heroSubtitle1 }}</p>
+            </div>
+            <div class="hero-item" v-if="homeInfo?.heroTitle2 || homeInfo?.heroSubtitle2">
+              <h1 class="main-title blue-title" v-if="homeInfo?.heroTitle2">{{ homeInfo.heroTitle2 }}</h1>
+              <p class="subtitle blue-subtitle" v-if="homeInfo?.heroSubtitle2">{{ homeInfo.heroSubtitle2 }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-image" v-if="homeInfo?.heroImageUrl">
+          <img :src="homeInfo.heroImageUrl" alt="首页图片" class="hero-img" />
+        </div>
       </div>
-    </div>
 
-    <!-- SDGs介绍区域 -->
-    <div class="sdgs-section">
-      <div class="sdgs-content">
-        <div class="sdgs-text">
-          <p class="sdgs-description">
-            联合国可持续发展目标（Sustainable Development
-            Goals，SDGs）是联合国为应对全球挑战而制定的一系列目标，旨在从2015年到2030年间以综合方式彻底解决社会、经济和环境三个维度的发展问题，转向可持续发展道路。
-          </p>
-          <p class="sdgs-description">
-            这些目标旨在推动全球发展，实现更美好、更可持续的未来，涵盖了贫困、饥饿、健康、教育、性别平等、水资源、能源、经济增长、基础设施、不平等、城市发展、消费模式、气候变化、海洋与陆地生态系统、和平与包容性社会等多个领域。
-          </p>
-        </div>
-        <div class="sdgs-logo">
-          <h2 class="sdgs-title">SDGs</h2>
-          <button class="more-info-btn" @click="goToBackground">
-            了解更多信息 <span class="arrow">›</span>
-          </button>
+      <!-- SDGs介绍区域 -->
+      <div class="sdgs-section">
+        <div class="sdgs-content">
+          <div class="sdgs-text">
+            <p class="sdgs-description" v-if="homeInfo?.sdgsDescription1">
+              {{ homeInfo.sdgsDescription1 }}
+            </p>
+            <p class="sdgs-description" v-if="homeInfo?.sdgsDescription2">
+              {{ homeInfo.sdgsDescription2 }}
+            </p>
+          </div>
+          <div class="sdgs-logo">
+            <h2 class="sdgs-title">SDGs</h2>
+            <button class="more-info-btn" @click="goToExpoBackground">
+              了解更多信息 <span class="arrow">›</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 世博会介绍区域 -->
-    <div class="expo-intro-section">
-      <div class="expo-intro-container">
-        <div class="expo-text-area">
-          <h2 class="expo-title">2025大阪世博会情况及介绍</h2>
-          <p class="expo-subtitle">"闪耀生命的未来社会的设计"</p>
-          <button class="explore-btn" @click="goToExpo">
-            探索 <span class="arrow">›</span>
-          </button>
-        </div>
-        <div class="expo-image">
-          <img
-            src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-            alt="世博会场景" class="expo-bg-img" />
+      <!-- 探索区域 - 新增卡片式布局 -->
+      <div class="explore-section">
+        <div class="explore-card"
+          :style="{ backgroundImage: homeInfo?.expoImageUrl ? `linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(${homeInfo.expoImageUrl})` : 'none' }">
+          <div class="explore-content">
+            <h2 class="explore-title" v-if="homeInfo?.expoTitle">{{ homeInfo.expoTitle }}</h2>
+            <p class="explore-subtitle" v-if="homeInfo?.expoSubtitle">{{ homeInfo.expoSubtitle }}</p>
+            <button class="explore-btn" @click="goToExpo">
+              探索 <span class="arrow">›</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 世博全球青年联盟介绍区域 -->
-    <div class="alliance-section">
-      <div class="alliance-content">
-        <h2 class="alliance-title">世博全球青年联盟</h2>
-        <div class="alliance-description">
-          <p class="alliance-text">
-            世博全球青年联盟（World Expo Global Young Alliance）在迪拜世博会期间，由世博全球青年SDGs峰会组委会与SDGsVision
-            2050发起，在迪拜世博会中华文化馆与中华文化促进会支持下成立，为激发全球青年为实现可持续发展目标SDGs（也称为全球目标和2030年议程）做出贡献的行动。
-          </p>
-          <p class="alliance-text">
-            世博全球青年联盟将连接全球的创意机构和人才，汇聚全球产业界、政界、学界、商界力量助力落实《联合国2030年可持续发展议程》，促进社会进步、环境保护、经济建设可持续发展。
-          </p>
+      <!-- 博览会区域 -->
+      <div class="expo-section" style="display: none;">
+        <div class="section-content">
+          <div class="expo-content">
+            <h2 class="section-title" v-if="homeInfo?.expoTitle">{{ homeInfo.expoTitle }}</h2>
+            <button class="expo-info-btn" @click="goToExpo">
+              了解更多信息 <span class="arrow">›</span>
+            </button>
+          </div>
+          <div class="expo-image" v-if="homeInfo?.expoImageUrl">
+            <img :src="homeInfo.expoImageUrl" alt="博览会" class="expo-img" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 相关数据区域 -->
-    <div class="data-section">
-      <div class="data-content">
-        <h2 class="data-title">相关行动数据</h2>
-        <div class="data-image">
-          <img
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-            alt="数据图表" class="data-img" />
+      <!-- 联盟介绍 -->
+      <div class="alliance-section">
+        <div class="section-content">
+          <div class="alliance-content">
+            <h2 class="section-title" v-if="homeInfo?.allianceTitle">{{ homeInfo.allianceTitle }}</h2>
+            <p class="alliance-description" v-if="homeInfo?.allianceDescription1">
+              {{ homeInfo.allianceDescription1 }}
+            </p>
+            <p class="alliance-description" v-if="homeInfo?.allianceDescription2">
+              {{ homeInfo.allianceDescription2 }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 加入我们区域 -->
-    <div class="join-us-section">
-      <div class="join-us-content">
-        <div class="join-us-text">
-          <h2 class="join-us-title">加入我们</h2>
-          <ul class="join-us-list">
-            <li class="join-us-item">要成为世博全球青年联盟的成员，关注公众号SDGs Vision 2050</li>
-            <li class="join-us-item">携手全球产业界、政界、学界、商界力量</li>
-            <li class="join-us-item">邀您共同探讨与行动！</li>
-          </ul>
-          <button class="join-info-btn" @click="goToJoinUs">
-            了解更多信息 <span class="arrow">›</span>
-          </button>
-        </div>
-        <div class="join-us-image">
-          <img
-            src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-            alt="加入我们" class="join-us-img" />
+      <!-- 相关数据区域 -->
+      <div class="data-section">
+        <div class="data-content">
+          <h2 class="data-title" v-if="homeInfo?.dataTitle">{{ homeInfo.dataTitle }}</h2>
+          <div class="data-image" v-if="homeInfo?.dataImageUrl">
+            <img :src="homeInfo.dataImageUrl" alt="数据图表" class="data-img" />
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- 加入我们区域 -->
+      <div class="join-us-section">
+        <div class="join-us-content">
+          <div class="join-us-main">
+            <div class="join-us-text">
+              <h2 class="join-us-title" v-if="homeInfo?.joinTitle">{{ homeInfo.joinTitle }}</h2>
+              <ul class="join-us-list" v-if="homeInfo?.joinItem1 || homeInfo?.joinItem2 || homeInfo?.joinItem3">
+                <li class="join-us-item" v-if="homeInfo?.joinItem1">{{ homeInfo.joinItem1 }}</li>
+                <li class="join-us-item" v-if="homeInfo?.joinItem2">{{ homeInfo.joinItem2 }}</li>
+                <li class="join-us-item" v-if="homeInfo?.joinItem3">{{ homeInfo.joinItem3 }}</li>
+              </ul>
+              <button class="join-info-btn" @click="goToJoinUs">
+                了解更多信息 <span class="arrow">›</span>
+              </button>
+            </div>
+            <div class="join-us-image" v-if="homeInfo?.joinImageUrl">
+              <img :src="homeInfo.joinImageUrl" alt="加入我们" class="join-us-img" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import request from '@/utils/request'
 
 const router = useRouter()
 
-// 跳转到背景页面
+// 响应式数据
+const homeInfo = ref(null)
+const loading = ref(false)
+
+// 获取首页信息
+const getHomeInfo = async () => {
+  loading.value = true
+  try {
+    const data = await request.get('/home/info')
+    homeInfo.value = data
+  } catch (error) {
+    console.error('获取首页信息失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 页面跳转方法
 const goToBackground = () => {
+  router.push('/about')
+}
+
+const goToExpoBackground = () => {
   router.push('/expo/background')
 }
 
-// 跳转到世博会页面
 const goToExpo = () => {
   router.push('/expo')
 }
 
-// 跳转到加入我们页面
 const goToJoinUs = () => {
   router.push('/join-us')
 }
+
+// 页面挂载时获取数据
+onMounted(() => {
+  getHomeInfo()
+})
 </script>
 
 <style scoped>
 .home {
   padding: 0;
-  min-height: 100vh;
-  background: #f8f9fa;
+  background-color: white;
 }
 
-.hero-section {
+.loading-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  min-height: auto;
-  padding: 20px 20px;
+  align-items: center;
+  height: 50vh;
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #666;
+}
+
+/* 英雄区域样式 */
+.hero-section {
+  padding: 2rem;
+  text-align: center;
+  background-color: white;
 }
 
 .hero-content {
+  margin-bottom: 2rem;
+}
+
+.hero-titles-row {
   display: flex;
-  gap: 0px;
-  max-width: 600px;
-  width: 100%;
   justify-content: center;
-  align-items: center;
+  gap: 4rem;
+  flex-wrap: wrap;
 }
 
 .hero-item {
   text-align: center;
-  flex: 1;
 }
 
 .main-title {
-  font-size: 3.2rem;
+  font-size: 2rem;
   font-weight: bold;
-  margin: 0 0 20px 0;
-  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 .blue-title {
-  color: #0e82e8;
+  color: #1976d2;
 }
 
 .subtitle {
-  font-size: 1.5rem;
-  margin: 0;
-  color: #0e82e8;
-  font-weight: 500;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1rem;
 }
 
-/* 图片区域样式 */
-.image-section {
-  max-width: 1400px;
-  margin: 0 auto 0;
-  padding: 0 80px;
+.blue-subtitle {
+  color: #1976d2;
 }
 
 .hero-image {
-  margin-bottom: 40px;
-  border-radius: 20px;
-  overflow: hidden;
+  text-align: center;
+  margin: 2rem 0;
 }
 
 .hero-img {
-  width: 100%;
+  width: 800px;
+  max-width: 100%;
   height: auto;
-  object-fit: cover;
-  display: block;
-  border-radius: 20px;
+  border-radius: 8px;
 }
 
-/* SDGs介绍区域样式 */
+/* SDGs区域样式 */
 .sdgs-section {
-  max-width: 1200px;
-  margin: 60px auto 0;
-  padding: 0 120px;
+  padding: 2rem 12rem;
+  background-color: white;
 }
 
 .sdgs-content {
+  max-width: 800px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 60px;
+  gap: 4rem;
 }
 
 .sdgs-text {
@@ -218,233 +264,234 @@ const goToJoinUs = () => {
 }
 
 .sdgs-description {
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
   color: #333;
-  margin-bottom: 20px;
-  text-align: justify;
-  letter-spacing: 0.5px;
-}
-
-.sdgs-description:last-child {
-  margin-bottom: 0;
 }
 
 .sdgs-logo {
-  flex: 0 0 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
   text-align: center;
 }
 
 .sdgs-title {
-  font-size: 4rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: #0e82e8;
-  margin: 0 0 30px 0;
-  letter-spacing: 2px;
+  color: #1976d2;
+  margin-bottom: 1rem;
 }
 
 .more-info-btn {
-  background: #0e82e8;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.more-info-btn:hover {
+  background-color: #1565c0;
+}
+
+.arrow {
+  margin-left: 0.5rem;
+}
+
+/* 探索区域样式 */
+.explore-section {
+  padding: 2rem 12rem;
+  background-color: white;
+}
+
+.explore-card {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 300px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  /* 没有图片时的背景色 */
+}
+
+.explore-content {
+  max-width: 500px;
+  z-index: 2;
+  padding-top: 1rem;
+}
+
+.explore-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.explore-subtitle {
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.explore-btn {
+  background-color: #4a90e2;
   color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 25px;
-  font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
-  display: flex;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.more-info-btn:hover {
-  background: #0d74d1;
-  transform: translateY(-2px);
-}
-
-.more-info-btn .arrow {
-  font-size: 16px;
-  transition: transform 0.3s ease;
-}
-
-.more-info-btn:hover .arrow {
-  transform: translateX(3px);
-}
-
-/* 世博会介绍区域样式 */
-.expo-intro-section {
-  max-width: 1300px;
-  margin: 80px auto 40px;
-  padding: 0 100px;
-}
-
-.expo-intro-container {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-}
-
-.expo-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
-
-.expo-bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
-}
-
-.expo-text-area {
-  position: relative;
-  z-index: 2;
-  padding: 60px;
-  color: white;
-  max-width: 600px;
-}
-
-.expo-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 0 0 20px 0;
-  line-height: 1.2;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.expo-subtitle {
-  font-size: 1.2rem;
-  margin: 0 0 40px 0;
-  line-height: 1.5;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.explore-btn {
-  background: #4A90E2;
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
 }
 
 .explore-btn:hover {
-  background: #357ABD;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+  background-color: #357abd;
 }
 
-.explore-btn .arrow {
-  font-size: 18px;
-  transition: transform 0.3s ease;
+/* 博览会区域样式 */
+.expo-section {
+  padding: 2rem;
+  background-color: white;
 }
 
-.explore-btn:hover .arrow {
-  transform: translateX(3px);
+.section-content {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* 世博全球青年联盟介绍区域样式 */
+.expo-content {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.expo-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.expo-info-btn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.expo-info-btn:hover {
+  background-color: #1565c0;
+}
+
+.expo-image {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.expo-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* 联盟区域样式 */
 .alliance-section {
-  max-width: 1200px;
-  margin: 80px auto 60px;
-  padding: 0 120px;
+  padding: 2rem 12rem;
+  background-color: white;
 }
 
 .alliance-content {
+  max-width: 800px;
+  margin: 0 auto;
   text-align: left;
 }
 
-.alliance-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #0e82e8;
-  margin: 0 0 40px 0;
-  line-height: 1.2;
-  letter-spacing: 1px;
+.alliance-content .section-title {
+  color: #1976d2;
+  text-align: left;
+  font-size: 1.9rem;
 }
 
 .alliance-description {
-  line-height: 1.8;
-}
-
-.alliance-text {
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
   color: #333;
-  margin-bottom: 25px;
-  text-align: justify;
-  letter-spacing: 0.5px;
+  text-align: left;
 }
 
-.alliance-text:last-child {
-  margin-bottom: 0;
-}
-
-/* 相关数据区域样式 */
+/* 数据区域样式 */
 .data-section {
-  max-width: 1200px;
-  margin: 80px auto 60px;
-  padding: 0 120px;
+  padding: 2rem 12rem;
+  background-color: white;
 }
 
 .data-content {
+  max-width: 800px;
+  margin: 0 auto;
   text-align: left;
 }
 
 .data-title {
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   font-weight: bold;
-  color: #0e82e8;
-  margin: 0 0 40px 0;
-  line-height: 1.2;
-  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  color: #1976d2;
+  text-align: left;
 }
 
 .data-image {
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .data-img {
-  width: 100%;
+  width: 600px;
+  max-width: 100%;
   height: auto;
-  object-fit: cover;
-  display: block;
-  border-radius: 20px;
+  border-radius: 8px;
 }
 
 /* 加入我们区域样式 */
 .join-us-section {
-  max-width: 1200px;
-  margin: 80px auto 60px;
-  padding: 0 120px;
+  padding: 2rem 12rem;
+  background-color: white;
 }
 
 .join-us-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.join-us-main {
   display: flex;
   align-items: center;
-  gap: 60px;
+  gap: 4rem;
 }
 
 .join-us-text {
@@ -452,327 +499,124 @@ const goToJoinUs = () => {
 }
 
 .join-us-title {
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   font-weight: bold;
-  color: #0e82e8;
-  margin: 0 0 30px 0;
-  line-height: 1.2;
-  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  color: #1976d2;
+  text-align: left;
 }
 
 .join-us-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 40px 0;
+  margin-bottom: 2rem;
 }
 
 .join-us-item {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #333;
-  margin-bottom: 15px;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
   position: relative;
-  padding-left: 20px;
-  letter-spacing: 0.5px;
+  color: #333;
 }
 
-.join-us-item:before {
+.join-us-item::before {
   content: '•';
-  color: #0e82e8;
-  font-size: 20px;
   position: absolute;
   left: 0;
-  top: -2px;
-}
-
-.join-us-item:last-child {
-  margin-bottom: 0;
+  color: #1976d2;
 }
 
 .join-info-btn {
-  background: #0e82e8;
+  background-color: #1976d2;
   color: white;
   border: none;
-  padding: 15px 30px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(14, 130, 232, 0.3);
+  font-size: 1rem;
 }
 
 .join-info-btn:hover {
-  background: #0d74d1;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(14, 130, 232, 0.4);
-}
-
-.join-info-btn .arrow {
-  font-size: 18px;
-  transition: transform 0.3s ease;
-}
-
-.join-info-btn:hover .arrow {
-  transform: translateX(3px);
+  background-color: #1565c0;
 }
 
 .join-us-image {
-  flex: 0 0 400px;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .join-us-img {
-  width: 100%;
-  height: 300px;
+  width: 300px;
+  height: 200px;
   object-fit: cover;
-  display: block;
-  border-radius: 20px;
+  border-radius: 8px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .hero-content {
-    flex-direction: column;
-    gap: 15px;
+
+  .hero-section,
+  .expo-section {
+    padding: 1rem;
   }
 
-  .main-title {
-    font-size: 2.4rem;
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-  }
-
-  .image-section {
-    padding: 0 40px;
-  }
-
-  .sdgs-section {
-    padding: 0 60px;
-    margin: 40px auto 0;
-  }
-
-  .sdgs-content {
-    flex-direction: column;
-    gap: 30px;
-  }
-
-  .sdgs-logo {
-    flex: none;
-  }
-
-  .sdgs-title {
-    font-size: 3rem;
-  }
-
-  .sdgs-description {
-    font-size: 15px;
-  }
-
-  .expo-intro-section {
-    padding: 0 50px;
-    margin: 60px auto 30px;
-  }
-
-  .expo-text-area {
-    padding: 40px;
-  }
-
-  .expo-title {
-    font-size: 2rem;
-  }
-
-  .expo-subtitle {
-    font-size: 1.1rem;
-    margin: 0 0 30px 0;
-  }
-
-  .explore-btn {
-    font-size: 15px;
-    padding: 12px 25px;
-  }
-
-  .alliance-section {
-    padding: 0 60px;
-    margin: 60px auto 40px;
-  }
-
-  .alliance-title {
-    font-size: 2rem;
-    margin: 0 0 30px 0;
-  }
-
-  .alliance-text {
-    font-size: 15px;
-    margin-bottom: 20px;
-  }
-
-  .data-section {
-    padding: 0 60px;
-    margin: 60px auto 40px;
-  }
-
-  .data-title {
-    font-size: 2rem;
-    margin: 0 0 30px 0;
-  }
-
+  .sdgs-section,
+  .explore-section,
+  .alliance-section,
+  .data-section,
   .join-us-section {
-    padding: 0 60px;
-    margin: 60px auto 40px;
+    padding: 1rem 2rem;
   }
 
-  .join-us-content {
+  .hero-titles-row {
     flex-direction: column;
-    gap: 40px;
+    gap: 2rem;
   }
 
-  .join-us-title {
-    font-size: 2rem;
-    margin: 0 0 25px 0;
-  }
-
-  .join-us-item {
-    font-size: 15px;
-    margin-bottom: 12px;
-  }
-
-  .join-info-btn {
-    font-size: 15px;
-    padding: 12px 25px;
-  }
-
-  .join-us-image {
-    flex: none;
+  .hero-img {
     width: 100%;
   }
 
-  .join-us-img {
-    height: 250px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-title {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .hero-section {
-    padding: 15px 15px;
-  }
-
-  .image-section {
-    padding: 0 25px;
-  }
-
-  .sdgs-section {
-    padding: 0 40px;
-    margin: 30px auto 0;
-  }
-
   .sdgs-content {
-    gap: 20px;
+    flex-direction: column;
+    gap: 2rem;
   }
 
-  .sdgs-title {
-    font-size: 2.5rem;
-    margin: 0 0 20px 0;
+  .explore-card {
+    min-height: 250px;
+    padding: 2rem;
   }
 
-  .sdgs-description {
-    font-size: 14px;
-  }
-
-  .more-info-btn {
-    font-size: 13px;
-    padding: 10px 20px;
-  }
-
-  .expo-intro-section {
-    padding: 0 40px;
-    margin: 40px auto 20px;
-  }
-
-  .expo-intro-container {
-    min-height: 300px;
-  }
-
-  .expo-text-area {
-    padding: 30px;
-  }
-
-  .expo-title {
-    font-size: 1.8rem;
-  }
-
-  .expo-subtitle {
-    font-size: 1rem;
-    margin: 0 0 25px 0;
-  }
-
-  .explore-btn {
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-
-  .alliance-section {
-    padding: 0 40px;
-    margin: 40px auto 30px;
-  }
-
-  .alliance-title {
-    font-size: 1.8rem;
-    margin: 0 0 25px 0;
-  }
-
-  .alliance-text {
-    font-size: 14px;
-    margin-bottom: 18px;
-  }
-
-  .data-section {
-    padding: 0 40px;
-    margin: 40px auto 30px;
-  }
-
-  .data-title {
-    font-size: 1.8rem;
-    margin: 0 0 25px 0;
-  }
-
-  .join-us-section {
-    padding: 0 20px;
-    margin: 40px auto 30px;
-  }
-
-  .join-us-title {
+  .explore-title {
     font-size: 1.5rem;
-    margin: 0 0 20px 0;
   }
 
-  .join-us-item {
-    font-size: 14px;
-    margin-bottom: 10px;
+  .explore-subtitle {
+    font-size: 1rem;
   }
 
-  .join-info-btn {
-    font-size: 14px;
-    padding: 10px 20px;
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .data-img {
+    width: 100%;
+  }
+
+  .join-us-main {
+    flex-direction: column;
+    gap: 2rem;
   }
 
   .join-us-img {
-    height: 200px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
   }
 }
 </style>
