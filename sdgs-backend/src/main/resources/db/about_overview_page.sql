@@ -27,15 +27,20 @@ CREATE TABLE `about_overview_page` (
                                        `intro_html`       TEXT                      COMMENT '引言段 HTML（图①下方两段文字）',
 
     /* === 三大优势 (图②上三卡片) === */
-                                       `advantages_json`  JSON                      COMMENT '“三大优势” 数组 [ { image,title,desc }, ... ]',
+                                       `advantages_title` VARCHAR(128)              COMMENT '三大优势区域标题',
+                                       `advantages_json`  JSON                      COMMENT '"三大优势" 数组 [ { image,title,desc }, ... ]',
 
     /* === 四色统计卡 (图②下四块) === */
-                                       `stats_json`       JSON                      COMMENT '“覆盖国家 / 媒体覆盖 …” 4 色块数组',
+                                       `stats_title`      VARCHAR(128)              COMMENT '四色统计卡区域标题',
+                                       `stats_json`       JSON                      COMMENT '"覆盖国家 / 媒体覆盖 …" 4 色块数组',
 
     /* === Logo 列表 === */
-                                       `media_json`       JSON                      COMMENT '“部分平台及媒体资源” logo 数组',
-                                       `special_json`     JSON                      COMMENT '“特别合作伙伴” logo 数组',
-                                       `partner_json`     JSON                      COMMENT '“合作伙伴” logo 数组',
+                                       `media_title`      VARCHAR(128)              COMMENT '部分平台及媒体资源标题',
+                                       `media_json`       JSON                      COMMENT '"部分平台及媒体资源" logo 数组',
+                                       `special_title`    VARCHAR(128)              COMMENT '特别合作伙伴标题',
+                                       `special_json`     JSON                      COMMENT '"特别合作伙伴" logo 数组',
+                                       `partner_title`    VARCHAR(128)              COMMENT '合作伙伴标题',
+                                       `partner_json`     JSON                      COMMENT '"合作伙伴" logo 数组',
 
     /* === 通用字段 === */
                                        `status`           TINYINT       NOT NULL DEFAULT 1 COMMENT '1=已发布 0=草稿',
@@ -49,15 +54,12 @@ CREATE TABLE `about_overview_page` (
     COMMENT = '关于我们页面（单表维护所有模块）';
 
 /* ————————————————————————————————
-   2. 演示：插入一行中文草稿（可删）
-   ———————————————————————————————— */
-/* ————————————————————————————————
    2. 演示：插入一行中文（已补全 URL）
    ———————————————————————————————— */
 INSERT INTO `about_overview_page`
 (`locale`, `header_title`, `header_tags`, `hero_btn_text`, `hero_btn_link`, `hero_img`,
- `intro_html`, `advantages_json`, `stats_json`,
- `media_json`, `special_json`, `partner_json`, `status`)
+ `intro_html`, `advantages_title`, `advantages_json`, `stats_title`, `stats_json`,
+ `media_title`, `media_json`, `special_title`, `special_json`, `partner_title`, `partner_json`, `status`)
 VALUES
     (
         'zh-CN',
@@ -69,6 +71,7 @@ VALUES
 
         '世博全球青年联盟（World Expo Global Young Alliance）在迪拜世博会期间，由世博全球青年SDGs峰会组委会与SDGsVision 2050发起，在迪拜世博会中华文化馆与中华文化促进会支持下成立，为激发全球青年为实现可持续发展目标SDGs（也称为全球目标和2030年议程）作出贡献的行动。/n世博全球青年联盟将连接全球的创意机构和人才，汇聚全球产业界、政界、学界、商界力量着力落实《联合国2030年可持续发展议程》，促进社会进步、环境保护、经济建设可持续发展。',
 
+        '三大优势',
         /* 三大优势 */
         JSON_ARRAY(
                 JSON_OBJECT(
@@ -88,6 +91,7 @@ VALUES
                 )
         ),
 
+        '数据统计',
         /* 统计四宫格 */
         JSON_ARRAY(
                 JSON_OBJECT('color','#4A9AD4','title','覆盖国家','desc','192 个国家<br>2500 万人次'),
@@ -96,9 +100,12 @@ VALUES
                 JSON_OBJECT('color','#B15054','title','海内外志愿者','desc','83 位海内外志愿者团队')
         ),
 
+        '部分平台及媒体资源',
         /* logo 示例（同一张图演示，按需替换/扩展） */
         JSON_ARRAY('https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/11/5c42ef566a4e449a92ccb5a42f1e7952.png'),
+        '特别合作伙伴',
         JSON_ARRAY('https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/11/5c42ef566a4e449a92ccb5a42f1e7952.png'),
+        '合作伙伴',
         JSON_ARRAY('https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/11/5c42ef566a4e449a92ccb5a42f1e7952.png'),
 
         1   -- 已发布

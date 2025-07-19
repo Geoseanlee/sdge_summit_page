@@ -33,18 +33,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="按钮文字" prop="heroBtnText">
-              <el-input v-model="formData.heroBtnText" placeholder="如：更多" disabled />
-              <div class="field-tip">此字段不可编辑，固定为"更多"</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="按钮链接" prop="heroBtnLink">
-              <el-input v-model="formData.heroBtnLink" placeholder="固定链接" disabled />
-              <div class="field-tip">此字段不可编辑，固定为 http://localhost:5174/about/more</div>
-            </el-form-item>
-          </el-col>
+
           <el-col :span="24">
             <el-form-item label="Hero图片" prop="heroImg">
               <div class="image-upload-container">
@@ -68,11 +57,6 @@
                   style="width: 200px; height: 120px;"
                   fit="cover"
                 />
-                <div class="image-actions">
-                  <el-button type="danger" size="small" @click="removeImage('heroImg')">
-                    删除图片
-                  </el-button>
-                </div>
               </div>
             </el-form-item>
           </el-col>
@@ -95,6 +79,9 @@
       <!-- 三大优势 -->
       <div class="form-section card">
         <h2>三大优势</h2>
+        <el-form-item label="区域标题">
+          <el-input v-model="formData.advantagesTitle" placeholder="如：三大优势" />
+        </el-form-item>
         <div v-for="(advantage, index) in advantages" :key="index" class="advantage-item">
           <div class="advantage-header">
             <h3>优势 {{ index + 1 }}</h3>
@@ -126,11 +113,6 @@
                     style="width: 200px; height: 120px;"
                     fit="cover"
                   />
-                  <div class="image-actions">
-                    <el-button type="danger" size="small" @click="removeImage(`advantage-${index}`)">
-                      删除图片
-                    </el-button>
-                  </div>
                 </div>
               </el-form-item>
             </el-col>
@@ -158,7 +140,6 @@
 
       <!-- 四色统计卡 -->
       <div class="form-section card">
-        <h2>四色统计卡</h2>
         <div v-for="(stat, index) in stats" :key="index" class="stat-item">
           <div class="stat-header">
             <h3>统计卡 {{ index + 1 }}</h3>
@@ -167,31 +148,34 @@
             </el-button>
           </div>
           <el-row :gutter="20">
-            <el-col :span="6">
-              <el-form-item :label="`统计卡${index + 1}颜色`">
-                <el-color-picker v-model="stat.color" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="18">
-              <el-form-item :label="`统计卡${index + 1}标题`">
+            <el-col :span="12">
+              <el-form-item :label="`标题`" :prop="`stats.${index}.title`">
                 <el-input v-model="stat.title" placeholder="如：覆盖国家" />
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item :label="`颜色`" :prop="`stats.${index}.color`">
+                <el-select v-model="stat.color" placeholder="选择颜色">
+                  <el-option label="蓝色" value="#1890ff" />
+                  <el-option label="橙色" value="#fa8c16" />
+                  <el-option label="绿色" value="#52c41a" />
+                  <el-option label="红色" value="#f5222d" />
+                </el-select>
+              </el-form-item>
+            </el-col>
             <el-col :span="24">
-              <el-form-item :label="`统计卡${index + 1}描述`">
+              <el-form-item :label="`描述`" :prop="`stats.${index}.desc`">
                 <el-input
                   v-model="stat.desc"
                   type="textarea"
-                  :rows="2"
-                  placeholder="如：192 个国家<br>2500 万人次"
+                  :rows="3"
+                  placeholder="如：192 个国家，2500 万人次"
                 />
               </el-form-item>
             </el-col>
           </el-row>
         </div>
-        <el-button type="primary" @click="addStat" :disabled="stats.length >= 6">
-          添加统计卡
-        </el-button>
+        <el-button type="primary" @click="addStat">添加统计卡</el-button>
       </div>
 
       <!-- Logo列表 -->
@@ -201,7 +185,7 @@
         <!-- 部分平台及媒体资源 -->
         <div class="logo-section">
           <el-form-item label="区域标题">
-            <el-input v-model="logoSectionTitles.media" placeholder="如：部分平台及媒体资源" />
+            <el-input v-model="formData.mediaTitle" placeholder="如：部分平台及媒体资源" />
           </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in mediaLogos" :key="index" class="logo-item">
@@ -228,12 +212,13 @@
               </div>
             </div>
           </div>
+          <el-button type="primary" @click="addLogo('media')">添加Logo</el-button>
         </div>
 
         <!-- 特别合作伙伴 -->
         <div class="logo-section">
           <el-form-item label="区域标题">
-            <el-input v-model="logoSectionTitles.special" placeholder="如：特别合作伙伴" />
+            <el-input v-model="formData.specialTitle" placeholder="如：特别合作伙伴" />
           </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in specialLogos" :key="index" class="logo-item">
@@ -260,12 +245,13 @@
               </div>
             </div>
           </div>
+          <el-button type="primary" @click="addLogo('special')">添加Logo</el-button>
         </div>
 
         <!-- 合作伙伴 -->
         <div class="logo-section">
           <el-form-item label="区域标题">
-            <el-input v-model="logoSectionTitles.partner" placeholder="如：合作伙伴" />
+            <el-input v-model="formData.partnerTitle" placeholder="如：合作伙伴" />
           </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in partnerLogos" :key="index" class="logo-item">
@@ -292,6 +278,7 @@
               </div>
             </div>
           </div>
+          <el-button type="primary" @click="addLogo('partner')">添加Logo</el-button>
         </div>
       </div>
 
@@ -322,23 +309,31 @@ const formData = reactive({
   headerTitle: '',
   headerTags: '',
   heroBtnText: '更多', // 固定值
-  heroBtnLink: 'http://localhost:5174/about/more', // 固定值
+  heroBtnLink: '/about/more', // 固定值
   heroImg: '',
   introHtml: '',
+  advantagesTitle: '三大优势', // 新增
   advantagesJson: '',
+  statsTitle: '数据统计', // 新增
   statsJson: '',
+  mediaTitle: '部分平台及媒体资源', // 新增
   mediaJson: '',
+  specialTitle: '特别合作伙伴', // 新增
   specialJson: '',
+  partnerTitle: '合作伙伴', // 新增
   partnerJson: '',
   status: 1
 })
 
 // Logo区域标题
-const logoSectionTitles = reactive({
-  media: '部分平台及媒体资源',
-  special: '特别合作伙伴',
-  partner: '合作伙伴'
-})
+// const logoSectionTitles = reactive({
+//   media: '部分平台及媒体资源',
+//   special: '特别合作伙伴',
+//   partner: '合作伙伴'
+// })
+
+// 三大优势标题
+// const advantagesTitle = ref('三大优势')
 
 // 表单验证规则
 const rules = {
@@ -398,7 +393,14 @@ const loadData = async () => {
 
       // 强制设置固定值，不允许用户修改
       formData.heroBtnText = '更多'
-      formData.heroBtnLink = 'http://localhost:5174/about/more'
+      formData.heroBtnLink = '/about/more' // 修改为内部路由路径
+
+      // 设置默认标题（如果数据库中没有值）
+      if (!formData.advantagesTitle) formData.advantagesTitle = '三大优势'
+      if (!formData.statsTitle) formData.statsTitle = '数据统计'
+      if (!formData.mediaTitle) formData.mediaTitle = '部分平台及媒体资源'
+      if (!formData.specialTitle) formData.specialTitle = '特别合作伙伴'
+      if (!formData.partnerTitle) formData.partnerTitle = '合作伙伴'
 
       // 保存原始图片URL
       originalImages.value.heroImg = data.heroImg || ''
@@ -586,29 +588,6 @@ const deleteOldLogo = async (type, index) => {
   }
 }
 
-// 删除图片
-const removeImage = async (field) => {
-  try {
-    let imageUrl = ''
-
-    if (field === 'heroImg') {
-      imageUrl = formData.heroImg
-      formData.heroImg = ''
-    } else if (field.startsWith('advantage-')) {
-      const index = parseInt(field.split('-')[1])
-      imageUrl = advantages.value[index].image
-      advantages.value[index].image = ''
-    }
-
-    if (imageUrl && imageUrl.startsWith('http')) {
-      await deleteImage(imageUrl)
-      ElMessage.success('图片删除成功')
-    }
-  } catch (error) {
-    ElMessage.error(`删除图片失败：${error.message || '网络错误'}`)
-  }
-}
-
 // 保存数据 - 使用完整的API路径
 const saveData = async () => {
   try {
@@ -618,7 +597,7 @@ const saveData = async () => {
 
     // 强制设置固定值，确保保存时也是正确的
     formData.heroBtnText = '更多'
-    formData.heroBtnLink = 'http://localhost:5174/about/more'
+    formData.heroBtnLink = '/about/more' // 修改为内部路由路径
 
     // 更新JSON字段
     formData.advantagesJson = advantagesJson.value
@@ -661,11 +640,9 @@ const addAdvantage = () => {
   originalImages.value.advantages.push('')
 }
 
+// 修改 removeAdvantage 函数，移除删除图片的逻辑
 const removeAdvantage = (index) => {
-  // 删除优势图片
-  if (advantages.value[index].image) {
-    removeImage(`advantage-${index}`)
-  }
+  // 不再删除优势图片，因为上传新图片时会自动删除旧图片
   advantages.value.splice(index, 1)
   originalImages.value.advantages.splice(index, 1)
 }
@@ -785,11 +762,6 @@ const removeLogo = async (type, index) => {
   border-radius: 6px;
   padding: 10px;
   background: #fafafa;
-}
-
-.image-actions {
-  margin-top: 10px;
-  text-align: center;
 }
 
 .advantage-item, .stat-item {
