@@ -55,7 +55,12 @@ export function updateHomeInfo(id, data) {
 export function uploadImage(file) {
   const formData = new FormData()
   formData.append('file', file)
-  return post('/api/file/upload/image', formData)
+  return request({
+    url: '/api/file/upload/image',
+    method: 'post',
+    data: formData,
+    timeout: 30000, // 增加超时时间到30秒
+  })
 }
 
 // 获取图片列表
