@@ -4,7 +4,7 @@ export function get(url, params) {
   return request({
     url,
     method: 'get',
-    params
+    params,
   })
 }
 
@@ -12,7 +12,7 @@ export function post(url, data) {
   return request({
     url,
     method: 'post',
-    data
+    data,
   })
 }
 
@@ -20,14 +20,14 @@ export function put(url, data) {
   return request({
     url,
     method: 'put',
-    data
+    data,
   })
 }
 
 export function del(url) {
   return request({
     url,
-    method: 'delete'
+    method: 'delete',
   })
 }
 
@@ -41,11 +41,26 @@ export function updateExpoInfo(id, data) {
   return put(`/api/expo/manage/${id}`, data)
 }
 
+// 获取最新的首页信息
+export function getHomeInfo() {
+  return get('/api/home/info')
+}
+
+// 更新首页信息
+export function updateHomeInfo(id, data) {
+  return put(`/api/home/manage/${id}`, data)
+}
+
 // 上传图片
 export function uploadImage(file) {
   const formData = new FormData()
   formData.append('file', file)
-  return post('/api/file/upload/image', formData)
+  return request({
+    url: '/api/file/upload/image',
+    method: 'post',
+    data: formData,
+    timeout: 30000, // 增加超时时间到30秒
+  })
 }
 
 // 获取图片列表
@@ -56,4 +71,4 @@ export function listImages(params) {
 // 删除图片
 export function deleteImage(fileUrl) {
   return del(`/api/file/delete?fileUrl=${encodeURIComponent(fileUrl)}`)
-} 
+}
