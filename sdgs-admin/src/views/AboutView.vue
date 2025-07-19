@@ -12,28 +12,7 @@
       label-width="120px"
       class="about-form"
     >
-      <!-- 基本信息 -->
-      <div class="form-section card">
-        <h2>基本信息</h2>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="语言" prop="locale">
-              <el-select v-model="formData.locale" placeholder="选择语言">
-                <el-option label="中文" value="zh-CN" />
-                <el-option label="English" value="en-US" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="formData.status">
-                <el-radio :label="1">已发布</el-radio>
-                <el-radio :label="0">草稿</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </div>
+
 
       <!-- Hero区域 -->
       <div class="form-section card">
@@ -56,26 +35,45 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="按钮文字" prop="heroBtnText">
-              <el-input v-model="formData.heroBtnText" placeholder="如：更多" />
+              <el-input v-model="formData.heroBtnText" placeholder="如：更多" disabled />
+              <div class="field-tip">此字段不可编辑，固定为"更多"</div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="按钮链接" prop="heroBtnLink">
-              <el-input v-model="formData.heroBtnLink" placeholder="如：# 或 https://..." />
+              <el-input v-model="formData.heroBtnLink" placeholder="固定链接" disabled />
+              <div class="field-tip">此字段不可编辑，固定为 http://localhost:5174/about/more</div>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="Hero图片" prop="heroImg">
               <div class="image-upload-container">
-                <el-input v-model="formData.heroImg" placeholder="请输入图片URL" />
-                <el-button type="primary" @click="selectImage('heroImg')">选择图片</el-button>
+                <el-upload
+                  ref="heroUploadRef"
+                  :show-file-list="false"
+                  :before-upload="beforeImageUpload"
+                  :http-request="(options) => handleImageUpload(options, 'heroImg')"
+                  accept="image/*"
+                  class="image-uploader"
+                >
+                  <div class="upload-trigger">
+                    <el-button type="primary">选择图片</el-button>
+                    <p class="upload-tip">支持 JPG、PNG、GIF 格式，最大10MB</p>
+                  </div>
+                </el-upload>
               </div>
-              <el-image
-                v-if="formData.heroImg"
-                :src="formData.heroImg"
-                style="width: 200px; height: 120px; margin-top: 10px;"
-                fit="cover"
-              />
+              <div v-if="formData.heroImg" class="image-preview">
+                <el-image
+                  :src="formData.heroImg"
+                  style="width: 200px; height: 120px;"
+                  fit="cover"
+                />
+                <div class="image-actions">
+                  <el-button type="danger" size="small" @click="removeImage('heroImg')">
+                    删除图片
+                  </el-button>
+                </div>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -108,15 +106,32 @@
             <el-col :span="24">
               <el-form-item :label="`优势${index + 1}图片`">
                 <div class="image-upload-container">
-                  <el-input v-model="advantage.image" placeholder="请输入图片URL" />
-                  <el-button type="primary" @click="selectImage(`advantage-${index}`)">选择图片</el-button>
+                  <el-upload
+                    :ref="`advantageUploadRef${index}`"
+                    :show-file-list="false"
+                    :before-upload="beforeImageUpload"
+                    :http-request="(options) => handleImageUpload(options, `advantage-${index}`)"
+                    accept="image/*"
+                    class="image-uploader"
+                  >
+                    <div class="upload-trigger">
+                      <el-button type="primary">选择图片</el-button>
+                      <p class="upload-tip">支持 JPG、PNG、GIF 格式，最大10MB</p>
+                    </div>
+                  </el-upload>
                 </div>
-                <el-image
-                  v-if="advantage.image"
-                  :src="advantage.image"
-                  style="width: 200px; height: 120px; margin-top: 10px;"
-                  fit="cover"
-                />
+                <div v-if="advantage.image" class="image-preview">
+                  <el-image
+                    :src="advantage.image"
+                    style="width: 200px; height: 120px;"
+                    fit="cover"
+                  />
+                  <div class="image-actions">
+                    <el-button type="danger" size="small" @click="removeImage(`advantage-${index}`)">
+                      删除图片
+                    </el-button>
+                  </div>
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -185,77 +200,120 @@
 
         <!-- 部分平台及媒体资源 -->
         <div class="logo-section">
-          <h3>部分平台及媒体资源</h3>
+          <el-form-item label="区域标题">
+            <el-input v-model="logoSectionTitles.media" placeholder="如：部分平台及媒体资源" />
+          </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in mediaLogos" :key="index" class="logo-item">
-              <el-input v-model="mediaLogos[index]" placeholder="请输入Logo URL" />
-              <el-button type="danger" @click="removeLogo('media', index)">删除</el-button>
+              <div class="logo-upload-container">
+                <el-upload
+                  :ref="`mediaLogoUploadRef${index}`"
+                  :show-file-list="false"
+                  :before-upload="beforeImageUpload"
+                  :http-request="(options) => handleLogoUpload(options, 'media', index)"
+                  accept="image/*"
+                  class="logo-uploader"
+                >
+                  <div class="logo-upload-trigger">
+                    <el-button type="primary" size="small">更换图片</el-button>
+                  </div>
+                </el-upload>
+              </div>
+              <div v-if="mediaLogos[index]" class="logo-preview">
+                <el-image
+                  :src="mediaLogos[index]"
+                  style="width: 80px; height: 60px;"
+                  fit="contain"
+                />
+              </div>
             </div>
           </div>
-          <el-button type="primary" @click="addLogo('media')">添加Logo</el-button>
         </div>
 
         <!-- 特别合作伙伴 -->
         <div class="logo-section">
-          <h3>特别合作伙伴</h3>
+          <el-form-item label="区域标题">
+            <el-input v-model="logoSectionTitles.special" placeholder="如：特别合作伙伴" />
+          </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in specialLogos" :key="index" class="logo-item">
-              <el-input v-model="specialLogos[index]" placeholder="请输入Logo URL" />
-              <el-button type="danger" @click="removeLogo('special', index)">删除</el-button>
+              <div class="logo-upload-container">
+                <el-upload
+                  :ref="`specialLogoUploadRef${index}`"
+                  :show-file-list="false"
+                  :before-upload="beforeImageUpload"
+                  :http-request="(options) => handleLogoUpload(options, 'special', index)"
+                  accept="image/*"
+                  class="logo-uploader"
+                >
+                  <div class="logo-upload-trigger">
+                    <el-button type="primary" size="small">更换图片</el-button>
+                  </div>
+                </el-upload>
+              </div>
+              <div v-if="specialLogos[index]" class="logo-preview">
+                <el-image
+                  :src="specialLogos[index]"
+                  style="width: 80px; height: 60px;"
+                  fit="contain"
+                />
+              </div>
             </div>
           </div>
-          <el-button type="primary" @click="addLogo('special')">添加Logo</el-button>
         </div>
 
         <!-- 合作伙伴 -->
         <div class="logo-section">
-          <h3>合作伙伴</h3>
+          <el-form-item label="区域标题">
+            <el-input v-model="logoSectionTitles.partner" placeholder="如：合作伙伴" />
+          </el-form-item>
           <div class="logo-list">
             <div v-for="(logo, index) in partnerLogos" :key="index" class="logo-item">
-              <el-input v-model="partnerLogos[index]" placeholder="请输入Logo URL" />
-              <el-button type="danger" @click="removeLogo('partner', index)">删除</el-button>
+              <div class="logo-upload-container">
+                <el-upload
+                  :ref="`partnerLogoUploadRef${index}`"
+                  :show-file-list="false"
+                  :before-upload="beforeImageUpload"
+                  :http-request="(options) => handleLogoUpload(options, 'partner', index)"
+                  accept="image/*"
+                  class="logo-uploader"
+                >
+                  <div class="logo-upload-trigger">
+                    <el-button type="primary" size="small">更换图片</el-button>
+                  </div>
+                </el-upload>
+              </div>
+              <div v-if="partnerLogos[index]" class="logo-preview">
+                <el-image
+                  :src="partnerLogos[index]"
+                  style="width: 80px; height: 60px;"
+                  fit="contain"
+                />
+              </div>
             </div>
           </div>
-          <el-button type="primary" @click="addLogo('partner')">添加Logo</el-button>
         </div>
       </div>
+
 
       <!-- 操作按钮 -->
       <div class="form-actions">
         <el-button type="primary" @click="saveData" :loading="saving">保存</el-button>
         <el-button @click="loadData">重新加载</el-button>
-        <el-button @click="previewData">预览</el-button>
       </div>
     </el-form>
-
-    <!-- 图片选择对话框 -->
-    <el-dialog v-model="imageDialogVisible" title="选择图片" width="80%">
-      <div class="image-selector">
-        <div class="image-grid">
-          <div
-            v-for="image in imageList"
-            :key="image.fileUrl"
-            class="image-select-item"
-            @click="selectImageFromList(image.fileUrl)"
-          >
-            <el-image :src="image.fileUrl" fit="cover" />
-          </div>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { ElMessage} from 'element-plus'
-import { get, put, listImages } from '@/api'
+import { ElMessage } from 'element-plus'
+import { get, put, uploadImage, deleteImage } from '@/api'
+import request from '@/utils/request'
 
 const formRef = ref(null)
 const saving = ref(false)
-const imageDialogVisible = ref(false)
-const imageList = ref([])
-const currentImageField = ref('')
+const heroUploadRef = ref(null)
 
 // 表单数据
 const formData = reactive({
@@ -263,8 +321,8 @@ const formData = reactive({
   locale: 'zh-CN',
   headerTitle: '',
   headerTags: '',
-  heroBtnText: '',
-  heroBtnLink: '',
+  heroBtnText: '更多', // 固定值
+  heroBtnLink: 'http://localhost:5174/about/more', // 固定值
   heroImg: '',
   introHtml: '',
   advantagesJson: '',
@@ -273,6 +331,13 @@ const formData = reactive({
   specialJson: '',
   partnerJson: '',
   status: 1
+})
+
+// Logo区域标题
+const logoSectionTitles = reactive({
+  media: '部分平台及媒体资源',
+  special: '特别合作伙伴',
+  partner: '合作伙伴'
 })
 
 // 表单验证规则
@@ -297,6 +362,15 @@ const mediaLogos = ref([''])
 const specialLogos = ref([''])
 const partnerLogos = ref([''])
 
+// 存储原始图片URL，用于删除旧图片
+const originalImages = ref({
+  heroImg: '',
+  advantages: [],
+  mediaLogos: [],
+  specialLogos: [],
+  partnerLogos: []
+})
+
 // 计算属性：将数据转换为JSON字符串
 const advantagesJson = computed(() => JSON.stringify(advantages.value))
 const statsJson = computed(() => JSON.stringify(stats.value))
@@ -306,30 +380,45 @@ const partnerJson = computed(() => JSON.stringify(partnerLogos.value.filter(logo
 
 onMounted(() => {
   loadData()
-  loadImageList()
 })
 
-// 加载数据
+// 加载数据 - 使用完整的API路径
 const loadData = async () => {
   try {
-    const res = await get('/api/public/about-overview', { locale: formData.locale })
+    // 使用完整的API路径，让Vite代理处理
+    const res = await request({
+      url: '/api/public/about-overview',
+      method: 'get',
+      params: { locale: formData.locale }
+    })
+
     if (res.code === 200 && res.data) {
       const data = res.data
       Object.assign(formData, data)
+
+      // 强制设置固定值，不允许用户修改
+      formData.heroBtnText = '更多'
+      formData.heroBtnLink = 'http://localhost:5174/about/more'
+
+      // 保存原始图片URL
+      originalImages.value.heroImg = data.heroImg || ''
 
       // 解析JSON数据
       if (data.advantagesJson) {
         try {
           advantages.value = JSON.parse(data.advantagesJson)
+          // 保存原始优势图片URL
+          originalImages.value.advantages = advantages.value.map(item => item.image || '')
         } catch {
           advantages.value = [{ image: '', title: '', desc: '' }]
+          originalImages.value.advantages = ['']
         }
       }
 
       if (data.statsJson) {
         try {
           stats.value = JSON.parse(data.statsJson)
-        } catch  {
+        } catch {
           stats.value = [{ color: '#4A9AD4', title: '', desc: '' }]
         }
       }
@@ -337,24 +426,30 @@ const loadData = async () => {
       if (data.mediaJson) {
         try {
           mediaLogos.value = JSON.parse(data.mediaJson)
-        } catch  {
+          originalImages.value.mediaLogos = [...mediaLogos.value]
+        } catch {
           mediaLogos.value = ['']
+          originalImages.value.mediaLogos = ['']
         }
       }
 
       if (data.specialJson) {
         try {
           specialLogos.value = JSON.parse(data.specialJson)
-        } catch  {
+          originalImages.value.specialLogos = [...specialLogos.value]
+        } catch {
           specialLogos.value = ['']
+          originalImages.value.specialLogos = ['']
         }
       }
 
       if (data.partnerJson) {
         try {
           partnerLogos.value = JSON.parse(data.partnerJson)
-        } catch  {
+          originalImages.value.partnerLogos = [...partnerLogos.value]
+        } catch {
           partnerLogos.value = ['']
+          originalImages.value.partnerLogos = ['']
         }
       }
 
@@ -367,12 +462,163 @@ const loadData = async () => {
   }
 }
 
-// 保存数据
+// 图片上传前的验证
+const beforeImageUpload = (file) => {
+  const isImage = file.type.startsWith('image/')
+  const isLt10M = file.size / 1024 / 1024 < 10
+
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件!')
+    return false
+  }
+  if (!isLt10M) {
+    ElMessage.error('图片大小不能超过 10MB!')
+    return false
+  }
+  return true
+}
+
+// 处理图片上传 - 使用完整的API路径
+const handleImageUpload = async (options, field) => {
+  try {
+    const res = await uploadImage(options.file)
+    if (res.code === 200) {
+      // 从阿里云OSS响应中获取文件URL
+      const newImageUrl = res.data.fileUrl
+
+      // 删除旧图片
+      await deleteOldImage(field)
+
+      // 更新图片URL
+      if (field === 'heroImg') {
+        formData.heroImg = newImageUrl
+      } else if (field.startsWith('advantage-')) {
+        const index = parseInt(field.split('-')[1])
+        advantages.value[index].image = newImageUrl
+      }
+
+      ElMessage.success('图片上传成功')
+    } else {
+      ElMessage.error(`上传失败：${res.message}`)
+    }
+  } catch (error) {
+    ElMessage.error(`上传失败：${error.message || '网络错误'}`)
+  }
+}
+
+// 处理Logo上传 - 使用完整的API路径
+const handleLogoUpload = async (options, type, index) => {
+  try {
+    const res = await uploadImage(options.file)
+    if (res.code === 200) {
+      // 从阿里云OSS响应中获取文件URL
+      const newImageUrl = res.data.fileUrl
+
+      // 删除旧Logo
+      await deleteOldLogo(type, index)
+
+      // 更新Logo URL
+      switch (type) {
+        case 'media':
+          mediaLogos.value[index] = newImageUrl
+          break
+        case 'special':
+          specialLogos.value[index] = newImageUrl
+          break
+        case 'partner':
+          partnerLogos.value[index] = newImageUrl
+          break
+      }
+
+      ElMessage.success('Logo上传成功')
+    } else {
+      ElMessage.error(`上传失败：${res.message}`)
+    }
+  } catch (error) {
+    ElMessage.error(`上传失败：${error.message || '网络错误'}`)
+  }
+}
+
+// 删除旧图片
+const deleteOldImage = async (field) => {
+  try {
+    let oldImageUrl = ''
+
+    if (field === 'heroImg') {
+      oldImageUrl = originalImages.value.heroImg
+    } else if (field.startsWith('advantage-')) {
+      const index = parseInt(field.split('-')[1])
+      oldImageUrl = originalImages.value.advantages[index] || ''
+    }
+
+    if (oldImageUrl && oldImageUrl.startsWith('http')) {
+      await deleteImage(oldImageUrl)
+      console.log('旧图片删除成功:', oldImageUrl)
+    }
+  } catch (error) {
+    console.error('删除旧图片失败:', error)
+  }
+}
+
+// 删除旧Logo
+const deleteOldLogo = async (type, index) => {
+  try {
+    let oldLogoUrl = ''
+
+    switch (type) {
+      case 'media':
+        oldLogoUrl = originalImages.value.mediaLogos[index] || ''
+        break
+      case 'special':
+        oldLogoUrl = originalImages.value.specialLogos[index] || ''
+        break
+      case 'partner':
+        oldLogoUrl = originalImages.value.partnerLogos[index] || ''
+        break
+    }
+
+    if (oldLogoUrl && oldLogoUrl.startsWith('http')) {
+      await deleteImage(oldLogoUrl)
+      console.log('旧Logo删除成功:', oldLogoUrl)
+    }
+  } catch (error) {
+    console.error('删除旧Logo失败:', error)
+  }
+}
+
+// 删除图片
+const removeImage = async (field) => {
+  try {
+    let imageUrl = ''
+
+    if (field === 'heroImg') {
+      imageUrl = formData.heroImg
+      formData.heroImg = ''
+    } else if (field.startsWith('advantage-')) {
+      const index = parseInt(field.split('-')[1])
+      imageUrl = advantages.value[index].image
+      advantages.value[index].image = ''
+    }
+
+    if (imageUrl && imageUrl.startsWith('http')) {
+      await deleteImage(imageUrl)
+      ElMessage.success('图片删除成功')
+    }
+  } catch (error) {
+    ElMessage.error(`删除图片失败：${error.message || '网络错误'}`)
+  }
+}
+
+// 保存数据 - 使用完整的API路径
 const saveData = async () => {
   try {
     await formRef.value.validate()
 
     saving.value = true
+
+    // 强制设置固定值，确保保存时也是正确的
+    formData.heroBtnText = '更多'
+    formData.heroBtnLink = 'http://localhost:5174/about/more'
 
     // 更新JSON字段
     formData.advantagesJson = advantagesJson.value
@@ -381,9 +627,21 @@ const saveData = async () => {
     formData.specialJson = specialJson.value
     formData.partnerJson = partnerJson.value
 
-    const res = await put(`/api/admin/about-overview/${formData.id || 1}`, formData)
+    // 使用完整的API路径
+    const res = await request({
+      url: `/api/admin/about-overview/${formData.id || 1}`,
+      method: 'put',
+      data: formData
+    })
+
     if (res.code === 200) {
       ElMessage.success('保存成功')
+      // 更新原始图片URL
+      originalImages.value.heroImg = formData.heroImg
+      originalImages.value.advantages = advantages.value.map(item => item.image || '')
+      originalImages.value.mediaLogos = [...mediaLogos.value]
+      originalImages.value.specialLogos = [...specialLogos.value]
+      originalImages.value.partnerLogos = [...partnerLogos.value]
       loadData() // 重新加载数据
     } else {
       ElMessage.error(`保存失败：${res.message}`)
@@ -397,55 +655,19 @@ const saveData = async () => {
   }
 }
 
-// 预览数据
-const previewData = () => {
-  console.log('预览数据：', {
-    formData,
-    advantages: advantages.value,
-    stats: stats.value,
-    mediaLogos: mediaLogos.value,
-    specialLogos: specialLogos.value,
-    partnerLogos: partnerLogos.value
-  })
-  ElMessage.info('数据预览已输出到控制台')
-}
-
-// 加载图片列表
-const loadImageList = async () => {
-  try {
-    const res = await listImages({ maxKeys: 100 })
-    if (res.code === 200) {
-      imageList.value = res.data.files || []
-    }
-  } catch (error) {
-    console.error('加载图片列表失败：', error)
-  }
-}
-
-// 选择图片
-const selectImage = (field) => {
-  currentImageField.value = field
-  imageDialogVisible.value = true
-}
-
-// 从图片列表选择
-const selectImageFromList = (imageUrl) => {
-  if (currentImageField.value === 'heroImg') {
-    formData.heroImg = imageUrl
-  } else if (currentImageField.value.startsWith('advantage-')) {
-    const index = parseInt(currentImageField.value.split('-')[1])
-    advantages.value[index].image = imageUrl
-  }
-  imageDialogVisible.value = false
-}
-
 // 三大优势操作
 const addAdvantage = () => {
   advantages.value.push({ image: '', title: '', desc: '' })
+  originalImages.value.advantages.push('')
 }
 
 const removeAdvantage = (index) => {
+  // 删除优势图片
+  if (advantages.value[index].image) {
+    removeImage(`advantage-${index}`)
+  }
   advantages.value.splice(index, 1)
+  originalImages.value.advantages.splice(index, 1)
 }
 
 // 统计卡操作
@@ -462,27 +684,47 @@ const addLogo = (type) => {
   switch (type) {
     case 'media':
       mediaLogos.value.push('')
+      originalImages.value.mediaLogos.push('')
       break
     case 'special':
       specialLogos.value.push('')
+      originalImages.value.specialLogos.push('')
       break
     case 'partner':
       partnerLogos.value.push('')
+      originalImages.value.partnerLogos.push('')
       break
   }
 }
 
-const removeLogo = (type, index) => {
-  switch (type) {
-    case 'media':
-      mediaLogos.value.splice(index, 1)
-      break
-    case 'special':
-      specialLogos.value.splice(index, 1)
-      break
-    case 'partner':
-      partnerLogos.value.splice(index, 1)
-      break
+const removeLogo = async (type, index) => {
+  try {
+    let logoUrl = ''
+
+    switch (type) {
+      case 'media':
+        logoUrl = mediaLogos.value[index]
+        mediaLogos.value.splice(index, 1)
+        originalImages.value.mediaLogos.splice(index, 1)
+        break
+      case 'special':
+        logoUrl = specialLogos.value[index]
+        specialLogos.value.splice(index, 1)
+        originalImages.value.specialLogos.splice(index, 1)
+        break
+      case 'partner':
+        logoUrl = partnerLogos.value[index]
+        partnerLogos.value.splice(index, 1)
+        originalImages.value.partnerLogos.splice(index, 1)
+        break
+    }
+
+    if (logoUrl && logoUrl.startsWith('http')) {
+      await deleteImage(logoUrl)
+      ElMessage.success('Logo删除成功')
+    }
+  } catch (error) {
+    ElMessage.error(`删除Logo失败：${error.message || '网络错误'}`)
   }
 }
 </script>
@@ -520,9 +762,34 @@ const removeLogo = (type, index) => {
 }
 
 .image-upload-container {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+  margin-bottom: 15px;
+}
+
+.image-uploader {
+  display: inline-block;
+}
+
+.upload-trigger {
+  text-align: center;
+}
+
+.upload-tip {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 5px;
+}
+
+.image-preview {
+  margin-top: 15px;
+  border: 1px solid #e4e7ed;
+  border-radius: 6px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.image-actions {
+  margin-top: 10px;
+  text-align: center;
 }
 
 .advantage-item, .stat-item {
@@ -547,11 +814,10 @@ const removeLogo = (type, index) => {
 
 .logo-section {
   margin-bottom: 30px;
-}
-
-.logo-section h3 {
-  color: #606266;
-  margin-bottom: 15px;
+  border: 1px solid #e4e7ed;
+  border-radius: 6px;
+  padding: 20px;
+  background: #fafafa;
 }
 
 .logo-list {
@@ -562,7 +828,37 @@ const removeLogo = (type, index) => {
   display: flex;
   gap: 10px;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  background: white;
+}
+
+.logo-upload-container {
+  min-width: 100px;
+}
+
+.logo-uploader {
+  display: inline-block;
+}
+
+.logo-upload-trigger {
+  text-align: center;
+}
+
+.logo-preview {
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  padding: 5px;
+  background: white;
+}
+
+.field-tip {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .form-actions {
@@ -571,33 +867,5 @@ const removeLogo = (type, index) => {
   padding: 20px;
   background: #f5f7fa;
   border-radius: 8px;
-}
-
-.image-selector {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.image-select-item {
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: border-color 0.3s;
-}
-
-.image-select-item:hover {
-  border-color: #409eff;
-}
-
-.image-select-item .el-image {
-  width: 100%;
-  height: 100px;
 }
 </style>

@@ -64,7 +64,7 @@ VALUES
         '世博全球青年联盟',
         '中国品牌，走向世界,中国文化，世界传播,中国青年，世界风采',
         '更多',
-        '#',
+        'http://localhost:5174/about/more',
         'https://sdgs-images-shanghai.oss-cn-shanghai.aliyuncs.com/images/2025/07/11/eec122b17b3f475d9a9e042829ad69b2.jpg',
 
         '世博全球青年联盟（World Expo Global Young Alliance）在迪拜世博会期间，由世博全球青年SDGs峰会组委会与SDGsVision 2050发起，在迪拜世博会中华文化馆与中华文化促进会支持下成立，为激发全球青年为实现可持续发展目标SDGs（也称为全球目标和2030年议程）作出贡献的行动。/n世博全球青年联盟将连接全球的创意机构和人才，汇聚全球产业界、政界、学界、商界力量着力落实《联合国2030年可持续发展议程》，促进社会进步、环境保护、经济建设可持续发展。',
