@@ -210,6 +210,14 @@
                   fit="contain"
                 />
               </div>
+              <el-button
+                type="danger"
+                size="small"
+                @click="removeLogo('media', index)"
+                :disabled="mediaLogos.length <= 1"
+              >
+                删除
+              </el-button>
             </div>
           </div>
           <el-button type="primary" @click="addLogo('media')">添加Logo</el-button>
@@ -243,6 +251,14 @@
                   fit="contain"
                 />
               </div>
+              <el-button
+                type="danger"
+                size="small"
+                @click="removeLogo('special', index)"
+                :disabled="specialLogos.length <= 1"
+              >
+                删除
+              </el-button>
             </div>
           </div>
           <el-button type="primary" @click="addLogo('special')">添加Logo</el-button>
@@ -276,6 +292,14 @@
                   fit="contain"
                 />
               </div>
+              <el-button
+                type="danger"
+                size="small"
+                @click="removeLogo('partner', index)"
+                :disabled="partnerLogos.length <= 1"
+              >
+                删除
+              </el-button>
             </div>
           </div>
           <el-button type="primary" @click="addLogo('partner')">添加Logo</el-button>
@@ -640,11 +664,24 @@ const addAdvantage = () => {
   originalImages.value.advantages.push('')
 }
 
-// 修改 removeAdvantage 函数，移除删除图片的逻辑
-const removeAdvantage = (index) => {
-  // 不再删除优势图片，因为上传新图片时会自动删除旧图片
-  advantages.value.splice(index, 1)
-  originalImages.value.advantages.splice(index, 1)
+// 修改 removeAdvantage 函数，添加删除图片的逻辑
+const removeAdvantage = async (index) => {
+  try {
+    // 删除优势图片
+    const advantage = advantages.value[index]
+    if (advantage.image && advantage.image.startsWith('http')) {
+      await deleteImage(advantage.image)
+      console.log('优势图片删除成功:', advantage.image)
+    }
+
+    // 移除优势项
+    advantages.value.splice(index, 1)
+    originalImages.value.advantages.splice(index, 1)
+
+    ElMessage.success('优势删除成功')
+  } catch (error) {
+    ElMessage.error(`删除优势失败：${error.message || '网络错误'}`)
+  }
 }
 
 // 统计卡操作
