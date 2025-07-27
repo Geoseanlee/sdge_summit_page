@@ -34,7 +34,7 @@ public interface ExpoInfoMapper {
     /**
      * 根据ID查询世博会信息
      */
-    @Select("SELECT id, title, subtitle, description, image_url, create_time, update_time FROM expo_info WHERE id = #{id}")
+    @Select("SELECT id, title, subtitle, description, image_url, card_title, card_subtitle, card_description, card_image_url, section_title_1, section_image_url_1, section_title_2, section_image_url_2, section_title_3, section_image_url_3, create_time, update_time FROM expo_info WHERE id = #{id}")
     @ResultMap("expoInfoResultMap")
     ExpoInfo selectById(Long id);
     
