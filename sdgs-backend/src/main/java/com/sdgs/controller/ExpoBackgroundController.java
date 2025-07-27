@@ -28,4 +28,30 @@ public class ExpoBackgroundController {
             return Result.error(500, "获取失败: " + e.getMessage());
         }
     }
+
+    /**
+     * 保存世博会背景页面数据
+     */
+    @PostMapping("/data")
+    public Result<?> saveExpoBackgroundData(@RequestBody Map<String, Object> data) {
+        try {
+            expoBackgroundService.saveExpoBackgroundData(data);
+            return Result.success();
+        } catch (Exception e) {
+            return Result.error(500, "保存失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 更新世博会背景页面数据
+     */
+    @PutMapping("/data")
+    public Result<?> updateExpoBackgroundData(@RequestBody Map<String, Object> data) {
+        try {
+            expoBackgroundService.saveExpoBackgroundData(data);
+            return Result.success();
+        } catch (Exception e) {
+            return Result.error(500, "更新失败: " + e.getMessage());
+        }
+    }
 }
