@@ -41,6 +41,21 @@ export function updateExpoInfo(id, data) {
   return put(`/api/expo/manage/${id}`, data)
 }
 
+// 获取世博会背景页面数据
+export function getExpoBackgroundData() {
+  return get('/api/expo/background/data')
+}
+
+// 保存世博会背景页面数据
+export function saveExpoBackgroundData(data) {
+  return post('/api/expo/background/data', data)
+}
+
+// 更新世博会背景页面数据
+export function updateExpoBackgroundData(data) {
+  return put('/api/expo/background/data', data)
+}
+
 // 上传图片
 export function uploadImage(file) {
   const formData = new FormData()
@@ -56,4 +71,4 @@ export function listImages(params) {
 // 删除图片
 export function deleteImage(fileUrl) {
   return del(`/api/file/delete?fileUrl=${encodeURIComponent(fileUrl)}`)
-} 
+}

@@ -69,7 +69,10 @@ const closeMenu = () => {
 
     <!-- 主要内容区域 -->
     <main class="main-content">
-      <RouterView />
+      <!-- 使用与导航一致的 container，但布局不受 flex 影响 -->
+      <div class="nav-container nav-container--main">
+        <RouterView />
+      </div>
     </main>
 
     <!-- 页脚 -->
@@ -151,6 +154,14 @@ const closeMenu = () => {
   }
 }
 
+/* 新增：主要内容区域的 nav-container 不使用 flex 布局 */
+.nav-container--main {
+  display: block;
+  justify-content: unset;
+  align-items: unset;
+  height: auto;
+}
+
 .nav-logo .logo-link {
   display: flex;
   align-items: center;
@@ -204,7 +215,7 @@ const closeMenu = () => {
     max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
-  
+
   .nav-menu.active {
     transform: translateY(0);
     opacity: 1;
@@ -243,7 +254,7 @@ const closeMenu = () => {
     line-height: 44px;
     color: white;
   }
-  
+
   .nav-link:last-child {
     border-bottom: none;
   }

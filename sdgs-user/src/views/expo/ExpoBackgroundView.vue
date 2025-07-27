@@ -1,30 +1,31 @@
 <template>
   <div class="expo-background">
-    <!-- 添加面包屑部分 -->
-    <div class="breadcrumb">
-      <a href="#" class="icon-link">
-        <img src="@/assets/home-icon.png" alt="首页" class="home-icon">
-      </a>
-      <img src="@/assets/arrow-icon.png" alt=">" class="separator">
-      <a href="#" class="breadcrumb-link">世博会</a>
-      <img src="@/assets/arrow-icon.png" alt=">" class="separator">
-      <span class="current">背景</span>
-    </div>
-    <!-- 主要内容 -->
     <div class="background-content">
       <div class="container">
+        <!-- 面包屑放入 container 内部，与内容左对齐 -->
+        <div class="breadcrumb">
+          <a href="#" class="icon-link">
+            <img src="@/assets/home-icon.png" alt="首页" class="home-icon">
+          </a>
+          <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+          <a href="#" class="breadcrumb-link">世博会</a>
+          <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+          <span class="current">背景</span>
+        </div>
         <!-- 第一部分 -->
         <section class="content-section combined-section">
-          <h2>{{ backgroundData.part1MainTitle || '暂无标题' }}</h2>
+          <h2 v-if="backgroundData.part1MainTitle" class="multiline-text">{{ backgroundData.part1MainTitle }}</h2>
+          <h2 v-else>暂无标题</h2>
           <div class="divider"></div>
 
           <div class="block-flex">
             <div class="text-area">
-              <h3>{{ backgroundData.part1Section1Title || '暂无标题' }}</h3>
+              <h3 v-if="backgroundData.part1Section1Title" class="multiline-text">{{ backgroundData.part1Section1Title }}</h3>
+              <h3 v-else>暂无标题</h3>
               <p
                 v-if="backgroundData.part1Section1Content"
-                v-html="backgroundData.part1Section1Content"
-              ></p>
+                class="multiline-text"
+              >{{ backgroundData.part1Section1Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
@@ -40,11 +41,12 @@
 
           <div class="block-flex reverse-layout">
             <div class="text-area">
-              <h3>{{ backgroundData.part1Section2Title || '暂无标题' }}</h3>
+              <h3 v-if="backgroundData.part1Section2Title" class="multiline-text">{{ backgroundData.part1Section2Title }}</h3>
+              <h3 v-else>暂无标题</h3>
               <p
                 v-if="backgroundData.part1Section2Content"
-                v-html="backgroundData.part1Section2Content"
-              ></p>
+                class="multiline-text"
+              >{{ backgroundData.part1Section2Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
@@ -60,11 +62,12 @@
 
           <div class="block-flex">
             <div class="text-area">
-              <h3>{{ backgroundData.part1Section3Title || '暂无标题' }}</h3>
+              <h3 v-if="backgroundData.part1Section3Title" class="multiline-text">{{ backgroundData.part1Section3Title }}</h3>
+              <h3 v-else>暂无标题</h3>
               <p
                 v-if="backgroundData.part1Section3Content"
-                v-html="backgroundData.part1Section3Content"
-              ></p>
+                class="multiline-text"
+              >{{ backgroundData.part1Section3Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
@@ -83,11 +86,12 @@
 
         <!-- 第二部分 -->
         <section class="content-section combined-policy-section">
-          <h2>{{ backgroundData.part2MainTitle || '暂无标题' }}</h2>
+          <h2 v-if="backgroundData.part2MainTitle" class="multiline-text">{{ backgroundData.part2MainTitle }}</h2>
+          <h2 v-else>暂无标题</h2>
           <div class="policy-section">
-            <h3 v-if="backgroundData.part2SubTitle" v-html="backgroundData.part2SubTitle"></h3>
+            <h3 v-if="backgroundData.part2SubTitle" class="multiline-text">{{ backgroundData.part2SubTitle }}</h3>
             <h3 v-else>暂无副标题</h3>
-            <div v-if="backgroundData.part2Content" v-html="backgroundData.part2Content"></div>
+            <div v-if="backgroundData.part2Content" class="multiline-text">{{ backgroundData.part2Content }}</div>
             <div v-else>暂无内容</div>
           </div>
         </section>
@@ -150,6 +154,7 @@ onMounted(() => {
   padding: 20px 0;
 }
 
+/* 面包屑样式，左对齐并与 container 保持一致 */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -157,8 +162,14 @@ onMounted(() => {
   font-weight: 900 !important;
   color: #0167a5;
   margin-bottom: 24px;
-  margin-left: 100px; /* 添加左边距 */
-  padding-left: 20px; /* 可选：额外的内边距 */
+  padding-left: var(--spacing-lg); /* 与 container 左内边距一致 */
+  padding-right: var(--spacing-lg);
+}
+
+/* 下方内容区域进一步内缩，留出更多页边距 */
+.content-section {
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .breadcrumb a,
@@ -318,5 +329,10 @@ section h2 {
   font-size: 2rem;
   line-height: 1;
   text-align: center;
+}
+
+/* 替换之前的 white-space: pre-line 样式 */
+.multiline-text {
+  white-space: pre-line; /* 保留换行符 */
 }
 </style>
