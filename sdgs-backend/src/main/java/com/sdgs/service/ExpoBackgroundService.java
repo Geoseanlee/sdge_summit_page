@@ -13,4 +13,9 @@ public interface ExpoBackgroundService {
      * 根据类型获取单个背景信息
      */
     ExpoBackground getByType(String sectionType);
+
+    /**
+     * 保存世博会背景页面数据
+     */
+    void saveExpoBackgroundData(Map<String, Object> data);
 }
