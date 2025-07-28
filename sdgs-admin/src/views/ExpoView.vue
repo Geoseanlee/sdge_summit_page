@@ -21,9 +21,10 @@
         <div class="form-group">
           <label for="imageUrl">主图片</label>
           <div class="image-uploader">
-            <img :src="expoData.imageUrl" v-if="expoData.imageUrl" class="image-preview" alt="主图片预览"/>
+            <img :src="expoData.imageUrl" v-if="expoData.imageUrl" class="image-preview" alt="主图片预览" />
             <div v-else class="image-placeholder">暂无图片</div>
-            <input type="file" @change="e => handleImageUpload('imageUrl', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['imageUrl'] = el)" />
+            <input type="file" @change="e => handleImageUpload('imageUrl', e)" accept="image/*" style="display: none;"
+              :ref="el => (fileInputs['imageUrl'] = el)" />
             <button @click.prevent="triggerFileInput('imageUrl')" class="upload-button">更换图片</button>
           </div>
         </div>
@@ -46,10 +47,11 @@
         </div>
         <div class="form-group">
           <label for="cardImageUrl">卡片图片</label>
-           <div class="image-uploader">
-            <img :src="expoData.cardImageUrl" v-if="expoData.cardImageUrl" class="image-preview" alt="卡片图片预览"/>
+          <div class="image-uploader">
+            <img :src="expoData.cardImageUrl" v-if="expoData.cardImageUrl" class="image-preview" alt="卡片图片预览" />
             <div v-else class="image-placeholder">暂无图片</div>
-            <input type="file" @change="e => handleImageUpload('cardImageUrl', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['cardImageUrl'] = el)" />
+            <input type="file" @change="e => handleImageUpload('cardImageUrl', e)" accept="image/*"
+              style="display: none;" :ref="el => (fileInputs['cardImageUrl'] = el)" />
             <button @click.prevent="triggerFileInput('cardImageUrl')" class="upload-button">更换图片</button>
           </div>
         </div>
@@ -64,10 +66,12 @@
         </div>
         <div class="form-group">
           <label for="sectionImageUrl1">区块1 图片</label>
-           <div class="image-uploader">
-            <img :src="expoData.sectionImageUrl1" v-if="expoData.sectionImageUrl1" class="image-preview" alt="区块1图片预览"/>
+          <div class="image-uploader">
+            <img :src="expoData.sectionImageUrl1" v-if="expoData.sectionImageUrl1" class="image-preview"
+              alt="区块1图片预览" />
             <div v-else class="image-placeholder">暂无图片</div>
-            <input type="file" @change="e => handleImageUpload('sectionImageUrl1', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['sectionImageUrl1'] = el)" />
+            <input type="file" @change="e => handleImageUpload('sectionImageUrl1', e)" accept="image/*"
+              style="display: none;" :ref="el => (fileInputs['sectionImageUrl1'] = el)" />
             <button @click.prevent="triggerFileInput('sectionImageUrl1')" class="upload-button">更换图片</button>
           </div>
         </div>
@@ -82,15 +86,17 @@
         </div>
         <div class="form-group">
           <label for="sectionImageUrl2">区块2 图片</label>
-           <div class="image-uploader">
-            <img :src="expoData.sectionImageUrl2" v-if="expoData.sectionImageUrl2" class="image-preview" alt="区块2图片预览"/>
+          <div class="image-uploader">
+            <img :src="expoData.sectionImageUrl2" v-if="expoData.sectionImageUrl2" class="image-preview"
+              alt="区块2图片预览" />
             <div v-else class="image-placeholder">暂无图片</div>
-            <input type="file" @change="e => handleImageUpload('sectionImageUrl2', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['sectionImageUrl2'] = el)" />
+            <input type="file" @change="e => handleImageUpload('sectionImageUrl2', e)" accept="image/*"
+              style="display: none;" :ref="el => (fileInputs['sectionImageUrl2'] = el)" />
             <button @click.prevent="triggerFileInput('sectionImageUrl2')" class="upload-button">更换图片</button>
           </div>
         </div>
       </div>
-      
+
       <!-- Section 3 -->
       <div class="form-section">
         <h3>内容区块 3</h3>
@@ -100,16 +106,21 @@
         </div>
         <div class="form-group">
           <label for="sectionImageUrl3">区块3 图片</label>
-           <div class="image-uploader">
-            <img :src="expoData.sectionImageUrl3" v-if="expoData.sectionImageUrl3" class="image-preview" alt="区块3图片预览"/>
+          <div class="image-uploader">
+            <img :src="expoData.sectionImageUrl3" v-if="expoData.sectionImageUrl3" class="image-preview"
+              alt="区块3图片预览" />
             <div v-else class="image-placeholder">暂无图片</div>
-            <input type="file" @change="e => handleImageUpload('sectionImageUrl3', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['sectionImageUrl3'] = el)" />
+            <input type="file" @change="e => handleImageUpload('sectionImageUrl3', e)" accept="image/*"
+              style="display: none;" :ref="el => (fileInputs['sectionImageUrl3'] = el)" />
             <button @click.prevent="triggerFileInput('sectionImageUrl3')" class="upload-button">更换图片</button>
           </div>
         </div>
       </div>
 
-      <button type="submit" class="save-button">保存更改</button>
+      <div class="button-group">
+        <button type="submit" class="save-button">保存更改</button>
+        <button type="button" class="reload-button" @click="reloadData">重新加载</button>
+      </div>
     </form>
   </div>
 </template>
@@ -117,6 +128,7 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import { getExpoInfo, updateExpoInfo, uploadImage } from '@/api';
+import { ElNotification, ElMessageBox } from 'element-plus';
 
 const expoData = ref({
   id: null, // 添加id字段来存储记录的ID
@@ -150,13 +162,28 @@ const handleImageUpload = async (fieldName, event) => {
     const res = await uploadImage(file);
     if (res.code === 200 && res.data.fileUrl) {
       expoData.value[fieldName] = res.data.fileUrl;
-      alert('图片上传成功！');
+      ElNotification({
+        title: '成功',
+        message: '图片上传成功！',
+        type: 'success',
+        duration: 3000
+      });
     } else {
-      alert(`图片上传失败: ${res.message}`);
+      ElNotification({
+        title: '错误',
+        message: `图片上传失败: ${res.message}`,
+        type: 'error',
+        duration: 4000
+      });
     }
   } catch (error) {
     console.error('图片上传失败:', error);
-    alert('图片上传过程中发生错误！');
+    ElNotification({
+      title: '错误',
+      message: '图片上传过程中发生错误！',
+      type: 'error',
+      duration: 4000
+    });
   }
 };
 
@@ -172,7 +199,12 @@ const fetchData = async () => {
     }
   } catch (error) {
     console.error('获取世博会信息失败:', error);
-    alert('数据加载失败！');
+    ElNotification({
+      title: '错误',
+      message: '数据加载失败！',
+      type: 'error',
+      duration: 4000
+    });
   }
 };
 
@@ -181,22 +213,69 @@ onMounted(() => {
   fetchData();
 });
 
+// 重新加载数据
+const reloadData = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要重新加载数据吗？这将丢失所有未保存的修改！',
+      '确认重新加载',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    await fetchData();
+    ElNotification({
+      title: '成功',
+      message: '数据已重新加载！',
+      type: 'success',
+      duration: 3000
+    });
+  } catch (error) {
+    // 用户取消操作，不需要处理
+    if (error !== 'cancel') {
+      console.error('重新加载数据失败:', error);
+    }
+  }
+};
+
 const saveChanges = async () => {
   if (!expoData.value.id) {
-    alert('数据ID不存在，无法保存！请先创建一条记录。');
+    ElNotification({
+      title: '错误',
+      message: '数据ID不存在，无法保存！请先创建一条记录。',
+      type: 'error',
+      duration: 4000
+    });
     // 此处可以引导至创建页面或实现创建逻辑
     return;
   }
   try {
     const res = await updateExpoInfo(expoData.value.id, expoData.value);
     if (res.code === 200) {
-      alert('数据保存成功！');
+      ElNotification({
+        title: '成功',
+        message: '数据保存成功！',
+        type: 'success',
+        duration: 3000
+      });
     } else {
-      alert(`保存失败: ${res.message}`);
+      ElNotification({
+        title: '错误',
+        message: `保存失败: ${res.message}`,
+        type: 'error',
+        duration: 4000
+      });
     }
   } catch (error) {
     console.error('保存失败:', error);
-    alert('保存过程中发生错误！');
+    ElNotification({
+      title: '错误',
+      message: '保存过程中发生错误！',
+      type: 'error',
+      duration: 4000
+    });
   }
 };
 </script>
@@ -254,8 +333,7 @@ h2 {
 }
 
 .save-button {
-  display: block;
-  width: 100%;
+  width: 48%;
   padding: 1rem;
   background-color: #4CAF50;
   color: white;
@@ -269,6 +347,29 @@ h2 {
 
 .save-button:hover {
   background-color: #45a049;
+}
+
+.reload-button {
+  width: 48%;
+  padding: 1rem;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.reload-button:hover {
+  background-color: #f57c00;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .image-uploader {
@@ -308,4 +409,4 @@ h2 {
 .upload-button:hover {
   background-color: #40a9ff;
 }
-</style> 
+</style>

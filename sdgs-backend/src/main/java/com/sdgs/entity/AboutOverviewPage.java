@@ -22,10 +22,15 @@ public class AboutOverviewPage {
 
     /* 引言段 & 模块 JSON（直接存字符串即可，前端/后台自行 JSON.parse） */
     private String introHtml;
+    private String advantagesTitle;  // 新增：三大优势标题
     private String advantagesJson;
+    private String statsTitle;       // 新增：统计卡标题
     private String statsJson;
+    private String mediaTitle;       // 新增：媒体资源标题
     private String mediaJson;
+    private String specialTitle;     // 新增：特别合作伙伴标题
     private String specialJson;
+    private String partnerTitle;     // 新增：合作伙伴标题
     private String partnerJson;
 
     private Integer status;          // 1 = 发布, 0 = 草稿

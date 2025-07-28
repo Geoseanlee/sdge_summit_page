@@ -22,25 +22,25 @@ public interface AboutOverviewPageMapper {
 
     /* ———————— 写入 ———————— */
 
-    /** 新增草稿（管理后台“新建语言版本”） */
+    /** 新增草稿（管理后台"新建语言版本"） */
     @Insert("""
         INSERT INTO about_overview_page
         (locale, header_title, header_tags,
          hero_btn_text, hero_btn_link, hero_img,
-         intro_html, advantages_json, stats_json,
-         media_json, special_json, partner_json,
+         intro_html, advantages_title, advantages_json, stats_title, stats_json,
+         media_title, media_json, special_title, special_json, partner_title, partner_json,
          status, created_at, updated_at)
         VALUES
         (#{locale}, #{headerTitle}, #{headerTags},
          #{heroBtnText}, #{heroBtnLink}, #{heroImg},
-         #{introHtml}, #{advantagesJson}, #{statsJson},
-         #{mediaJson}, #{specialJson}, #{partnerJson},
+         #{introHtml}, #{advantagesTitle}, #{advantagesJson}, #{statsTitle}, #{statsJson},
+         #{mediaTitle}, #{mediaJson}, #{specialTitle}, #{specialJson}, #{partnerTitle}, #{partnerJson},
          #{status}, NOW(), NOW())
         """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AboutOverviewPage page);
 
-    /** 更新整页（后台“保存/发布”按钮） */
+    /** 更新整页（后台"保存/发布"按钮） */
     @Update("""
         UPDATE about_overview_page SET
           header_title     = #{headerTitle},
@@ -49,10 +49,15 @@ public interface AboutOverviewPageMapper {
           hero_btn_link    = #{heroBtnLink},
           hero_img         = #{heroImg},
           intro_html       = #{introHtml},
+          advantages_title = #{advantagesTitle},
           advantages_json  = #{advantagesJson},
+          stats_title      = #{statsTitle},
           stats_json       = #{statsJson},
+          media_title      = #{mediaTitle},
           media_json       = #{mediaJson},
+          special_title    = #{specialTitle},
           special_json     = #{specialJson},
+          partner_title    = #{partnerTitle},
           partner_json     = #{partnerJson},
           status           = #{status},
           updated_at       = NOW()
