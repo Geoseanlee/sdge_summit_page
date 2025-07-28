@@ -246,16 +246,18 @@ section h2 {
 }
 
 .text-area {
-  flex: 1;
+  flex: 55%; /* 调整为55%宽度 */
 }
 
 .image-area {
-  flex: 0 0 300px;
+  flex: 45%; /* 修改为45%宽度 */
 }
 
 .image-area img {
   max-width: 100%;
+  width: 100%; /* 确保图片填满区域 */
   border-radius: 12px;
+  object-fit: cover; /* 保持图片比例并填充容器 */
 }
 
 /* 占位图片样式 */
