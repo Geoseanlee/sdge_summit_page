@@ -250,12 +250,14 @@ section h2 {
 }
 
 .image-area {
-  flex: 0 0 300px;
+  flex: 1; /* 修改为flex: 1，与文字区域平分宽度 */
 }
 
 .image-area img {
   max-width: 100%;
+  width: 100%; /* 确保图片填满区域 */
   border-radius: 12px;
+  object-fit: cover; /* 保持图片比例并填充容器 */
 }
 
 /* 占位图片样式 */
