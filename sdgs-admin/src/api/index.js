@@ -4,7 +4,6 @@ export function get(url, params) {
   return request({
     url,
     method: 'get',
-    params
   })
 }
 
@@ -12,7 +11,6 @@ export function post(url, data) {
   return request({
     url,
     method: 'post',
-    data
   })
 }
 
@@ -20,14 +18,12 @@ export function put(url, data) {
   return request({
     url,
     method: 'put',
-    data
   })
 }
 
 export function del(url) {
   return request({
     url,
-    method: 'delete'
   })
 }
 
@@ -41,6 +37,7 @@ export function updateExpoInfo(id, data) {
   return put(`/api/expo/manage/${id}`, data)
 }
 
+<<<<<<< HEAD
 // 获取世博会背景页面数据
 export function getExpoBackgroundData() {
   return get('/api/expo/background/data')
@@ -54,6 +51,16 @@ export function saveExpoBackgroundData(data) {
 // 更新世博会背景页面数据
 export function updateExpoBackgroundData(data) {
   return put('/api/expo/background/data', data)
+=======
+// 获取最新的首页信息
+export function getHomeInfo() {
+  return get('/api/home/info')
+}
+
+// 更新首页信息
+export function updateHomeInfo(id, data) {
+  return put(`/api/home/manage/${id}`, data)
+>>>>>>> master
 }
 
 // 上传图片

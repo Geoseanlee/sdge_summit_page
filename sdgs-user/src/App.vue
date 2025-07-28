@@ -80,23 +80,26 @@ const closeMenu = () => {
       <div class="footer-container">
         <div class="footer-content">
           <div class="footer-section">
-            <h4>SDGs Platform</h4>
-            <p>致力于推进联合国可持续发展目标的实现</p>
+            <router-link to="/" class="footer-logo">
+              <img src="/expo_logo.png" alt="Logo" class="footer-logo-img">
+            </router-link>
           </div>
           <div class="footer-section">
             <h4>快速链接</h4>
             <ul>
-              <li><router-link to="/expo">SDGs展览</router-link></li>
+              <li><router-link to="/expo">世博会</router-link></li>
               <li><router-link to="/roundtable">圆桌会议</router-link></li>
-              <li><router-link to="/news">新闻资讯</router-link></li>
+              <li><router-link to="/news">动态</router-link></li>
               <li><router-link to="/about">关于我们</router-link></li>
+              <li><router-link to="/join-us">加入我们</router-link></li>
             </ul>
           </div>
           <div class="footer-section">
             <h4>联系我们</h4>
-            <p>📧 info@sdgs-platform.org</p>
-            <p>📞 +86 10 1234 5678</p>
-            <p>📍 北京市朝阳区国贸大厦8层</p>
+            <p>📧 邮箱: Secretariat@expoyoung.com</p>
+            <p>📍 地址:江苏省苏州市工业园区李公堤三期14栋a-1号</p>
+            <p>✉️ E-mail：Secretariat@expoyoung.com</p>
+            <p>🏢 Address: No.a-1, Building 14, PhaseIll of Ligongdi, Suzhou Industrial Park, Jiangsu Province</p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -173,14 +176,16 @@ const closeMenu = () => {
 }
 
 .logo-image {
-  height: 80px; /* Adjust as needed */
+  height: 80px;
+  /* Adjust as needed */
   width: auto;
   transition: var(--transition-base);
 }
 
 @media (max-width: 767px) {
   .logo-image {
-    height: 60px; /* Adjust for smaller screens */
+    height: 60px;
+    /* Adjust for smaller screens */
   }
 }
 
@@ -358,34 +363,34 @@ const closeMenu = () => {
 .footer-container {
   max-width: var(--container-lg);
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
 }
 
 @media (max-width: 1279px) {
   .footer-container {
     max-width: var(--container-md);
-    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
   }
 }
 
 @media (max-width: 767px) {
   .footer-container {
-    padding: var(--spacing-lg) var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
   }
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 @media (max-width: 767px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
   }
 }
 
@@ -394,6 +399,31 @@ const closeMenu = () => {
   margin-bottom: var(--spacing-sm);
   font-size: var(--font-size-lg);
   font-weight: 600;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  height: 100%;
+}
+
+.footer-logo-img {
+  height: 80px;
+  width: auto;
+  transition: var(--transition-base);
+}
+
+.footer-logo-img:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+@media (max-width: 767px) {
+  .footer-logo-img {
+    height: 60px;
+  }
 }
 
 .footer-section p {
@@ -425,7 +455,7 @@ const closeMenu = () => {
 
 .footer-bottom {
   border-top: 1px solid #374151;
-  padding-top: var(--spacing-lg);
+  padding-top: var(--spacing-md);
   text-align: center;
 }
 

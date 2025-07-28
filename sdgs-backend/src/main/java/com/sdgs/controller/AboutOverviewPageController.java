@@ -34,22 +34,22 @@ public class AboutOverviewPageController {
         return Result.success(service.getById(id));
     }
 
-//    @PostMapping("/admin/about-overview")
-//    public Result<Long> create(@RequestBody @Valid AboutOverviewPage page) {
-//        Long id = service.create(page);           // 草稿
-//        return Result.success(id);
-//    }
-//
-//    @PutMapping("/admin/about-overview/{id}")
-//    public Result<Boolean> update(@PathVariable Long id,
-//                                  @RequestBody @Valid AboutOverviewPage page) {
-//
-//        page.setId(id);
-//        return Result.success(service.update(page));
-//    }
-//
-//    @DeleteMapping("/admin/about-overview/{id}")
-//    public Result<Boolean> delete(@PathVariable Long id) {
-//        return Result.success(service.delete(id));
-//    }
+    @PostMapping("/admin/about-overview")
+    public Result<Long> create(@RequestBody  AboutOverviewPage page) {
+        Long id = service.create(page);           // 草稿
+        return Result.success(id);
+    }
+
+    @PutMapping("/admin/about-overview/{id}")
+    public Result<Boolean> update(@PathVariable Long id,
+                                  @RequestBody  AboutOverviewPage page) {
+
+        page.setId(id);
+        return Result.success(service.update(page));
+    }
+
+    @DeleteMapping("/admin/about-overview/{id}")
+    public Result<Boolean> delete(@PathVariable Long id) {
+        return Result.success(service.delete(id));
+    }
 }

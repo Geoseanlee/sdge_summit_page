@@ -18,7 +18,7 @@
           <div class="hero-tags">
             <div class="hero-tag" v-for="t in headerTags" :key="t">{{ t }}</div>
           </div>
-          <a class="hero-btn" :href="about.heroBtnLink">{{ about.heroBtnText }}</a>
+          <a class="hero-btn" href="/about/more">更多</a>
         </div>
       </section>
 
@@ -31,7 +31,7 @@
 
       <!-- 三大优势 -->
       <section class="advantages section-container">
-        <h2 class="sec-title">三大优势</h2>
+        <h2 class="sec-title">{{ about.advantagesTitle || '三大优势' }}</h2>
 
         <div class="adv-grid">
           <article class="adv-card" v-for="(item, i) in advantages" :key="i">
@@ -44,6 +44,7 @@
 
       <!-- 统计四宫格 -->
       <section class="stats section-container">
+
         <div
           class="stat-box"
           v-for="(s, i) in stats"
@@ -55,21 +56,21 @@
         </div>
       </section>
 
-      <!-- 伙伴 LOGO 示例（选做，可继续拆成组件） -->
+      <!-- 伙伴 LOGO 示例 -->
       <section class="logo-wall section-container">
-        <h2 class="logo-wall-title">部分平台及媒体资源</h2>
+        <h2 class="logo-wall-title">{{ about.mediaTitle || '部分平台及媒体资源' }}</h2>
         <div class="logo-grid" v-if="mediaList.length > 0">
           <img class="logo-item" :src="logo" alt="logo" v-for="logo in mediaList" :key="logo" />
         </div>
       </section>
       <section class="logo-wall section-container">
-        <h2 class="logo-wall-title">特别合作伙伴</h2>
+        <h2 class="logo-wall-title">{{ about.specialTitle || '特别合作伙伴' }}</h2>
         <div class="logo-grid" v-if="specialList.length > 0">
           <img class="logo-item" :src="logo" alt="logo" v-for="logo in specialList" :key="logo" />
         </div>
       </section>
       <section class="logo-wall section-container">
-        <h2 class="logo-wall-title">合作伙伴</h2>
+        <h2 class="logo-wall-title">{{ about.partnerTitle || '合作伙伴' }}</h2>
         <div class="logo-grid" v-if="partnerList.length > 0">
           <img class="logo-item" :src="logo" alt="logo" v-for="logo in partnerList" :key="logo" />
         </div>
