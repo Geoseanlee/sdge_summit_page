@@ -95,8 +95,17 @@
         </div>
       </div>
 
-      <button type="submit" class="save-button">保存更改</button>
+      <button type="submit" class="save-button" :disabled="isLoading">
+        <span v-if="isLoading">保存中...</span>
+        <span v-else>保存更改</span>
+      </button>
     </form>
+
+    <!-- 添加加载遮罩 -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">{{ loadingText }}</div>
+    </div>
   </div>
 </template>
 
@@ -122,6 +131,8 @@ const backgroundData = ref({
 });
 
 const fileInputs = reactive({});
+const isLoading = ref(false);
+const loadingText = ref('加载中...');
 
 const triggerFileInput = (fieldName) => {
   fileInputs[fieldName].click();
@@ -132,6 +143,9 @@ const handleImageUpload = async (fieldName, event) => {
   if (!file) return;
 
   try {
+    isLoading.value = true;
+    loadingText.value = '图片上传中，请稍候...';
+
     // 使用 api 中的 uploadImage 函数
     const res = await uploadImage(file);
 
@@ -142,14 +156,32 @@ const handleImageUpload = async (fieldName, event) => {
       alert(`图片上传失败: ${res.message || '未知错误'}`);
     }
   } catch (error) {
+    // 提取更详细的错误信息
+    let errorMsg = '未知错误';
+    if (error.response) {
+      // 服务器响应但状态码不在 2xx 范围
+      errorMsg = `服务器错误 ${error.response.status}: ${error.response.data?.message || JSON.stringify(error.response.data) || error.message}`;
+    } else if (error.request) {
+      // 请求已发出但没收到响应
+      errorMsg = '服务器无响应，请检查网络连接';
+    } else {
+      // 请求设置过程中出错
+      errorMsg = error.message || '请求配置错误';
+    }
+
     console.error('图片上传失败:', error);
-    alert('图片上传过程中发生错误！');
+    alert(`图片上传过程中发生错误！\n详细信息: ${errorMsg}`);
+  } finally {
+    isLoading.value = false;
   }
 };
 
 // 获取数据
 const fetchData = async () => {
   try {
+    isLoading.value = true;
+    loadingText.value = '加载数据中...';
+
     // 使用 api 中的 getExpoBackgroundData 函数
     const res = await getExpoBackgroundData();
 
@@ -161,6 +193,8 @@ const fetchData = async () => {
   } catch (error) {
     console.error('获取世博会背景信息失败:', error);
     alert('数据加载失败！');
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -171,6 +205,9 @@ onMounted(() => {
 
 const saveChanges = async () => {
   try {
+    isLoading.value = true;
+    loadingText.value = '正在保存数据...';
+
     let res;
 
     // 根据是否有 ID 来决定是创建还是更新
@@ -194,6 +231,8 @@ const saveChanges = async () => {
   } catch (error) {
     console.error('保存失败:', error);
     alert('保存过程中发生错误！');
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
@@ -284,6 +323,11 @@ h2 {
   background-color: #45a049;
 }
 
+.save-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 .image-uploader {
   margin-top: 0.5rem;
   border: 1px dashed #d9d9d9;
@@ -320,5 +364,40 @@ h2 {
 
 .upload-button:hover {
   background-color: #40a9ff;
+}
+
+/* 添加加载状态相关样式 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
