@@ -95,10 +95,13 @@
         </div>
       </div>
 
-      <button type="submit" class="save-button" :disabled="isLoading">
-        <span v-if="isLoading">保存中...</span>
-        <span v-else>保存更改</span>
-      </button>
+      <div class="button-group">
+        <button type="submit" class="save-button" :disabled="isLoading">
+          <span v-if="isLoading">保存中...</span>
+          <span v-else>保存更改</span>
+        </button>
+        <button type="button" class="reload-button" @click="reloadData" :disabled="isLoading">重新加载</button>
+      </div>
     </form>
 
     <!-- 添加加载遮罩 -->
@@ -112,6 +115,7 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import { getExpoBackgroundData, saveExpoBackgroundData, updateExpoBackgroundData, uploadImage } from '@/api';
+import { ElNotification, ElMessageBox } from 'element-plus';
 
 const backgroundData = ref({
   id: null,
@@ -151,9 +155,19 @@ const handleImageUpload = async (fieldName, event) => {
 
     if (res.code === 200 && res.data.fileUrl) {
       backgroundData.value[fieldName] = res.data.fileUrl;
-      alert('图片上传成功！');
+      ElNotification({
+        title: '成功',
+        message: '图片上传成功！',
+        type: 'success',
+        duration: 3000
+      });
     } else {
-      alert(`图片上传失败: ${res.message || '未知错误'}`);
+      ElNotification({
+        title: '错误',
+        message: `图片上传失败: ${res.message || '未知错误'}`,
+        type: 'error',
+        duration: 4000
+      });
     }
   } catch (error) {
     // 提取更详细的错误信息
@@ -170,7 +184,12 @@ const handleImageUpload = async (fieldName, event) => {
     }
 
     console.error('图片上传失败:', error);
-    alert(`图片上传过程中发生错误！\n详细信息: ${errorMsg}`);
+    ElNotification({
+      title: '错误',
+      message: `图片上传过程中发生错误！详细信息: ${errorMsg}`,
+      type: 'error',
+      duration: 5000
+    });
   } finally {
     isLoading.value = false;
   }
@@ -187,12 +206,24 @@ const fetchData = async () => {
 
     if (res.code === 200 && res.data) {
       backgroundData.value = res.data;
+      console.log('背景数据加载成功');
     } else {
       console.log('尚未配置世博会背景信息');
+      ElNotification({
+        title: '提示',
+        message: '尚未配置世博会背景信息，请填写并保存',
+        type: 'info',
+        duration: 4000
+      });
     }
   } catch (error) {
     console.error('获取世博会背景信息失败:', error);
-    alert('数据加载失败！');
+    ElNotification({
+      title: '错误',
+      message: '数据加载失败！',
+      type: 'error',
+      duration: 4000
+    });
   } finally {
     isLoading.value = false;
   }
@@ -203,6 +234,33 @@ onMounted(() => {
   fetchData();
 });
 
+// 重新加载数据
+const reloadData = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要重新加载数据吗？这将丢失所有未保存的修改！',
+      '确认重新加载',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    await fetchData();
+    ElNotification({
+      title: '成功',
+      message: '数据已重新加载！',
+      type: 'success',
+      duration: 3000
+    });
+  } catch (error) {
+    // 用户取消操作，不需要处理
+    if (error !== 'cancel' && error !== 'close') {
+      console.error('重新加载数据失败:', error);
+    }
+  }
+};
+
 const saveChanges = async () => {
   try {
     isLoading.value = true;
@@ -210,7 +268,7 @@ const saveChanges = async () => {
 
     let res;
 
-    // 根据是否有 ID 来决定是创建还是更新
+    // 根据是��有 ID 来决定是创建还是更新
     if (backgroundData.value.id) {
       // 使用 api 中的 updateExpoBackgroundData 函数
       res = await updateExpoBackgroundData(backgroundData.value);
@@ -224,13 +282,28 @@ const saveChanges = async () => {
       if (!backgroundData.value.id && res.data?.id) {
         backgroundData.value.id = res.data.id;
       }
-      alert('数据保存成功！');
+      ElNotification({
+        title: '成功',
+        message: '数据保存成功！',
+        type: 'success',
+        duration: 3000
+      });
     } else {
-      alert(`保存失败: ${res.message || '未知错误'}`);
+      ElNotification({
+        title: '错误',
+        message: `保存失败: ${res.message || '未知错误'}`,
+        type: 'error',
+        duration: 4000
+      });
     }
   } catch (error) {
     console.error('保存失败:', error);
-    alert('保存过程中发生错误！');
+    ElNotification({
+      title: '错误',
+      message: '保存过程中发生错误！',
+      type: 'error',
+      duration: 4000
+    });
   } finally {
     isLoading.value = false;
   }
@@ -305,9 +378,15 @@ h2 {
   min-height: 40px;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
 .save-button {
-  display: block;
-  width: 100%;
+  width: 48%;
   padding: 1rem;
   background-color: #4CAF50;
   color: white;
@@ -324,6 +403,28 @@ h2 {
 }
 
 .save-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.reload-button {
+  width: 48%;
+  padding: 1rem;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.reload-button:hover {
+  background-color: #f57c00;
+}
+
+.reload-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
@@ -360,6 +461,8 @@ h2 {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  display: block;
+  margin: 0 auto; /* 添加这一行使按钮居中 */
 }
 
 .upload-button:hover {
