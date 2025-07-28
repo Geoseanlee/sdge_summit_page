@@ -246,11 +246,11 @@ section h2 {
 }
 
 .text-area {
-  flex: 1;
+  flex: 55%; /* 调整为55%宽度 */
 }
 
 .image-area {
-  flex: 1; /* 修改为flex: 1，与文字区域平分宽度 */
+  flex: 45%; /* 修改为45%宽度 */
 }
 
 .image-area img {
