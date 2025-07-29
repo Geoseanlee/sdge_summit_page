@@ -12,7 +12,7 @@
     </div>
 
     <el-table
-      :data="filteredList"
+      :data="pagedList"
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
@@ -20,7 +20,12 @@
       <el-table-column prop="id" label="ID" width="80" />
       <el-table-column prop="title" label="标题" />
       <el-table-column prop="description" label="副标题" />
-      <el-table-column prop="createTime" label="发布时间" width="180" />
+      <el-table-column
+        prop="updateTime"
+        label="发布时间"
+        width="200"
+        :formatter="formatTime"
+      />
       <el-table-column label="操作" width="160">
         <template #default="{ row }">
           <el-button size="small" type="primary" @click="editRow(row)">修改</el-button>
@@ -28,6 +33,24 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 分页 -->
+    <div class="forum-pagination">
+      <div class="custom-pagination">
+        <span class="pagination-info">第{{ currentPage }}页，共{{ totalPages }}页</span>
+        <el-button type="text" :disabled="currentPage===1" @click="changePage(currentPage-1)">&lt;</el-button>
+        <template v-for="page in pageList" :key="page">
+          <el-button
+            v-if="page!=='...'"
+            type="text"
+            :class="{ active: currentPage===page }"
+            @click="changePage(page)"
+          >{{ page }}</el-button>
+          <span v-else class="ellipsis">...</span>
+        </template>
+        <el-button type="text" :disabled="currentPage===totalPages" @click="changePage(currentPage+1)">&gt;</el-button>
+      </div>
+    </div>
 
     <!-- 编辑/新增对话框 -->
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
@@ -82,6 +105,39 @@ const filteredList = computed(() => {
   if (!searchKey.value) return list.value
   return list.value.filter((i) => i.title && i.title.includes(searchKey.value))
 })
+
+// 分页
+const pageSize = 20
+const currentPage = ref(1)
+const totalPages = computed(() => Math.ceil(filteredList.value.length / pageSize))
+const pagedList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return filteredList.value.slice(start, start + pageSize)
+})
+
+const pageList = computed(() => {
+  const listPages = []
+  if (totalPages.value <= 5) {
+    for (let i = 1; i <= totalPages.value; i++) listPages.push(i)
+    return listPages
+  }
+  if (currentPage.value <= 3) {
+    listPages.push(1, 2, 3, 4, '...', totalPages.value)
+    return listPages
+  }
+  if (currentPage.value >= totalPages.value - 2) {
+    listPages.push(1, '...', totalPages.value - 3, totalPages.value - 2, totalPages.value - 1, totalPages.value)
+    return listPages
+  }
+  listPages.push(1, '...', currentPage.value - 1, currentPage.value, currentPage.value + 1, '...', totalPages.value)
+  return listPages
+})
+
+const changePage = (page) => {
+  if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
@@ -138,6 +194,12 @@ const handleBatchDelete = async () => {
     fetchList()
   } catch (e) {}
 }
+
+// 格式化时间：2025-07-29T20:08:07 -> 2025-07-29, 20:08:07
+const formatTime = (_, __, value) => {
+  if (!value) return ''
+  return String(value).replace('T', ', ')
+}
 </script>
 
 <style scoped>
@@ -153,5 +215,36 @@ const handleBatchDelete = async () => {
 }
 .left > * {
   margin-right: 10px;
+}
+
+.forum-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pagination-info {
+  margin-right: 12px;
+}
+.active {
+  font-weight: bold;
+  color: #409eff;
+}
+.ellipsis {
+  color: #999;
+}
+
+/* 放大表格与控件字号 */
+.manage-container :deep(.el-table .cell) {
+  font-size: 16px;
+}
+
+.toolbar :deep(.el-button),
+.toolbar :deep(.el-input__inner) {
+  font-size: 16px;
 }
 </style> 
