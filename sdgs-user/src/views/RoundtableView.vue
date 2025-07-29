@@ -136,8 +136,11 @@ const watchRecording = (meeting) => {
 }
 
 function viewMore(item) {
-  // 这里可以跳转详情页或弹窗
-  alert('更多: ' + item.title)
+  if (item.url) {
+    window.open(item.url, '_blank')
+  } else {
+    ElMessage.info('暂无跳转链接')
+  }
 }
 
 // 页面加载时获取数据

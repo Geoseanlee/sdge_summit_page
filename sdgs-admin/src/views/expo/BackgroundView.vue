@@ -1,5 +1,506 @@
 <template>
-  <div>
-    <h1>世博会 - 背景页面</h1>
+  <div class="background-admin">
+    <h2>世博会背景页面管理</h2>
+
+    <form @submit.prevent="saveChanges">
+      <!-- 第一部分 -->
+      <div class="form-section">
+        <h3>第一部分</h3>
+        <div class="form-group">
+          <label for="part1MainTitle">主标题</label>
+          <textarea id="part1MainTitle" rows="2" v-model="backgroundData.part1MainTitle"></textarea>
+        </div>
+
+        <!-- 子部分1 -->
+        <div class="sub-section">
+          <h4>子部分1</h4>
+          <div class="form-group">
+            <label for="part1Section1Title">标题</label>
+            <textarea id="part1Section1Title" rows="2" v-model="backgroundData.part1Section1Title"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section1Content">内容</label>
+            <textarea id="part1Section1Content" rows="5" v-model="backgroundData.part1Section1Content"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section1Image">图片</label>
+            <div class="image-uploader">
+              <img :src="backgroundData.part1Section1Image" v-if="backgroundData.part1Section1Image" class="image-preview" alt="子部分1图片预览"/>
+              <div v-else class="image-placeholder">暂无图片</div>
+              <input type="file" @change="e => handleImageUpload('part1Section1Image', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['part1Section1Image'] = el)" />
+              <button @click.prevent="triggerFileInput('part1Section1Image')" class="upload-button">更换图片</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 子部分2 -->
+        <div class="sub-section">
+          <h4>子部分2</h4>
+          <div class="form-group">
+            <label for="part1Section2Title">标题</label>
+            <textarea id="part1Section2Title" rows="2" v-model="backgroundData.part1Section2Title"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section2Content">内容</label>
+            <textarea id="part1Section2Content" rows="5" v-model="backgroundData.part1Section2Content"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section2Image">图片</label>
+            <div class="image-uploader">
+              <img :src="backgroundData.part1Section2Image" v-if="backgroundData.part1Section2Image" class="image-preview" alt="子部分2图片预览"/>
+              <div v-else class="image-placeholder">暂无图片</div>
+              <input type="file" @change="e => handleImageUpload('part1Section2Image', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['part1Section2Image'] = el)" />
+              <button @click.prevent="triggerFileInput('part1Section2Image')" class="upload-button">更换图片</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 子部分3 -->
+        <div class="sub-section">
+          <h4>子部分3</h4>
+          <div class="form-group">
+            <label for="part1Section3Title">标题</label>
+            <textarea id="part1Section3Title" rows="2" v-model="backgroundData.part1Section3Title"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section3Content">内容</label>
+            <textarea id="part1Section3Content" rows="5" v-model="backgroundData.part1Section3Content"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="part1Section3Image">图片</label>
+            <div class="image-uploader">
+              <img :src="backgroundData.part1Section3Image" v-if="backgroundData.part1Section3Image" class="image-preview" alt="子部分3图片预览"/>
+              <div v-else class="image-placeholder">暂无图片</div>
+              <input type="file" @change="e => handleImageUpload('part1Section3Image', e)" accept="image/*" style="display: none;" :ref="el => (fileInputs['part1Section3Image'] = el)" />
+              <button @click.prevent="triggerFileInput('part1Section3Image')" class="upload-button">更换图片</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二部分 -->
+      <div class="form-section">
+        <h3>第二部分</h3>
+        <div class="form-group">
+          <label for="part2MainTitle">主标题</label>
+          <textarea id="part2MainTitle" rows="2" v-model="backgroundData.part2MainTitle"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="part2SubTitle">副标题</label>
+          <textarea id="part2SubTitle" rows="2" v-model="backgroundData.part2SubTitle"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="part2Content">内容</label>
+          <textarea id="part2Content" rows="8" v-model="backgroundData.part2Content"></textarea>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="save-button" :disabled="isLoading">
+          <span v-if="isLoading">保存中...</span>
+          <span v-else>保存更改</span>
+        </button>
+        <button type="button" class="reload-button" @click="reloadData" :disabled="isLoading">重新加载</button>
+      </div>
+    </form>
+
+    <!-- 添加加载遮罩 -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">{{ loadingText }}</div>
+    </div>
   </div>
-</template> 
+</template>
+
+<script setup>
+import { ref, onMounted, reactive } from 'vue';
+import { getExpoBackgroundData, saveExpoBackgroundData, updateExpoBackgroundData, uploadImage } from '@/api';
+import { ElNotification, ElMessageBox } from 'element-plus';
+
+const backgroundData = ref({
+  id: null,
+  part1MainTitle: '',
+  part1Section1Title: '',
+  part1Section1Content: '',
+  part1Section1Image: '',
+  part1Section2Title: '',
+  part1Section2Content: '',
+  part1Section2Image: '',
+  part1Section3Title: '',
+  part1Section3Content: '',
+  part1Section3Image: '',
+  part2MainTitle: '',
+  part2SubTitle: '',
+  part2Content: '',
+});
+
+const fileInputs = reactive({});
+const isLoading = ref(false);
+const loadingText = ref('加载中...');
+
+const triggerFileInput = (fieldName) => {
+  fileInputs[fieldName].click();
+};
+
+const handleImageUpload = async (fieldName, event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    isLoading.value = true;
+    loadingText.value = '图片上传中，请稍候...';
+
+    // 使用 api 中的 uploadImage 函数
+    const res = await uploadImage(file);
+
+    if (res.code === 200 && res.data.fileUrl) {
+      backgroundData.value[fieldName] = res.data.fileUrl;
+      ElNotification({
+        title: '成功',
+        message: '图片上传成功！',
+        type: 'success',
+        duration: 3000
+      });
+    } else {
+      ElNotification({
+        title: '错误',
+        message: `图片上传失败: ${res.message || '未知错误'}`,
+        type: 'error',
+        duration: 4000
+      });
+    }
+  } catch (error) {
+    // 提取更详细的错误信息
+    let errorMsg = '未知错误';
+    if (error.response) {
+      // 服务器响应但状态码不在 2xx 范围
+      errorMsg = `服务器错误 ${error.response.status}: ${error.response.data?.message || JSON.stringify(error.response.data) || error.message}`;
+    } else if (error.request) {
+      // 请求已发出但没收到响应
+      errorMsg = '服务器无响应，请检查网络连接';
+    } else {
+      // 请求设置过程中出错
+      errorMsg = error.message || '请求配置错误';
+    }
+
+    console.error('图片上传失败:', error);
+    ElNotification({
+      title: '错误',
+      message: `图片上传过程中发生错误！详细信息: ${errorMsg}`,
+      type: 'error',
+      duration: 5000
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 获取数据
+const fetchData = async () => {
+  try {
+    isLoading.value = true;
+    loadingText.value = '加载数据中...';
+
+    // 使用 api 中的 getExpoBackgroundData 函数
+    const res = await getExpoBackgroundData();
+
+    if (res.code === 200 && res.data) {
+      backgroundData.value = res.data;
+      console.log('背景数据加载成功');
+    } else {
+      console.log('尚未配置世博会背景信息');
+      ElNotification({
+        title: '提示',
+        message: '尚未配置世博会背景信息，请填写并保存',
+        type: 'info',
+        duration: 4000
+      });
+    }
+  } catch (error) {
+    console.error('获取世博会背景信息失败:', error);
+    ElNotification({
+      title: '错误',
+      message: '数据加载失败！',
+      type: 'error',
+      duration: 4000
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 在组件挂载时获取数据
+onMounted(() => {
+  fetchData();
+});
+
+// 重新加载数据
+const reloadData = async () => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要重新加载数据吗？这将丢失所有未保存的修改！',
+      '确认重新加载',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    await fetchData();
+    ElNotification({
+      title: '成功',
+      message: '数据已重新加载！',
+      type: 'success',
+      duration: 3000
+    });
+  } catch (error) {
+    // 用户取消操作，不需要处理
+    if (error !== 'cancel' && error !== 'close') {
+      console.error('重新加载数据失败:', error);
+    }
+  }
+};
+
+const saveChanges = async () => {
+  try {
+    isLoading.value = true;
+    loadingText.value = '正在保存数据...';
+
+    let res;
+
+    // 根据是��有 ID 来决定是创建还是更新
+    if (backgroundData.value.id) {
+      // 使用 api 中的 updateExpoBackgroundData 函数
+      res = await updateExpoBackgroundData(backgroundData.value);
+    } else {
+      // 使用 api 中的 saveExpoBackgroundData 函数
+      res = await saveExpoBackgroundData(backgroundData.value);
+    }
+
+    if (res.code === 200) {
+      // 如果是创建操作，更新ID
+      if (!backgroundData.value.id && res.data?.id) {
+        backgroundData.value.id = res.data.id;
+      }
+      ElNotification({
+        title: '成功',
+        message: '数据保存成功！',
+        type: 'success',
+        duration: 3000
+      });
+    } else {
+      ElNotification({
+        title: '错误',
+        message: `保存失败: ${res.message || '未知错误'}`,
+        type: 'error',
+        duration: 4000
+      });
+    }
+  } catch (error) {
+    console.error('保存失败:', error);
+    ElNotification({
+      title: '错误',
+      message: '保存过程中发生错误！',
+      type: 'error',
+      duration: 4000
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>
+
+<style scoped>
+.background-admin {
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.form-section {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  color: #555;
+}
+
+.sub-section {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.sub-section h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #666;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+  line-height: 1.5;
+  min-height: 40px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.save-button {
+  width: 48%;
+  padding: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #45a049;
+}
+
+.save-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.reload-button {
+  width: 48%;
+  padding: 1rem;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.reload-button:hover {
+  background-color: #f57c00;
+}
+
+.reload-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.image-uploader {
+  margin-top: 0.5rem;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 200px;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 150px;
+  line-height: 150px;
+  background-color: #f5f5f5;
+  color: #999;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.upload-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto; /* 添加这一行使按钮居中 */
+}
+
+.upload-button:hover {
+  background-color: #40a9ff;
+}
+
+/* 添加加载状态相关样式 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
