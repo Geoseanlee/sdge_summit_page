@@ -15,16 +15,18 @@
       :data="pagedList"
       style="width: 100%"
       @selection-change="handleSelectionChange"
+      @sort-change="handleSort"
     >
       <el-table-column type="selection" width="55" />
       <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="title" label="标题" />
-      <el-table-column prop="description" label="副标题" />
+      <el-table-column prop="title" label="标题" sortable="custom" />
+      <el-table-column prop="description" label="副标题" sortable="custom" />
       <el-table-column
         prop="updateTime"
         label="发布时间"
         width="200"
         :formatter="formatTime"
+        sortable="custom"
       />
       <el-table-column label="操作" width="160">
         <template #default="{ row }">
@@ -114,6 +116,29 @@ const filteredList = computed(() => {
   })
 })
 
+// 排序
+const sortProp = ref('')
+const sortOrder = ref('') // 'ascending' | 'descending'
+
+const sortedList = computed(() => {
+  if (!sortProp.value) return filteredList.value
+  const data = [...filteredList.value]
+  data.sort((a, b) => {
+    let v1 = a[sortProp.value]
+    let v2 = b[sortProp.value]
+    if (sortProp.value === 'updateTime') {
+      v1 = new Date(v1)
+      v2 = new Date(v2)
+    }
+    if (v1 == null) return -1
+    if (v2 == null) return 1
+    if (v1 === v2) return 0
+    const res = typeof v1 === 'string' ? v1.localeCompare(v2) : v1 - v2
+    return sortOrder.value === 'ascending' ? res : -res
+  })
+  return data
+})
+
 const handleSearch = () => {
   searchValue.value = searchInput.value.trim()
   currentPage.value = 1
@@ -125,7 +150,7 @@ const currentPage = ref(1)
 const totalPages = computed(() => Math.ceil(filteredList.value.length / pageSize))
 const pagedList = computed(() => {
   const start = (currentPage.value - 1) * pageSize
-  return filteredList.value.slice(start, start + pageSize)
+  return sortedList.value.slice(start, start + pageSize)
 })
 
 const pageList = computed(() => {
@@ -150,6 +175,12 @@ const changePage = (page) => {
   if (typeof page === 'number' && page >= 1 && page <= totalPages.value) {
     currentPage.value = page
   }
+}
+
+const handleSort = ({ prop, order }) => {
+  sortProp.value = order ? prop : ''
+  sortOrder.value = order || ''
+  currentPage.value = 1
 }
 
 const handleSelectionChange = (val) => {
