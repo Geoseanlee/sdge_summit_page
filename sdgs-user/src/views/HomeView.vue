@@ -174,7 +174,9 @@ onMounted(() => {
 
 <style scoped>
 .home {
-  padding: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 80px;
   background-color: white;
 }
 
@@ -192,7 +194,7 @@ onMounted(() => {
 
 /* 英雄区域样式 */
 .hero-section {
-  padding: 2rem;
+  padding: 2rem 0;
   text-align: center;
   background-color: white;
 }
@@ -213,7 +215,7 @@ onMounted(() => {
 }
 
 .main-title {
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: bold;
   margin-bottom: 1rem;
   color: #333;
@@ -224,7 +226,7 @@ onMounted(() => {
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   color: #666;
   margin-bottom: 1rem;
 }
@@ -239,7 +241,7 @@ onMounted(() => {
 }
 
 .hero-img {
-  width: 800px;
+  width: 1200px;
   max-width: 100%;
   height: auto;
   border-radius: 8px;
@@ -247,12 +249,12 @@ onMounted(() => {
 
 /* SDGs区域样式 */
 .sdgs-section {
-  padding: 2rem 12rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .sdgs-content {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -302,12 +304,12 @@ onMounted(() => {
 
 /* 探索区域样式 */
 .explore-section {
-  padding: 2rem 12rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .explore-card {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   min-height: 300px;
   background-size: cover;
@@ -368,12 +370,12 @@ onMounted(() => {
 
 /* 博览会区域样式 */
 .expo-section {
-  padding: 2rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .section-content {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -422,12 +424,12 @@ onMounted(() => {
 
 /* 联盟区域样式 */
 .alliance-section {
-  padding: 2rem 12rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .alliance-content {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: left;
 }
@@ -448,12 +450,12 @@ onMounted(() => {
 
 /* 数据区域样式 */
 .data-section {
-  padding: 2rem 12rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .data-content {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: left;
 }
@@ -471,7 +473,7 @@ onMounted(() => {
 }
 
 .data-img {
-  width: 600px;
+  width: 800px;
   max-width: 100%;
   height: auto;
   border-radius: 8px;
@@ -479,12 +481,12 @@ onMounted(() => {
 
 /* 加入我们区域样式 */
 .join-us-section {
-  padding: 2rem 12rem;
+  padding: 2rem 0;
   background-color: white;
 }
 
 .join-us-content {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -555,10 +557,13 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .home {
+    padding: 20px 40px;
+  }
 
   .hero-section,
   .expo-section {
-    padding: 1rem;
+    padding: 1rem 0;
   }
 
   .sdgs-section,
@@ -566,7 +571,7 @@ onMounted(() => {
   .alliance-section,
   .data-section,
   .join-us-section {
-    padding: 1rem 2rem;
+    padding: 1rem 0;
   }
 
   .hero-titles-row {
@@ -597,7 +602,7 @@ onMounted(() => {
   }
 
   .main-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .section-title {

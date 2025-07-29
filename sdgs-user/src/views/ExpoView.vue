@@ -18,11 +18,7 @@
     <!-- 描述内容 -->
     <div class="description">
       <div v-if="expoInfo?.description" class="description-content">
-        <p 
-          v-for="(paragraph, index) in descriptionParagraphs" 
-          :key="index" 
-          class="description-text"
-        >
+        <p v-for="(paragraph, index) in descriptionParagraphs" :key="index" class="description-text">
           {{ paragraph }}
         </p>
       </div>
@@ -55,7 +51,7 @@
             </p>
             <p v-else>null</p>
           </div>
-          
+
           <!-- 探索按钮 -->
           <div class="explore-button-container">
             <button class="explore-button" @click="goToBackground">
@@ -111,7 +107,7 @@ const descriptionParagraphs = computed(() => {
   if (!expoInfo.value?.description || typeof expoInfo.value.description !== 'string') {
     return []
   }
-  
+
   // 按换行符分割段落，过滤空行
   return expoInfo.value.description
     .split(/\n+/) // 支持多个连续换行符
@@ -134,9 +130,9 @@ const getExpoInfo = async () => {
   }
 }
 
-// 跳转到背景页面
+// 跳转到峰会页面
 const goToBackground = () => {
-  router.push('/expo/background')
+  router.push('/expo/summit')
 }
 
 // 组件挂载时获取数据
@@ -278,13 +274,13 @@ onMounted(() => {
   border-radius: 20px 0 0 20px;
 }
 
-  .showcase-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 60px;
-  }
+.showcase-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+}
 
 .showcase-title {
   font-size: 20px;
@@ -338,9 +334,9 @@ onMounted(() => {
   transition: transform 0.3s ease;
 }
 
-  .explore-button:hover .arrow {
-    transform: translateX(3px);
-  }
+.explore-button:hover .arrow {
+  transform: translateX(3px);
+}
 
 /* 三个section样式 */
 .three-sections {
@@ -383,19 +379,19 @@ onMounted(() => {
   .expo-page {
     padding: 20px 40px;
   }
-  
+
   .page-title h1 {
     font-size: 36px;
   }
-  
+
   .subtitle h2 {
     font-size: 28px;
   }
-  
+
   .description-text {
     font-size: 16px;
   }
-  
+
   .hero-img {
     height: 250px;
   }
@@ -479,16 +475,16 @@ onMounted(() => {
   .expo-page {
     padding: 20px 25px;
   }
-  
+
   .page-title h1 {
     font-size: 28px;
     letter-spacing: 1px;
   }
-  
+
   .subtitle h2 {
     font-size: 24px;
   }
-  
+
   .description-text {
     font-size: 15px;
   }
@@ -553,4 +549,4 @@ onMounted(() => {
 
 
 }
-</style> 
+</style>
