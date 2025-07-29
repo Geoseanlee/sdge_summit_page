@@ -6,6 +6,9 @@ import com.sdgs.service.ForumInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +26,12 @@ public class ForumInfoController {
     @GetMapping("/latest")
     public Result<ForumInfo> latest() {
         return Result.success(forumInfoService.getLatest());
+    }
+
+    @PutMapping("/manage/{id}")
+    public Result<Boolean> update(@PathVariable Long id, @RequestBody ForumInfo info) {
+        info.setId(id);
+        forumInfoService.update(info);
+        return Result.success(true);
     }
 } 
