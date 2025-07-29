@@ -6,8 +6,8 @@
         <el-button :disabled="!multipleSelection.length" @click="handleBatchDelete">删除选中</el-button>
       </div>
       <div class="right">
-        <el-input v-model="searchKey" placeholder="搜索标题" style="width:200px" />
-        <el-button icon="Search" @click="fetchList" />
+        <el-input v-model="searchInput" placeholder="搜索标题" style="width:200px" />
+        <el-button :icon="Search" @click="handleSearch" />
       </div>
     </div>
 
@@ -82,10 +82,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Search } from '@element-plus/icons-vue'
 import { get, post, put, del } from '@/api'
 
 const list = ref([])
-const searchKey = ref('')
+const searchInput = ref('')
+const searchValue = ref('')
 const multipleSelection = ref([])
 
 const dialogVisible = ref(false)
@@ -102,9 +104,20 @@ const fetchList = async () => {
 onMounted(fetchList)
 
 const filteredList = computed(() => {
-  if (!searchKey.value) return list.value
-  return list.value.filter((i) => i.title && i.title.includes(searchKey.value))
+  if (!searchValue.value) return list.value
+  return list.value.filter((i) => {
+    const key = searchValue.value
+    return (
+      (i.title && i.title.includes(key)) ||
+      (i.description && i.description.includes(key))
+    )
+  })
 })
+
+const handleSearch = () => {
+  searchValue.value = searchInput.value.trim()
+  currentPage.value = 1
+}
 
 // 分页
 const pageSize = 20
