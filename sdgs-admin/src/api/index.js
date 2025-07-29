@@ -67,3 +67,37 @@ export function listImages(params) {
 export function deleteImage(fileUrl) {
   return del(`/api/file/delete?fileUrl=${encodeURIComponent(fileUrl)}`)
 }
+
+// === 关于我们-更多页面的API ===
+
+// 获取所有区块（管理端）
+export function getAboutMoreSections() {
+  return get('/api/about-more/admin/sections')
+}
+
+// 创建新区块
+export function createAboutMoreSection(data) {
+  return post('/api/about-more/admin/sections', data)
+}
+
+// 更新区块
+export function updateAboutMoreSection(id, data) {
+  return put(`/api/about-more/admin/sections/${id}`, data)
+}
+
+// 删除区块
+export function deleteAboutMoreSection(id) {
+  return del(`/api/about-more/admin/sections/${id}`)
+}
+
+
+// 获取页面配置
+export function getAboutMoreConfig() {
+  // 注意，这里的路径没有 /api 前缀，代理会自动添加
+  return get('/api/about-more/public/config')
+}
+
+// 更新页面配置
+export function updateAboutMoreConfig(data) {
+  return put('/api/about-more/admin/config', data)
+}

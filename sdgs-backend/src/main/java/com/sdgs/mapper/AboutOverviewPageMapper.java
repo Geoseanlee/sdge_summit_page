@@ -29,12 +29,14 @@ public interface AboutOverviewPageMapper {
          hero_btn_text, hero_btn_link, hero_img,
          intro_html, advantages_title, advantages_json, stats_title, stats_json,
          media_title, media_json, special_title, special_json, partner_title, partner_json,
+         more_page_title, more_page_final_statement,
          status, created_at, updated_at)
         VALUES
         (#{locale}, #{headerTitle}, #{headerTags},
          #{heroBtnText}, #{heroBtnLink}, #{heroImg},
          #{introHtml}, #{advantagesTitle}, #{advantagesJson}, #{statsTitle}, #{statsJson},
          #{mediaTitle}, #{mediaJson}, #{specialTitle}, #{specialJson}, #{partnerTitle}, #{partnerJson},
+         #{morePageTitle}, #{morePageFinalStatement},
          #{status}, NOW(), NOW())
         """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -42,26 +44,33 @@ public interface AboutOverviewPageMapper {
 
     /** 更新整页（后台"保存/发布"按钮） */
     @Update("""
-        UPDATE about_overview_page SET
-          header_title     = #{headerTitle},
-          header_tags      = #{headerTags},
-          hero_btn_text    = #{heroBtnText},
-          hero_btn_link    = #{heroBtnLink},
-          hero_img         = #{heroImg},
-          intro_html       = #{introHtml},
-          advantages_title = #{advantagesTitle},
-          advantages_json  = #{advantagesJson},
-          stats_title      = #{statsTitle},
-          stats_json       = #{statsJson},
-          media_title      = #{mediaTitle},
-          media_json       = #{mediaJson},
-          special_title    = #{specialTitle},
-          special_json     = #{specialJson},
-          partner_title    = #{partnerTitle},
-          partner_json     = #{partnerJson},
-          status           = #{status},
-          updated_at       = NOW()
-        WHERE id = #{id}
+        <script>
+            UPDATE about_overview_page
+            <set>
+                <if test="locale != null">locale = #{locale},</if>
+                <if test="headerTitle != null">header_title = #{headerTitle},</if>
+                <if test="headerTags != null">header_tags = #{headerTags},</if>
+                <if test="heroBtnText != null">hero_btn_text = #{heroBtnText},</if>
+                <if test="heroBtnLink != null">hero_btn_link = #{heroBtnLink},</if>
+                <if test="heroImg != null">hero_img = #{heroImg},</if>
+                <if test="introHtml != null">intro_html = #{introHtml},</if>
+                <if test="advantagesTitle != null">advantages_title = #{advantagesTitle},</if>
+                <if test="advantagesJson != null">advantages_json = #{advantagesJson},</if>
+                <if test="statsTitle != null">stats_title = #{statsTitle},</if>
+                <if test="statsJson != null">stats_json = #{statsJson},</if>
+                <if test="mediaTitle != null">media_title = #{mediaTitle},</if>
+                <if test="mediaJson != null">media_json = #{mediaJson},</if>
+                <if test="specialTitle != null">special_title = #{specialTitle},</if>
+                <if test="specialJson != null">special_json = #{specialJson},</if>
+                <if test="partnerTitle != null">partner_title = #{partnerTitle},</if>
+                <if test="partnerJson != null">partner_json = #{partnerJson},</if>
+                <if test="morePageTitle != null">more_page_title = #{morePageTitle},</if>
+                <if test="morePageFinalStatement != null">more_page_final_statement = #{morePageFinalStatement},</if>
+                <if test="status != null">status = #{status},</if>
+                updated_at = NOW()
+            </set>
+            WHERE id = #{id}
+        </script>
         """)
     int updateById(AboutOverviewPage page);
 

@@ -32,6 +32,8 @@ public class AboutOverviewPage {
     private String specialJson;
     private String partnerTitle;     // 新增：合作伙伴标题
     private String partnerJson;
+    private String morePageTitle;
+    private String morePageFinalStatement;
 
     private Integer status;          // 1 = 发布, 0 = 草稿
     private LocalDateTime createdAt;
