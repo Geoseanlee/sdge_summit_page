@@ -67,3 +67,24 @@ export function listImages(params) {
 export function deleteImage(fileUrl) {
   return del(`/api/file/delete?fileUrl=${encodeURIComponent(fileUrl)}`)
 }
+
+//********************************************************************************
+//下面代码由Drame完成注意区分！！！
+//********************************************************************************
+
+// 获取世博会背景页面数据
+export function getExpoBackgroundData() {
+  return get('/api/expo/background/data')
+}
+
+// 保存世博会背景页面数据
+export function saveExpoBackgroundData(data) {
+  return post('/api/expo/background/data', data)
+}
+
+// 更新世博会背景页面数据
+export function updateExpoBackgroundData(data) {
+  return put('/api/expo/background/data', data)
+}
+
+//********************************************************************************
