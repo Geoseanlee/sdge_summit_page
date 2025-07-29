@@ -20,20 +20,15 @@
 
           <div class="block-flex">
             <div class="text-area">
-              <h3 v-if="backgroundData.part1Section1Title" class="multiline-text">{{ backgroundData.part1Section1Title }}</h3>
+              <h3 v-if="backgroundData.part1Section1Title" class="multiline-text">{{ backgroundData.part1Section1Title
+              }}</h3>
               <h3 v-else>暂无标题</h3>
-              <p
-                v-if="backgroundData.part1Section1Content"
-                class="multiline-text"
-              >{{ backgroundData.part1Section1Content }}</p>
+              <p v-if="backgroundData.part1Section1Content" class="multiline-text">{{
+                backgroundData.part1Section1Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img
-                v-if="backgroundData.part1Section1Image"
-                :src="backgroundData.part1Section1Image"
-                alt="图1"
-              />
+              <img v-if="backgroundData.part1Section1Image" :src="backgroundData.part1Section1Image" alt="图1" />
               <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
@@ -41,20 +36,15 @@
 
           <div class="block-flex reverse-layout">
             <div class="text-area">
-              <h3 v-if="backgroundData.part1Section2Title" class="multiline-text">{{ backgroundData.part1Section2Title }}</h3>
+              <h3 v-if="backgroundData.part1Section2Title" class="multiline-text">{{ backgroundData.part1Section2Title
+              }}</h3>
               <h3 v-else>暂无标题</h3>
-              <p
-                v-if="backgroundData.part1Section2Content"
-                class="multiline-text"
-              >{{ backgroundData.part1Section2Content }}</p>
+              <p v-if="backgroundData.part1Section2Content" class="multiline-text">{{
+                backgroundData.part1Section2Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img
-                v-if="backgroundData.part1Section2Image"
-                :src="backgroundData.part1Section2Image"
-                alt="图2"
-              />
+              <img v-if="backgroundData.part1Section2Image" :src="backgroundData.part1Section2Image" alt="图2" />
               <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
@@ -62,20 +52,15 @@
 
           <div class="block-flex">
             <div class="text-area">
-              <h3 v-if="backgroundData.part1Section3Title" class="multiline-text">{{ backgroundData.part1Section3Title }}</h3>
+              <h3 v-if="backgroundData.part1Section3Title" class="multiline-text">{{ backgroundData.part1Section3Title
+              }}</h3>
               <h3 v-else>暂无标题</h3>
-              <p
-                v-if="backgroundData.part1Section3Content"
-                class="multiline-text"
-              >{{ backgroundData.part1Section3Content }}</p>
+              <p v-if="backgroundData.part1Section3Content" class="multiline-text">{{
+                backgroundData.part1Section3Content }}</p>
               <p v-else>暂无内容</p>
             </div>
             <div class="image-area">
-              <img
-                v-if="backgroundData.part1Section3Image"
-                :src="backgroundData.part1Section3Image"
-                alt="图3"
-              />
+              <img v-if="backgroundData.part1Section3Image" :src="backgroundData.part1Section3Image" alt="图3" />
               <div v-else class="placeholder-image">暂无图片</div>
             </div>
           </div>
@@ -162,7 +147,8 @@ onMounted(() => {
   font-weight: 900 !important;
   color: #0167a5;
   margin-bottom: 24px;
-  padding-left: var(--spacing-lg); /* 与 container 左内边距一致 */
+  padding-left: var(--spacing-lg);
+  /* 与 container 左内边距一致 */
   padding-right: var(--spacing-lg);
 }
 
@@ -207,7 +193,8 @@ onMounted(() => {
 }
 
 .background-content {
-  padding: 20px 0; /* 减少顶部内边距 */
+  padding: 20px 0;
+  /* 减少顶部内边距 */
 }
 
 section {
@@ -239,6 +226,8 @@ section h2 {
   display: flex;
   gap: 24px;
   align-items: center;
+  margin: 0 40px;
+  /* 左右留出空隙 */
 }
 
 .block-flex.reverse-layout {
@@ -246,18 +235,28 @@ section h2 {
 }
 
 .text-area {
-  flex: 55%; /* 调整为55%宽度 */
+  flex: 55%;
+  /* 调整为55%宽度 */
+}
+
+.text-area p {
+  margin-left: 20px;
+  /* 正文相对标题缩进 */
 }
 
 .image-area {
-  flex: 45%; /* 修改为45%宽度 */
+  flex: 45%;
+  /* 修改为45%宽度 */
 }
 
 .image-area img {
   max-width: 100%;
-  width: 100%; /* 确保图片填满区域 */
+  max-height: 300px;
+  width: auto;
+  height: auto;
   border-radius: 12px;
-  object-fit: cover; /* 保持图片比例并填充容器 */
+  object-fit: contain;
+  /* 保持图片比例并在容器内完整显示 */
 }
 
 /* 占位图片样式 */
@@ -284,13 +283,18 @@ section h2 {
 .policy-section h3 {
   margin-top: 0px;
   text-align: center;
-  line-height: 1;
-  font-weight: 400; /* 更细的字体 */
-  font-size: 1.3rem; /* 可选：稍微调小字号 */
+  line-height: 1.3;
+  font-weight: 400;
+  /* 更细的字体 */
+  font-size: 1.3rem;
+  /* 可选：稍微调小字号 */
 }
 
 .policy-section div {
-  text-align: left; /* 内容div左对齐 */
+  text-align: left;
+  /* 内容div左对齐 */
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .divider {
@@ -323,7 +327,8 @@ section h2 {
 
 /* 调整第一部分和第二部分之间的间距 */
 .combined-policy-section {
-  margin-top: 80px; /* 增加顶部间距 */
+  margin-top: 80px;
+  /* 增加顶部间距 */
 }
 
 .combined-policy-section h2 {
@@ -335,6 +340,7 @@ section h2 {
 
 /* 替换之前的 white-space: pre-line 样式 */
 .multiline-text {
-  white-space: pre-line; /* 保留换行符 */
+  white-space: pre-line;
+  /* 保留换行符 */
 }
 </style>
