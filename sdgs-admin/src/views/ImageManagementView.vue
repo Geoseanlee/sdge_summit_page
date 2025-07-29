@@ -43,6 +43,7 @@
             </template>
           </el-image>
           <div class="image-overlay">
+            <el-button type="primary" :icon="DocumentCopy" @click="copyUrl(image.fileUrl)" circle></el-button>
             <el-button type="danger" :icon="Delete" @click="handleDeleteImage(image.fileUrl, index)" circle></el-button>
           </div>
           <div class="image-info">
@@ -58,7 +59,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { UploadFilled, Refresh, Delete, Loading } from '@element-plus/icons-vue'
+import { UploadFilled, Refresh, Delete, Loading, DocumentCopy } from '@element-plus/icons-vue'
 import { uploadImage, listImages, deleteImage } from '@/api'
 
 const selectedFile = ref(null)
@@ -165,6 +166,16 @@ const getShortFileName = (fileName) => {
   if (!fileName) return '未命名'
   const parts = fileName.split('/')
   return parts[parts.length - 1]
+}
+
+// 复制链接到剪贴板
+const copyUrl = async (url) => {
+  try {
+    await navigator.clipboard.writeText(url)
+    ElMessage.success('已复制链接')
+  } catch (e) {
+    ElMessage.error('复制失败')
+  }
 }
 </script>
 

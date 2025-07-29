@@ -25,10 +25,14 @@
           <el-menu-item index="/expo/background">背景</el-menu-item>
           <el-menu-item index="/expo/summit">峰会</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="/roundtable">
-          <el-icon><Management /></el-icon>
-          <span>圆桌会议</span>
-        </el-menu-item>
+        <el-sub-menu index="/roundtable">
+          <template #title>
+            <el-icon><Management /></el-icon>
+            <span>圆桌会议</span>
+          </template>
+          <el-menu-item index="/roundtable/info">圆桌会议主页</el-menu-item>
+          <el-menu-item index="/roundtable/manage">论坛管理</el-menu-item>
+        </el-sub-menu>
         <el-menu-item index="/updates">
           <el-icon><Notification /></el-icon>
           <span>动态</span>
