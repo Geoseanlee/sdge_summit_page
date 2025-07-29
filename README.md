@@ -374,3 +374,8 @@ sdgs-user/src/
 ###
 圆桌会议论坛数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/forum.sql
 圆桌会议标题介绍数据库表插入指令：mysql -u root -p sdgs_db < sdgs-backend/src/main/resources/db/forum_info.sql
+
+快捷指令
+cd sdgs-admin && npm install && npm run dev
+cd sdgs-user && npm install && npm run dev
+cd sdgs-backend && mvnw spring-boot:run

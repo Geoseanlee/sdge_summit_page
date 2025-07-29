@@ -16,4 +16,9 @@ public class ForumInfoServiceImpl implements ForumInfoService {
     public ForumInfo getLatest() {
         return forumInfoMapper.selectLatest();
     }
+
+    @Override
+    public void update(ForumInfo info) {
+        forumInfoMapper.updateById(info);
+    }
 } 

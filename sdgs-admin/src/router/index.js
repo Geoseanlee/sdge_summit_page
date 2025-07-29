@@ -30,9 +30,14 @@ const router = createRouter({
           component: () => import('../views/expo/SummitView.vue')
         },
         {
-          path: 'roundtable',
-          name: 'roundtable',
-          component: () => import('../views/RoundtableView.vue')
+          path: 'roundtable/info',
+          name: 'roundtable-info',
+          component: () => import('../views/roundtable/InfoView.vue')
+        },
+        {
+          path: 'roundtable/manage',
+          name: 'roundtable-manage',
+          component: () => import('../views/roundtable/ManageView.vue')
         },
         {
           path: 'updates',
