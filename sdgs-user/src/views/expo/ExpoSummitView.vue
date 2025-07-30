@@ -30,7 +30,8 @@
                     <div v-if="scheduleData.length === 0 && !loading" class="empty-state">
                         暂无议程信息
                     </div>
-                    <el-table v-else :data="scheduleData" :span-method="mergeRows" style="width: 100%" size="large" :show-header="false" :cell-style="setCellStyle" class="borderless-table">
+                    <el-table v-else :data="scheduleData" :span-method="mergeRows" style="width: 100%" size="large"
+                        :show-header="false" :cell-style="setCellStyle" class="borderless-table">
                         <el-table-column prop="date" width="120" align="center" :show-overflow-tooltip="false">
                             <template #default="scope">
                                 <div class="date-cell">
@@ -61,13 +62,14 @@
 
                 <!-- 峰会拟邀请嘉宾 -->
                 <h1 class="page-title guest-title">峰会拟邀请嘉宾</h1>
-                
+
                 <el-card class="guest-card" v-loading="loading">
                     <div v-if="guestCategories.length === 0 && !loading" class="empty-state">
                         暂无嘉宾信息
                     </div>
                     <div v-else class="guest-categories">
-                        <div v-for="(category, index) in guestCategories" :key="category.id || index" class="category-section">
+                        <div v-for="(category, index) in guestCategories" :key="category.id || index"
+                            class="category-section">
                             <h2 class="category-title">{{ category.title || '' }}</h2>
                             <ul class="guest-list">
                                 <li v-for="(guest, guestIndex) in category.guests" :key="guestIndex">
@@ -94,44 +96,42 @@ const scheduleData = ref([])
 const guestCategories = ref([])
 const loading = ref(false)
 
-// 获取峰会议程数据
-const fetchScheduleData = async () => {
+// 获取峰会完整数据（包含议程和嘉宾）
+const fetchSummitData = async () => {
     try {
         loading.value = true
-        const response = await request.get('/summit/schedule')
-        if (response && Array.isArray(response)) {
-            scheduleData.value = response
+        const response = await request.get('/summit/complete')
+        if (response && response.schedule && response.guests) {
+            // 处理议程数据
+            scheduleData.value = Array.isArray(response.schedule) ? response.schedule : []
+
+            // 处理嘉宾数据
+            if (Array.isArray(response.guests)) {
+                // 按分类组织嘉宾数据
+                const guestMap = new Map()
+                response.guests.forEach(guest => {
+                    if (!guestMap.has(guest.categoryTitle)) {
+                        guestMap.set(guest.categoryTitle, [])
+                    }
+                    guestMap.get(guest.categoryTitle).push(guest.guestName)
+                })
+
+                guestCategories.value = Array.from(guestMap.entries()).map(([title, guests]) => ({
+                    title,
+                    guests
+                }))
+            } else {
+                guestCategories.value = []
+            }
         } else {
             // 如果后端返回null或空数据，使用默认数据
             scheduleData.value = []
-        }
-    } catch (error) {
-        console.error('获取峰会议程失败:', error)
-        ElMessage.error('获取峰会议程失败')
-        scheduleData.value = []
-    } finally {
-        loading.value = false
-    }
-}
-
-// 获取嘉宾分类数据
-const fetchGuestData = async () => {
-    try {
-        loading.value = true
-        const response = await request.get('/summit/guests')
-        if (response && Array.isArray(response)) {
-            // 转换后端数据格式为前端需要的格式
-            guestCategories.value = response.map(category => ({
-                title: category.title,
-                guests: category.guests ? category.guests.map(guest => guest.guestName) : []
-            }))
-        } else {
-            // 如果后端返回null或空数据，使用默认数据
             guestCategories.value = []
         }
     } catch (error) {
-        console.error('获取峰会嘉宾信息失败:', error)
-        ElMessage.error('获取峰会嘉宾信息失败')
+        console.error('获取峰会数据失败:', error)
+        ElMessage.error('获取峰会数据失败')
+        scheduleData.value = []
         guestCategories.value = []
     } finally {
         loading.value = false
@@ -140,19 +140,18 @@ const fetchGuestData = async () => {
 
 // 页面挂载时获取数据
 onMounted(() => {
-    fetchScheduleData()
-    fetchGuestData()
+    fetchSummitData()
 })
 
 // 合并单元格方法
 const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
     if (columnIndex === 0 && scheduleData.value.length > 0) { // 日期列
         const currentDate = scheduleData.value[rowIndex]?.date
-        
+
         // 如果当前行有日期值，计算需要合并的行数
         if (currentDate && currentDate.trim() !== '') {
             let mergeCount = 1
-            
+
             // 向下查找相同日期的行（空日期属于同一天）
             for (let i = rowIndex + 1; i < scheduleData.value.length; i++) {
                 const nextDate = scheduleData.value[i]?.date
@@ -162,7 +161,7 @@ const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
                     break
                 }
             }
-            
+
             return [mergeCount, 1]
         } else {
             // 当前行是空日期，需要隐藏
@@ -174,12 +173,12 @@ const mergeRows = ({ row, column, rowIndex, columnIndex }) => {
 // 计算颜色逻辑
 const getRowColors = (rowIndex) => {
     if (scheduleData.value.length === 0) return null
-    
+
     // 找到当前行所属的日期组和在组内的索引
     let currentDateGroupIndex = 0
     let indexInGroup = 0
     let currentGroupStartIndex = 0
-    
+
     // 从头开始遍历，计算当前行属于第几个日期组
     for (let i = 0; i <= rowIndex; i++) {
         const row = scheduleData.value[i]
@@ -200,20 +199,20 @@ const getRowColors = (rowIndex) => {
                 }
             }
         }
-        
+
         if (i === rowIndex) {
             indexInGroup = i - currentGroupStartIndex
         }
     }
-    
+
     // 第一列和第二列的颜色逻辑（保持原有逻辑）
     const isEvenGroup = currentDateGroupIndex % 2 === 0
     const dateColor = isEvenGroup ? '#bae1f6' : '#d7f1fc'
     const timeColor = isEvenGroup ? '#d7f1fc' : '#ffffff'
-    
+
     // 第三列的颜色逻辑（按您的模板数据）
     let eventColor = '#bae1f6' // 默认值
-    
+
     if (currentDateGroupIndex === 0) {
         // 第1个日期组（8月24日）：全部 #bae1f6
         eventColor = '#bae1f6'
@@ -242,7 +241,7 @@ const getRowColors = (rowIndex) => {
         // 其他日期组：按奇偶交替
         eventColor = isEvenGroup ? '#bae1f6' : '#e1f3ff'
     }
-    
+
     return { dateColor, timeColor, eventColor }
 }
 
@@ -250,7 +249,7 @@ const getRowColors = (rowIndex) => {
 const setCellStyle = ({ row, column, rowIndex }) => {
     const colors = getRowColors(rowIndex)
     if (!colors) return {}
-    
+
     if (column.property === 'date') {
         return { backgroundColor: colors.dateColor }
     } else if (column.property === 'time') {

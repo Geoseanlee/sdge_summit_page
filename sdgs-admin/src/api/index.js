@@ -87,4 +87,34 @@ export function updateExpoBackgroundData(data) {
   return put('/api/expo/background/data', data)
 }
 
+// 获取峰会完整数据
+export function getSummitCompleteData() {
+  return get('/api/summit/complete')
+}
+
+// 获取峰会议程数据
+export function getSummitScheduleData() {
+  return get('/api/summit/schedule')
+}
+
+// 获取峰会嘉宾数据
+export function getSummitGuestData() {
+  return get('/api/summit/guests')
+}
+
+// 添加峰会数据项
+export function addSummitData(data) {
+  return post('/api/summit/add', data)
+}
+
+// 更新峰会数据项
+export function updateSummitData(id, data) {
+  return put(`/api/summit/update/${id}`, data)
+}
+
+// 删除峰会数据项
+export function deleteSummitData(id) {
+  return del(`/api/summit/delete/${id}`)
+}
+
 //********************************************************************************
