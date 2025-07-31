@@ -1,27 +1,18 @@
 <template>
     <div class="expo-summit">
-        <!-- 面包屑导航 -->
-        <div class="breadcrumb-nav">
-            <div class="container">
-                <el-breadcrumb separator=">">
-                    <el-breadcrumb-item>
-                        <router-link to="/" class="breadcrumb-link">
-                            <el-icon>
-                                <House />
-                            </el-icon>
-                        </router-link>
-                    </el-breadcrumb-item>
-                    <el-breadcrumb-item>
-                        <router-link to="/expo" class="breadcrumb-link">世博会</router-link>
-                    </el-breadcrumb-item>
-                    <el-breadcrumb-item>2025年大版世博会</el-breadcrumb-item>
-                </el-breadcrumb>
-            </div>
-        </div>
-
         <!-- 主要内容 -->
         <div class="main-content">
             <div class="container">
+                <!-- 面包屑导航 -->
+                <div class="breadcrumb">
+                    <router-link to="/" class="icon-link">
+                        <img src="@/assets/home-icon.png" alt="首页" class="home-icon">
+                    </router-link>
+                    <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+                    <router-link to="/expo" class="breadcrumb-link">世博会</router-link>
+                    <img src="@/assets/arrow-icon.png" alt=">" class="separator">
+                    <span class="current">2025年大版世博会</span>
+                </div>
                 <!-- 峰会简明议程标题 -->
                 <h1 class="page-title">峰会简明议程</h1>
 
@@ -87,7 +78,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { House, User } from '@element-plus/icons-vue'
 import request from '@/utils/request'
 import { ElMessage } from 'element-plus'
 
@@ -330,47 +320,51 @@ const setCellStyle = ({ row, column, rowIndex }) => {
     background-color: #ffffff;
 }
 
-/* 面包屑导航样式 */
-.breadcrumb-nav {
-    background-color: #ffffff;
-    padding: 16px 0;
-    border-bottom: none;
-}
-
-.breadcrumb-link {
-    color: #0167A5;
-    text-decoration: none;
+/* 面包屑样式，左对齐并与 container 保持一致 */
+.breadcrumb {
     display: flex;
     align-items: center;
-    font-weight: 600;
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: 900 !important;
+    color: #0167a5;
+    margin-bottom: 24px;
+    padding-left: var(--spacing-lg);
+    /* 与 container 左内边距一致 */
+    padding-right: var(--spacing-lg);
+}
+
+.breadcrumb a,
+.breadcrumb-link,
+.current {
+    color: #0167a5;
+    text-decoration: none;
+    font-weight: 700 !important;
+}
+
+.separator {
+    width: 16px;
+    height: 16px;
+    margin: 0 8px;
+    vertical-align: middle;
+    object-fit: contain;
+}
+
+.home-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    vertical-align: middle;
 }
 
 .breadcrumb-link:hover {
-    color: #0167A5;
+    color: #014f7d;
+    text-decoration: underline;
 }
 
-/* Element Plus面包屑样式覆盖 */
-.breadcrumb-nav :deep(.el-breadcrumb__item) {
-    color: #0167A5;
-    font-size: 16px;
-}
-
-.breadcrumb-nav :deep(.el-breadcrumb__item .el-breadcrumb__inner) {
-    color: #0167A5;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.breadcrumb-nav :deep(.el-breadcrumb__item .el-breadcrumb__separator) {
-    color: #0167A5;
-    font-size: 16px;
-}
-
-.breadcrumb-nav :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
-    color: #0167A5;
-    font-weight: 600;
-    font-size: 16px;
+.icon-link:hover .home-icon {
+    filter: brightness(0.8);
+    transform: scale(1.1);
+    transition: all 0.3s ease;
 }
 
 /* 主要内容样式 */

@@ -33,15 +33,12 @@
               <span class="pagination-info">第{{ currentPage }}页，共{{ totalPages }}页</span>
               <button class="pager-btn" :disabled="currentPage === 1" @click="changePage(currentPage - 1)">&lt;</button>
               <template v-for="page in pageList" :key="page">
-                <button
-                  v-if="page !== '...'"
-                  class="pager-btn"
-                  :class="{ active: currentPage === page }"
-                  @click="changePage(page)"
-                >{{ page }}</button>
+                <button v-if="page !== '...'" class="pager-btn" :class="{ active: currentPage === page }"
+                  @click="changePage(page)">{{ page }}</button>
                 <span v-else class="pager-btn ellipsis">...</span>
               </template>
-              <button class="pager-btn" :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">&gt;</button>
+              <button class="pager-btn" :disabled="currentPage === totalPages"
+                @click="changePage(currentPage + 1)">&gt;</button>
             </div>
           </div>
         </section>
@@ -121,7 +118,7 @@ const fetchForums = async () => {
 const registerMeeting = async (meeting) => {
   try {
     await request.post(`/forums/${meeting.id}/register`)
-  ElMessage.success(`已成功报名：${meeting.title}`)
+    ElMessage.success(`已成功报名：${meeting.title}`)
   } catch (error) {
     ElMessage.error('报名失败，请稍后重试')
   }
@@ -153,7 +150,6 @@ onMounted(() => {
 <style scoped>
 .roundtable {
   min-height: 100vh;
-  background-color: #f8f9fa;
 }
 
 .page-header {
@@ -214,7 +210,7 @@ section h2 {
   display: flex;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   margin-bottom: 32px;
   min-height: 160px;
@@ -342,7 +338,7 @@ section h2 {
   background: white;
   padding: 32px 20px 24px 20px;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   text-align: center;
   transition: all 0.3s ease;
   min-width: 240px;
@@ -387,12 +383,15 @@ section h2 {
   .page-header h1 {
     font-size: 2rem;
   }
+
   .forum-intro-section {
     padding: 0 8px;
   }
+
   .discussion-topics {
     padding: 0 8px;
   }
+
   .topics-grid {
     gap: 16px;
   }
@@ -400,7 +399,7 @@ section h2 {
 
 .topics-vertical {
   display: flex;
-    flex-direction: column;
+  flex-direction: column;
   gap: 32px;
   align-items: center;
 }
@@ -410,24 +409,27 @@ section h2 {
   margin: 0 auto;
   padding: 40px 0 60px 0;
 }
+
 .forum-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 32px;
 }
+
 .forum-item {
   background: #eaf6fb;
   color: #0166A5FF;
   display: flex;
   border-radius: 16px;
-  box-shadow: 0 -2px 1px rgba(255, 255, 255, 0), 0 8px 14px rgba(0,0,0,0.18);
+  box-shadow: 0 -2px 1px rgba(255, 255, 255, 0), 0 8px 14px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   margin-bottom: 32px;
   min-height: 250px;
   width: 1200px;
   max-width: 100%;
 }
+
 .forum-img {
   width: 220px;
   min-height: 250px;
@@ -437,12 +439,14 @@ section h2 {
   justify-content: center;
   background: #f7f7f7;
 }
+
 .forum-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+
 .forum-info {
   position: relative;
   padding: 1px 24px 80px 32px;
@@ -450,12 +454,14 @@ section h2 {
   max-width: 900px;
   display: flex;
   flex-direction: column;
-    justify-content: center;
-  }
+  justify-content: center;
+}
+
 .forum-tags {
   font-weight: bold;
   margin-top: 2em;
 }
+
 .forum-tag {
   display: inline-block;
   background: #e0f2fe;
@@ -465,6 +471,7 @@ section h2 {
   font-size: 0.95rem;
   margin-right: 8px;
 }
+
 .forum-title,
 .forum-desc,
 .forum-tags,
@@ -473,35 +480,42 @@ section h2 {
   font-weight: bold;
   font-size: 0.95rem;
 }
+
 .forum-title {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
   line-height: 1;
 }
+
 .forum-desc {
   font-size: 1rem;
   margin-bottom: 18px;
   line-height: 1;
 }
+
 .forum-pagination {
   display: flex;
   justify-content: center;
   margin-top: 32px;
 }
+
 :deep(.el-pagination) {
   font-size: 1.1rem;
 }
+
 :deep(.el-pagination.is-background .el-pager li) {
   border-radius: 4px;
   min-width: 32px;
   height: 32px;
   line-height: 32px;
 }
+
 :deep(.el-pagination.is-background .el-pager li.active) {
   background: #42a5f5;
   color: #fff;
 }
+
 .forum-more-btn {
   min-width: unset;
   width: auto;
@@ -517,25 +531,30 @@ section h2 {
   color: #fff;
   display: flex;
   align-items: center;
-    justify-content: center;
-  }
+  justify-content: center;
+}
+
 .intro-paragraph {
   margin-bottom: 1.5em;
   line-height: 1.9;
   font-size: 0.95rem;
 }
+
 .forum-intro-content {
   max-width: 70%;
   margin: 0 auto;
 }
+
 .forum-intro-title {
   color: #0166A5FF !important;
 }
+
 .forum-intro-section,
 .forum-intro-section .forum-intro-content,
 .forum-intro-section .intro-paragraph {
   color: #000 !important;
 }
+
 .custom-pagination {
   display: flex;
   align-items: center;
@@ -545,9 +564,11 @@ section h2 {
   font-size: 1.1rem;
   color: #7a97b6;
 }
+
 .pagination-info {
   margin-right: 16px;
 }
+
 .pager-btn {
   background: #f5f7fa;
   border: none;
@@ -558,26 +579,33 @@ section h2 {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .pager-btn.active {
   background: #51aaff;
   color: #fff;
 }
+
 .pager-btn:disabled {
   color: #b0b0b0;
   cursor: not-allowed;
 }
+
 .pager-btn.ellipsis {
   background: none;
   color: #999;
   cursor: default;
 }
-.forum-intro-content > p {
-  font-size: 1.05rem; /* 比默认增大约10% */
+
+.forum-intro-content>p {
+  font-size: 1.05rem;
+  /* 比默认增大约10% */
   line-height: 1.9;
   margin-bottom: 1.5em;
 }
+
 .forum-intro-content :deep(p) {
-  font-size: 0.95rem; /* 再放大一点便于观察 */
+  font-size: 0.95rem;
+  /* 再放大一点便于观察 */
   line-height: 1.9;
 }
-</style> 
+</style>
