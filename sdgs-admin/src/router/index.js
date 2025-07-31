@@ -5,6 +5,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
+    {
       path: '/',
       component: Layout,
       redirect: '/home',
@@ -12,66 +17,66 @@ const router = createRouter({
         {
           path: 'home',
           name: 'home',
-          component: () => import('../views/HomeView.vue')
+          component: () => import('../views/HomeView.vue'),
         },
         {
           path: 'expo',
           name: 'expo',
-          component: () => import('../views/ExpoView.vue')
+          component: () => import('../views/ExpoView.vue'),
         },
         {
           path: 'expo/background',
           name: 'expo-background',
-          component: () => import('../views/expo/BackgroundView.vue')
+          component: () => import('../views/expo/BackgroundView.vue'),
         },
         {
           path: 'expo/summit',
           name: 'expo-summit',
-          component: () => import('../views/expo/SummitView.vue')
+          component: () => import('../views/expo/SummitView.vue'),
         },
         {
           path: 'roundtable/info',
           name: 'roundtable-info',
-          component: () => import('../views/roundtable/InfoView.vue')
+          component: () => import('../views/roundtable/InfoView.vue'),
         },
         {
           path: 'roundtable/manage',
           name: 'roundtable-manage',
-          component: () => import('../views/roundtable/ManageView.vue')
+          component: () => import('../views/roundtable/ManageView.vue'),
         },
         {
           path: 'updates',
           name: 'updates',
-          component: () => import('../views/UpdatesView.vue')
+          component: () => import('../views/UpdatesView.vue'),
         },
         {
           path: 'about',
           name: 'about',
-          component: () => import('../views/AboutView.vue')
+          component: () => import('../views/AboutView.vue'),
         },
         {
           path: 'about/more',
           name: 'about-more',
-          component: () => import('../views/about/MoreView.vue')
+          component: () => import('../views/about/MoreView.vue'),
         },
         {
           path: 'join',
           name: 'join',
-          component: () => import('../views/JoinView.vue')
+          component: () => import('../views/JoinView.vue'),
         },
         {
           path: 'image-management',
           name: 'image-management',
-          component: () => import('../views/ImageManagementView.vue')
+          component: () => import('../views/ImageManagementView.vue'),
         },
         {
           path: 'account',
           name: 'account',
-          component: () => import('../views/AccountView.vue')
-        }
-      ]
-    }
-  ]
+          component: () => import('../views/AccountView.vue'),
+        },
+      ],
+    },
+  ],
 })
 
 export default router
