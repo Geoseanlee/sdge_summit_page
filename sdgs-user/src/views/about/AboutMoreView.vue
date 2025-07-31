@@ -71,9 +71,9 @@ onMounted(fetchData);
 
 <style scoped>
 .about-more-page {
-  max-width: 900px;
+  max-width: 1400px;
   margin: 40px auto;
-  padding: 0 20px;
+  padding: 40px 80px;
   color: #333;
 }
 
@@ -85,8 +85,8 @@ onMounted(fetchData);
   font-weight: 900 !important;
   color: #0167a5;
   margin-bottom: 12px;
-  margin-top: -20px;
-  margin-left: -20px;
+  margin-top: -30px;
+  margin-left: -60px;
   padding-left: 0;
   padding-right: 0;
 }
@@ -128,7 +128,7 @@ onMounted(fetchData);
 .main-title h1 {
   color: #004a91;
   /* 大标题颜色 */
-  font-size: 2em;
+  font-size: 2.2em;
   text-align: center;
   margin-bottom: 50px;
   font-weight: bold;
@@ -148,7 +148,7 @@ onMounted(fetchData);
 .section-subtitle {
   color: #1e65a5;
   /* 比大标题 #004a91 浅一些的蓝色 */
-  font-size: 1.4em;
+  font-size: 1.6em;
   font-weight: bold;
   margin-bottom: 15px;
 }
@@ -156,6 +156,7 @@ onMounted(fetchData);
 .section-content {
   line-height: 1.8;
   text-align: justify;
+  font-size: 1.1rem;
 }
 
 .final-statement {
@@ -167,5 +168,44 @@ onMounted(fetchData);
   text-align: center;
   font-weight: 500;
   line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .about-more-page {
+    padding: 20px 40px;
+  }
+
+  .breadcrumb {
+    margin-left: -20px;
+  }
+
+  .main-title h1 {
+    font-size: 1.7em;
+  }
+
+  .section-subtitle {
+    font-size: 1.4em;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-more-page {
+    padding: 20px 25px;
+  }
+
+  .breadcrumb {
+    margin-left: -5px;
+    font-size: 18px;
+  }
+
+  .main-title h1 {
+    font-size: 1.5em;
+  }
+
+  .section-subtitle {
+    font-size: 1.2em;
+  }
 }
 </style>

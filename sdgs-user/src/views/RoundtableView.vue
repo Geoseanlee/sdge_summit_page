@@ -162,7 +162,7 @@ onMounted(() => {
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 80px;
 }
 
 .page-header h1 {
@@ -380,6 +380,10 @@ section h2 {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 40px;
+  }
+
   .page-header h1 {
     font-size: 2rem;
   }
@@ -394,6 +398,12 @@ section h2 {
 
   .topics-grid {
     gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 25px;
   }
 }
 
@@ -541,7 +551,7 @@ section h2 {
 }
 
 .forum-intro-content {
-  max-width: 70%;
+  max-width: 85%;
   margin: 0 auto;
 }
 
