@@ -94,6 +94,10 @@
       <!-- 模块三：食品奖项 -->
       <div class="form-section card">
         <h2>食品奖项</h2>
+        <el-form-item label="模块标题">
+          <el-input v-model="foodAwardTitleItem.title" placeholder="请输入食品奖项模块标题" />
+        </el-form-item>
+        
         <div v-for="(item, index) in foodAwardItems" :key="item.localKey" class="member-card">
           <div class="member-header">
             <h3>奖项 {{ index + 1 }}</h3>
@@ -125,6 +129,7 @@
         <el-button type="primary" @click="addFoodAward">添加食品奖项</el-button>
       </div>
 
+
       <!-- 统一保存按钮 -->
       <div class="form-actions">
         <el-button type="primary" @click="saveAll" :loading="saving">保存整个页面</el-button>
@@ -133,6 +138,7 @@
     </el-form>
   </div>
 </template>
+
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
@@ -146,6 +152,7 @@ const bannerItem = reactive({ id: null, imageUrl: '' })
 // 标题数据
 const projectTitleItem = reactive({ id: null, category: 'projectTitle', title: '项目岗位信息' })
 const memberTitleItem = reactive({ id: null, category: 'memberTitle', title: '入选名单' })
+const foodAwardTitleItem = reactive({ id: null, category: 'foodAwardTitle', title: '食品奖项' }) // 新增
 
 // 模块数据
 const projectItems = ref([])
@@ -159,14 +166,25 @@ const beforeImageUpload = (file) => {
 }
 
 const handleImageUpload = async (options, itemOrField) => {
-  const res = await uploadImage(options.file)
-  if (res.code === 200) {
-    if (itemOrField === 'banner') {
-      bannerItem.imageUrl = res.data.fileUrl
+  try {
+    const res = await uploadImage(options.file)
+    if (res.code === 200 || res.success) {
+      const url = res.data?.fileUrl || res.url
+      if (itemOrField === 'banner') {
+        bannerItem.imageUrl = url
+      } else {
+        itemOrField.imageUrl = url
+      }
+      ElMessage.success('图片上传成功')
+      options.onSuccess && options.onSuccess()
     } else {
-      itemOrField.imageUrl = res.data.fileUrl
+      ElMessage.error(res.message || '上传失败')
+      options.onError && options.onError()
     }
-    ElMessage.success('图片上传成功')
+  } catch (err) {
+    console.error(err)
+    ElMessage.error('上传失败')
+    options.onError && options.onError(err)
   }
 }
 
@@ -174,12 +192,18 @@ const loadData = async () => {
   const res = await axios.get('http://localhost:8080/api/joinus/list')
   const data = res.data || []
 
-  const banner = data.find(i => i.category === 'banner')
-  if (banner) {
+  // 🔹 用最后一条 banner（刚保存的）
+  const bannerList = data.filter(i => i.category === 'banner')
+  if (bannerList.length) {
+    const banner = bannerList[bannerList.length - 1]
     bannerItem.id = banner.id
     bannerItem.imageUrl = banner.imageUrl
+  } else {
+    bannerItem.id = null
+    bannerItem.imageUrl = ''
   }
 
+  // 其他标题
   const projectTitle = data.find(i => i.category === 'projectTitle')
   if (projectTitle) {
     projectTitleItem.id = projectTitle.id
@@ -190,6 +214,12 @@ const loadData = async () => {
   if (memberTitle) {
     memberTitleItem.id = memberTitle.id
     memberTitleItem.title = memberTitle.title
+  }
+
+  const foodAwardTitle = data.find(i => i.category === 'foodAwardTitle')
+  if (foodAwardTitle) {
+    foodAwardTitleItem.id = foodAwardTitle.id
+    foodAwardTitleItem.title = foodAwardTitle.title
   }
 
   projectItems.value = data
@@ -207,6 +237,7 @@ const loadData = async () => {
   if (projectItems.value.length === 0) addProject()
   if (memberItems.value.length === 0) addMember()
 }
+
 
 const addProject = () => {
   projectItems.value.push({
@@ -262,13 +293,18 @@ const removeFoodAward = async (index) => {
   }
   foodAwardItems.value.splice(index, 1)
 }
-
 const saveAll = async () => {
   saving.value = true
 
-  if (bannerItem.id) {
-    await axios.put(`http://localhost:8080/api/joinus/update/${bannerItem.id}`, bannerItem)
-  } else {
+  // 🔹 清理数据库中所有 banner 数据
+  const res = await axios.get('http://localhost:8080/api/joinus/list')
+  const banners = res.data.filter(i => i.category === 'banner')
+  for (const b of banners) {
+    await axios.delete(`http://localhost:8080/api/joinus/delete/${b.id}`)
+  }
+
+  // 🔹 重新新增新的 banner
+  if (bannerItem.imageUrl) {
     await axios.post('http://localhost:8080/api/joinus/add', {
       category: 'banner',
       imageUrl: bannerItem.imageUrl,
@@ -276,7 +312,8 @@ const saveAll = async () => {
     })
   }
 
-  for (const titleItem of [projectTitleItem, memberTitleItem]) {
+  // 🔹 保存标题（包括食品奖项标题）
+  for (const titleItem of [projectTitleItem, memberTitleItem, foodAwardTitleItem]) {
     if (titleItem.id) {
       await axios.put(`http://localhost:8080/api/joinus/update/${titleItem.id}`, titleItem)
     } else {
@@ -284,6 +321,7 @@ const saveAll = async () => {
     }
   }
 
+  // 🔹 保存列表数据
   for (const item of [...projectItems.value, ...memberItems.value, ...foodAwardItems.value]) {
     if (item.id) {
       await axios.put(`http://localhost:8080/api/joinus/update/${item.id}`, item)
@@ -293,12 +331,19 @@ const saveAll = async () => {
   }
 
   ElMessage.success('保存成功')
-  loadData()
+
+  // 重新加载，保证管理端预览同步
+  await loadData()
+
   saving.value = false
 }
 
+
+
 onMounted(loadData)
 </script>
+
+
 
 <style scoped>
 .joinus-management-container {
