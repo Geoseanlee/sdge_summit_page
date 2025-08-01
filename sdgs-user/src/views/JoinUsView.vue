@@ -1,78 +1,85 @@
 <template>
   <div class="join-us-page">
     <!-- 顶部 Banner -->
-    <div class="banner">
+    <div class="banner section-container">
       <img :src="bannerImage" alt="banner" />
-      <h2 class="banner-title">与世博全球青年一起<br />共创可持续发展未来</h2>
+      <h2 class="banner-title">
+        与世博全球青年一起<br />共创可持续发展未来
+      </h2>
     </div>
 
-    <!-- 项目岗位信息（滑块） -->
-    <h2 class="section-title">项目岗位信息</h2>
-    <div class="carousel-wrapper" v-if="projects.length">
-      <el-carousel
-        ref="projectCarousel"
-        :interval="5000"
-        arrow="always"
-        indicator-position=""
-        @change="handleCarouselChange('project', $event)"
-      >
-        <el-carousel-item v-for="(item, index) in projects" :key="item.id">
-          <div class="project-card">
-            <h3 class="project-title">{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
-            <el-button class="project-btn" type="primary" @click="goToLink(item.linkUrl)">
-              报名通道
-            </el-button>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
-
-      <!-- 圆点指示器 -->
-      <div class="indicators">
-        <span
-          v-for="(item, index) in projects"
-          :key="index"
-          :class="{ active: activeIndex === index }"
-          @click="setActive(index, 'projectCarousel')"
-        ></span>
-      </div>
-    </div>
-
-    <!-- 入选名单 -->
-    <h2 class="section-title">入选名单</h2>
-    <div v-for="(cat, idx) in categories" :key="idx" class="member-block">
-      <div class="category-title">{{ cat.categoryTitle }}</div>
-
-      <!-- 食品奖项模块（滑块） -->
-      <div v-if="cat.type === 'slider'" class="carousel-wrapper">
+    <!-- 项目岗位信息 -->
+    <div class="section-container">
+      <h2 class="section-title">{{ projectTitle }}</h2>
+      <div class="carousel-wrapper" v-if="projects.length">
         <el-carousel
-          ref="foodCarousel"
+          ref="projectCarousel"
           :interval="5000"
           arrow="always"
-          indicator-position=""
-          @change="handleCarouselChange('food', $event)"
+          indicator-position="none"
+          @change="handleCarouselChange('project', $event)"
         >
-          <el-carousel-item v-for="(item, i) in cat.items" :key="item.id">
+          <el-carousel-item v-for="(item, index) in projects" :key="item.id">
             <div class="project-card">
-              <h3 class="food-title">{{ item.title }}</h3>
-              <img :src="item.imageUrl" alt="" class="food-img" />
+              <h3 class="project-title">{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <el-button class="project-btn" type="primary" @click="goToLink(item.linkUrl)">
+                报名通道
+              </el-button>
             </div>
           </el-carousel-item>
         </el-carousel>
 
-        <!-- 圆点指示器 -->
-        <div class="indicators food-indicators">
+        <!-- 自定义圆点 -->
+        <div class="indicators project-indicators">
           <span
-            v-for="(item, index) in cat.items"
+            v-for="(item, index) in projects"
             :key="index"
-            :class="{ active: foodActiveIndex === index }"
-            @click="setActive(index, 'foodCarousel')"
+            :class="{ active: activeIndex === index }"
+            @click="setActive(index, 'projectCarousel')"
           ></span>
         </div>
       </div>
+    </div>
 
-      <!-- 非滑块的图片 -->
-      <img v-else :src="cat.items[0].imageUrl" alt="名单图片" class="member-img small-img" />
+    <!-- 入选名单 -->
+    <div class="section-container">
+      <h2 class="section-title">{{ memberTitle }}</h2>
+      <div v-for="(cat, idx) in categories" :key="idx" class="member-block">
+        <div class="category-title">{{ cat.categoryTitle }}</div>
+
+        <!-- 食品奖项模块 -->
+        <div v-if="cat.type === 'slider'" class="carousel-wrapper food-award-carousel">
+          <el-carousel
+            ref="foodCarousel"
+            arrow="always"
+            indicator-position="none"
+            :autoplay="false"
+            :height="undefined"
+            @change="handleCarouselChange('food', $event)"
+          >
+            <el-carousel-item v-for="(item, i) in cat.items" :key="item.id">
+              <div class="project-card">
+                <h3 class="food-title">{{ item.title }}</h3>
+                <img :src="item.imageUrl" alt="" class="food-img" />
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+
+          <!-- 小圆点 -->
+          <div class="indicators food-indicators">
+            <span
+              v-for="(item, index) in cat.items"
+              :key="index"
+              :class="{ active: foodActiveIndex === index }"
+              @click="setActive(index, 'foodCarousel')"
+            ></span>
+          </div>
+        </div>
+
+        <!-- 普通图片 -->
+        <img v-else :src="cat.items[0].imageUrl" alt="名单图片" class="member-img small-img" />
+      </div>
     </div>
   </div>
 </template>
@@ -81,12 +88,12 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const bannerImage = ref('') 
-
+const bannerImage = ref('')
+const projectTitle = ref('项目岗位信息')
+const memberTitle = ref('入选名单')
 const projects = ref([])
 const categories = ref([])
 
-/* 圆点索引 */
 const activeIndex = ref(0)
 const foodActiveIndex = ref(0)
 const projectCarousel = ref(null)
@@ -111,9 +118,7 @@ const handleCarouselChange = (type, index) => {
 }
 
 const goToLink = (link) => {
-  if (link) {
-    window.open(link, '_blank')
-  }
+  if (link) window.open(link, '_blank')
 }
 
 onMounted(async () => {
@@ -121,21 +126,25 @@ onMounted(async () => {
     const res = await axios.get('http://localhost:8080/api/joinus/list')
     const data = res.data
 
-    bannerImage.value = data.find(item => item.category === 'banner')?.imageUrl 
+    // Banner
+    bannerImage.value = data.find(item => item.category === 'banner')?.imageUrl
 
-    // 1. 项目岗位信息（category = project）
+    // 动态标题
+    projectTitle.value = data.find(item => item.category === 'projectTitle')?.title || '项目岗位信息'
+    memberTitle.value = data.find(item => item.category === 'memberTitle')?.title || '入选名单'
+
+    // 项目岗位信息
     projects.value = data.filter(item => item.category === 'project')
 
-    // 2. 入选名单（category = member） => 每条直接显示为一个小模块
+    // 入选名单 + 食品奖项
     categories.value = data
       .filter(item => item.category === 'member')
       .map(item => ({
         categoryTitle: item.title,
         type: 'image',
-        items: [item] 
+        items: [item]
       }))
 
-    // 3. 食品奖项（category = food_award）
     const foodAwardItems = data.filter(item => item.category === 'food_award')
     if (foodAwardItems.length) {
       categories.value.push({
@@ -148,40 +157,56 @@ onMounted(async () => {
     console.error('加载数据失败', error)
   }
 })
-
 </script>
 
 <style scoped>
 .join-us-page {
-  padding: 20px;
+  background: #fff;
 }
-.banner {
+
+.banner.section-container {
+  max-width: 960px;
+  margin: 2rem auto;
+  text-align: center;
   position: relative;
 }
 .banner img {
   width: 100%;
+  border-radius: 8px;
 }
 .banner-title {
   position: absolute;
-  bottom: 80px;
-  left: 20px;
+  bottom: 30px;
+  left: 80px;
   color: white;
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
 }
+
+.section-container {
+  max-width: 960px;
+  margin: 0 auto 3.5rem auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
 .section-title {
-  text-align: left;
-  margin: 30px 0 10px;
-  font-size: 22px;
-  color: #003366;
+  font-size: 1.9rem;
   font-weight: bold;
+  margin: 2rem 0 1.5rem;
+  color: #1976d2;
+  text-align: left;
 }
 
-
-.carousel-wrapper {
-  position: relative;
-  width: 80%;
-  margin: 0 auto;
+.category-title {
+  display: inline-block;
+  background: #409eff;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
 }
 
 .project-card {
@@ -191,60 +216,41 @@ onMounted(async () => {
   width: 85%;
   margin: 0 auto;
   text-align: center;
-  position: relative;    
-  height: auto;
 }
-
-.food-title {
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 15px;
-}
-
-.food-img {
-  width: 100%;
+.project-card img,
+.food-img,
+.member-img {
+  width: 85%;
   height: auto;
-  max-height: none;    
-  object-fit: contain; 
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
   border-radius: 8px;
-}
-
-.project-btn {
-  position: static;
-  margin-top: 30px;  
 }
 
 .project-title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 1.2rem;
   margin-bottom: 10px;
 }
-
-.member-img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
+.food-title {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 15px;
 }
 
-.small-img {
-  width: 70%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border-radius: 8px;
+.project-btn {
+  margin-top: 30px;
 }
+
 
 .indicators {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  text-align: center;
+  margin-top: 6px;
 }
-
-.food-indicators {
-  bottom: -10px;
+.project-indicators {
+  margin-top: -60px;
 }
-
 .indicators span {
   display: inline-block;
   width: 8px;
@@ -258,25 +264,28 @@ onMounted(async () => {
   background: #409eff;
 }
 
+.food-award-carousel .el-carousel__container {
+  height: auto !important;
+  overflow: visible !important;
+}
+.food-award-carousel .el-carousel__item {
+  height: auto !important;
+  overflow: visible !important;
+}
+
 .member-block {
   text-align: center;
   margin: 30px 0;
 }
-.category-title {
-  display: inline-block;
-  background: #409eff;
-  color: #fff;
-  padding: 5px 15px;
-  border-radius: 20px;
-  font-size: 16px;
-  margin-bottom: 10px;
-  text-align: center;
+
+@media (max-width: 768px) {
+  .section-container,
+  .banner.section-container {
+    padding: 0 16px;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
 }
-
-:deep(.el-carousel__indicators) {
-  display: none !important;
-}
-
-
-
 </style>
