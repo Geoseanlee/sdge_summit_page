@@ -39,7 +39,8 @@ INSERT INTO join_us_content (category, title, description, image_url, link_url, 
 ('food_award', '地方可持续风味榜TOP10', NULL, '', NULL, 5, NOW());
 
 -- 动态标题初始化
-INSERT INTO joinus (category, title) VALUES
-                                         ('projectTitle', '项目岗位信息'),
-                                         ('memberTitle', '入选名单'),
+INSERT INTO join_us_content (category, title)
+VALUES ('projectTitle', '项目岗位信息'),
+       ('memberTitle', '入选名单');
+
 
