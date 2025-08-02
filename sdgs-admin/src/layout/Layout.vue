@@ -53,6 +53,10 @@
           <el-icon><Setting /></el-icon>
           <span>账号管理</span>
         </el-menu-item>
+        <el-menu-item index="/test-oss">
+          <el-icon><Tools /></el-icon>
+          <span>OSS测试</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 
@@ -76,7 +80,8 @@ import {
   InfoFilled,
   User,
   Setting,
-  Picture
+  Picture,
+  Tools
 } from '@element-plus/icons-vue'
 </script>
 
