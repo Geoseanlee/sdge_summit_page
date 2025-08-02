@@ -21,6 +21,7 @@ public interface ForumMapper {
         @Result(property = "description", column = "description"),
         @Result(property = "imageUrl", column = "image_url"),
         @Result(property = "tag", column = "tag"),
+        @Result(property = "url", column = "url"),
         @Result(property = "createTime", column = "create_time"),
         @Result(property = "updateTime", column = "update_time")
     })
@@ -33,15 +34,16 @@ public interface ForumMapper {
         @Result(property = "description", column = "description"),
         @Result(property = "imageUrl", column = "image_url"),
         @Result(property = "tag", column = "tag"),
+        @Result(property = "url", column = "url"),
         @Result(property = "createTime", column = "create_time"),
         @Result(property = "updateTime", column = "update_time")
     })
     Forum selectById(Long id);
     
-    @Insert("INSERT INTO forum (title, description, image_url, tag, create_time, update_time) VALUES (#{title}, #{description}, #{imageUrl}, #{tag}, NOW(), NOW())")
+    @Insert("INSERT INTO forum (title, description, image_url, tag, url, create_time, update_time) VALUES (#{title}, #{description}, #{imageUrl}, #{tag}, #{url}, NOW(), NOW())")
     int insert(Forum forum);
     
-    @Update("UPDATE forum SET title = #{title}, description = #{description}, image_url = #{imageUrl}, tag = #{tag}, update_time = NOW() WHERE id = #{id}")
+    @Update("UPDATE forum SET title = #{title}, description = #{description}, image_url = #{imageUrl}, tag = #{tag}, url = #{url}, update_time = NOW() WHERE id = #{id}")
     int updateById(Forum forum);
     
     @Delete("DELETE FROM forum WHERE id = #{id}")

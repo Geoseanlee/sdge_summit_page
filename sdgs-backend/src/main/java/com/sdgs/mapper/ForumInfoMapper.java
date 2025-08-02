@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface ForumInfoMapper {
@@ -21,4 +22,7 @@ public interface ForumInfoMapper {
             @Result(property = "updateTime", column = "update_time")
     })
     ForumInfo selectLatest();
+
+    @Update("UPDATE forum_info SET title=#{title}, content=#{content}, update_time=NOW() WHERE id=#{id}")
+    int updateById(ForumInfo info);
 } 

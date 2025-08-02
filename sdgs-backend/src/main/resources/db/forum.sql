@@ -8,6 +8,7 @@ CREATE TABLE `forum` (
   `description` text COMMENT '会议描述',
   `image_url` varchar(255) DEFAULT NULL COMMENT '会议图片URL',
   `tag` varchar(255) DEFAULT NULL COMMENT '会议标签（可多个，逗号分隔）',
+  `url` varchar(255) DEFAULT NULL COMMENT '详情跳转链接',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
