@@ -1,41 +1,43 @@
 <template>
   <div class="news">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="container">
-        <h1>新闻资讯</h1>
-        <p>关注可持续发展的最新动态和进展</p>
-      </div>
-    </div>
-
     <!-- 主要内容 -->
     <div class="news-content">
       <div class="container">
-        <!-- 筛选和搜索 -->
+        <!-- 筛选和搜索 - 居中框框样式 -->
         <div class="filter-section">
-          <div class="search-box">
-            <el-input
-              v-model="searchQuery"
-              placeholder="搜索新闻..."
-              prefix-icon="Search"
-              size="large"
-            />
-          </div>
-          <div class="category-tabs">
-            <el-button
-              v-for="category in categories"
-              :key="category.id"
-              :type="selectedCategory === category.id ? 'primary' : ''"
-              @click="selectedCategory = category.id"
-            >
-              {{ category.name }}
-            </el-button>
+          <div class="filter-container">
+            <div class="search-box">
+              <el-input
+                v-model="searchQuery"
+                placeholder="搜索新闻..."
+                prefix-icon="Search"
+                size="large"
+              />
+            </div>
+
+            <div class="search-button-container">
+              <el-button type="primary" size="large" @click="fetchNewsData">
+                搜索
+              </el-button>
+            </div>
           </div>
         </div>
 
         <!-- 新闻列表 -->
         <div class="news-list">
+          <!-- 加载状态 -->
+          <div v-if="loading" class="loading-state">
+            <p>正在加载新闻...</p>
+          </div>
+          
+          <!-- 空状态 -->
+          <div v-else-if="filteredNews.length === 0" class="empty-state">
+            <p>暂无新闻数据</p>
+          </div>
+          
+          <!-- 新闻卡片 -->
           <div
+            v-else
             v-for="article in filteredNews"
             :key="article.id"
             class="news-card"
@@ -43,25 +45,15 @@
           >
             <div class="news-image">
               <img :src="article.image" :alt="article.title" />
-              <div class="news-category">{{ article.category }}</div>
             </div>
             <div class="news-content-area">
               <h3>{{ article.title }}</h3>
               <p class="news-summary">{{ article.summary }}</p>
               <div class="news-meta">
                 <span class="news-date">{{ article.date }}</span>
-                <span class="news-source">{{ article.source }}</span>
                 <span class="news-read-time">{{ article.readTime }} 分钟阅读</span>
               </div>
-              <div class="news-tags">
-                <span
-                  v-for="tag in article.tags"
-                  :key="tag"
-                  class="news-tag"
-                >
-                  #{{ tag }}
-                </span>
-              </div>
+
             </div>
           </div>
         </div>
@@ -71,106 +63,52 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import request from '@/utils/request'
 
 const $router = useRouter()
 
 // 响应式数据
 const searchQuery = ref('')
-const selectedCategory = ref('all')
+const loading = ref(false)
+const newsData = ref([])
 
-// 分类数据
-const categories = ref([
-  { id: 'all', name: '全部' },
-  { id: 'climate', name: '气候行动' },
-  { id: 'education', name: '教育发展' },
-  { id: 'health', name: '健康福祉' },
-  { id: 'economy', name: '经济发展' },
-  { id: 'environment', name: '环境保护' }
-])
-
-// 新闻数据
-const newsData = ref([
-  {
-    id: 1,
-    title: '联合国发布2024年可持续发展目标进展报告',
-    summary: '报告显示全球在减贫、教育、健康等领域取得显著进展，但气候变化仍是最大挑战。',
-    category: '全部',
-    categoryId: 'all',
-    date: '2024-03-10',
-    source: '联合国官网',
-    readTime: 5,
-    image: '/images/news1.jpg',
-    tags: ['SDG报告', '全球进展', '联合国']
-  },
-  {
-    id: 2,
-    title: '全球气候峰会达成新的减排协议',
-    summary: '195个国家承诺在2030年前将碳排放量减少50%，加速向清洁能源转型。',
-    category: '气候行动',
-    categoryId: 'climate',
-    date: '2024-03-08',
-    source: 'Climate News',
-    readTime: 8,
-    image: '/images/news2.jpg',
-    tags: ['气候变化', '减排', '清洁能源']
-  },
-  {
-    id: 3,
-    title: '数字教育平台助力全球教育公平',
-    summary: '新兴的在线教育技术正在帮助发展中国家的儿童获得优质教育资源。',
-    category: '教育发展',
-    categoryId: 'education',
-    date: '2024-03-05',
-    source: 'Education Today',
-    readTime: 6,
-    image: '/images/news3.jpg',
-    tags: ['数字教育', '教育公平', '技术创新']
-  },
-  {
-    id: 4,
-    title: '全球疫苗接种计划显著改善儿童健康',
-    summary: '世界卫生组织报告显示，全球儿童疫苗接种率达到历史新高。',
-    category: '健康福祉',
-    categoryId: 'health',
-    date: '2024-03-03',
-    source: 'WHO',
-    readTime: 4,
-    image: '/images/news4.jpg',
-    tags: ['疫苗接种', '儿童健康', 'WHO']
-  },
-  {
-    id: 5,
-    title: '绿色金融推动可持续经济发展',
-    summary: '越来越多的金融机构将ESG因素纳入投资决策，推动经济向可持续方向发展。',
-    category: '经济发展',
-    categoryId: 'economy',
-    date: '2024-03-01',
-    source: 'Finance Weekly',
-    readTime: 7,
-    image: '/images/news5.jpg',
-    tags: ['绿色金融', 'ESG', '可持续投资']
+// 获取新闻数据
+const fetchNewsData = async () => {
+  loading.value = true
+  try {
+    const response = await request.get('/news/published')
+    newsData.value = response.map(item => ({
+      ...item,
+      date: item.publishTime ? new Date(item.publishTime).toLocaleDateString('zh-CN') : '',
+      image: item.coverImageUrl || '/placeholder-news.jpg',
+      readTime: Math.ceil((item.content || '').length / 200) // 估算阅读时间
+    }))
+  } catch (error) {
+    ElMessage.error('加载新闻数据失败')
+    console.error('Error fetching news:', error)
+  } finally {
+    loading.value = false
   }
-])
+}
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchNewsData()
+})
 
 // 计算属性：过滤后的新闻
 const filteredNews = computed(() => {
   let filtered = newsData.value
-
-  // 按分类筛选
-  if (selectedCategory.value !== 'all') {
-    filtered = filtered.filter(news => news.categoryId === selectedCategory.value)
-  }
 
   // 按搜索关键词筛选
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(news =>
       news.title.toLowerCase().includes(query) ||
-      news.summary.toLowerCase().includes(query) ||
-      news.tags.some(tag => tag.toLowerCase().includes(query))
+      news.summary.toLowerCase().includes(query)
     )
   }
 
@@ -187,14 +125,39 @@ const openNews = (article) => {
 <style scoped>
 .news {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: white;
+  position: relative;
 }
 
-.page-header {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  color: white;
-  padding: 60px 0;
-  text-align: center;
+.news::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18%;
+  background-image: url('https://image.kkday.com/image/get/s1.kkday.com/product_261745/20241108085501_4472o/jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.news::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18%; 
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.news-content {
+  padding: 300px 0 60px 0;
+  position: relative;
+  z-index: 3;
 }
 
 .container {
@@ -203,27 +166,27 @@ const openNews = (article) => {
   padding: 0 20px;
 }
 
-.page-header h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-
-.page-header p {
-  font-size: 1.2rem;
-  opacity: 0.9;
-}
-
-.news-content {
-  padding: 60px 0;
-}
-
 .filter-section {
   margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-container {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 1200px;
+  max-width: 100%;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .search-box {
-  text-align: center;
   margin-bottom: 20px;
 }
 
@@ -231,77 +194,83 @@ const openNews = (article) => {
   max-width: 400px;
 }
 
-.category-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+
+
+.search-button-container {
+  text-align: center;
 }
 
 .news-list {
-  display: grid;
-  gap: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
 }
 
 .news-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
+  background: #eaf6fb;
+  color: #0166A5FF;
   display: flex;
-  gap: 24px;
+  border-radius: 16px;
+  box-shadow: 0 -2px 1px rgba(255, 255, 255, 0), 0 8px 14px rgba(0,0,0,0.18);
+  overflow: hidden;
+  margin-bottom: 32px;
+  min-height: 250px;
+  width: 1200px;
+  max-width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .news-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -2px 1px rgba(255, 255, 255, 0), 0 12px 20px rgba(0,0,0,0.25);
 }
 
 .news-image {
+  width: 220px;
+  min-height: 250px;
+  height: auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: #f7f7f7;
   position: relative;
-  width: 300px;
-  height: 200px;
-  flex-shrink: 0;
 }
 
 .news-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.news-category {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-}
+
 
 .news-content-area {
+  position: relative;
+  padding: 1px 24px 80px 32px;
   flex: 1;
-  padding: 24px;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .news-content-area h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #333;
-  line-height: 1.4;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #0166A5FF;
+  line-height: 1;
 }
 
 .news-summary {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 16px;
+  font-size: 1rem;
+  color: #0166A5FF;
+  font-weight: bold;
+  line-height: 1;
+  margin-bottom: 18px;
   flex: 1;
 }
 
@@ -309,33 +278,44 @@ const openNews = (article) => {
   display: flex;
   gap: 16px;
   margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: #999;
+  font-size: 0.95rem;
+  color: #0166A5FF;
+  font-weight: bold;
   flex-wrap: wrap;
 }
 
-.news-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
 }
 
-.news-tag {
-  background: #f0f9ff;
-  color: #0369a1;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+.loading-state p,
+.empty-state p {
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .page-header h1 {
-    font-size: 2rem;
+  .news::before {
+    height: 200px;  /* 移动设备上的固定高度 */
+  }
+  
+  .news::after {
+    height: 200px;  /* 移动设备上的固定高度 */
+  }
+  
+  .news-content {
+    padding: 200px 0 60px 0;
   }
   
   .news-card {
     flex-direction: column;
+    width: 100%;
   }
   
   .news-image {
@@ -343,10 +323,19 @@ const openNews = (article) => {
     height: 200px;
   }
   
-  .category-tabs {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 10px;
+
+  
+  .filter-container {
+    max-width: 95%;
+    padding: 20px;
+  }
+  
+  .news-list {
+    padding: 20px;
+  }
+  
+  .news-content-area {
+    padding: 20px;
   }
 }
 </style> 
