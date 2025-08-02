@@ -29,32 +29,22 @@ public class FileUploadController {
      */
     @PostMapping("/upload/image")
     public Result<Map<String, Object>> uploadImage(@RequestParam("file") MultipartFile file) {
-        log.info("开始处理图片上传请求，文件名: {}, 文件大小: {} bytes, 内容类型: {}", 
-                file != null ? file.getOriginalFilename() : "null", 
-                file != null ? file.getSize() : 0, 
-                file != null ? file.getContentType() : "null");
-        
         try {
             // 验证文件是否为空
             if (file == null || file.isEmpty()) {
-                log.warn("文件为空或未选择文件");
                 return Result.error(400, "请选择要上传的文件");
             }
 
             // 验证文件类型
             if (!ossService.isImageFile(file)) {
-                log.warn("文件类型验证失败，内容类型: {}", file.getContentType());
                 return Result.error(400, "只能上传图片文件（jpg、png、gif、bmp等）");
             }
 
             // 验证文件大小（限制为10MB）
             if (!ossService.isValidFileSize(file, 10)) {
-                log.warn("文件大小验证失败，文件大小: {} bytes", file.getSize());
                 return Result.error(400, "文件大小不能超过10MB");
             }
 
-            log.info("文件验证通过，开始上传到OSS...");
-            
             // 上传文件
             String fileUrl = ossService.uploadFile(file);
 
@@ -68,7 +58,7 @@ public class FileUploadController {
             return Result.success(data);
 
         } catch (Exception e) {
-            log.error("图片上传失败，详细错误信息: ", e);
+            log.error("图片上传失败", e);
             return Result.error(500, "图片上传失败: " + e.getMessage());
         }
     }

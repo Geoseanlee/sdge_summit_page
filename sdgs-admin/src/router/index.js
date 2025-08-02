@@ -63,11 +63,6 @@ const router = createRouter({
           path: 'account',
           name: 'account',
           component: () => import('../views/AccountView.vue')
-        },
-        {
-          path: 'test-oss',
-          name: 'test-oss',
-          component: () => import('../views/TestOssView.vue')
         }
       ]
     }
